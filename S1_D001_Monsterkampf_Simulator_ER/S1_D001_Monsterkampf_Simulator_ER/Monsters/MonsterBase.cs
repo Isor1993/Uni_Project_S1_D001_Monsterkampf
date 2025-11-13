@@ -11,12 +11,11 @@
 ******************************************************************************/
 
 
+using S1_D001_Monsterkampf_Simulator_ER.Systems.StatusEffects;
+
 namespace S1_D001_Monsterkampf_Simulator_ER.Monsters
 {
 
-    // === Dependencies ===
-
-    // === Fields ===
 
     public enum RaceType
     {
@@ -27,15 +26,23 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Monsters
         Slime = 4,
 
     }
+    public enum EfectsType
+    {
+
+    }
 
 
     internal abstract class MonsterBase
     {
+        // === Dependencies ===
         protected MonsterMeta _meta;
         protected MonsterResistance _resistance;
 
+        // === Fields ===
+        private List<StatusEffectBase> _statusEffects = new List<StatusEffectBase>();
 
-        public RaceType Race { get;  }
+
+        public RaceType Race { get; }
 
 
         public int Level { get; }
@@ -69,6 +76,19 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Monsters
 
 
         public virtual void Heal() { }
+
+        public void AddStatusEffect(StatusEffectBase effect)
+        {
+            _statusEffects.Add(effect);
+        }
+
+        public void ProcessStatusEffects()
+        {
+            foreach (StatusEffectBase effect in _statusEffects)
+                effect.ApplyEffect(this);
+
+            _statusEffects.RemoveAll(effect => effect.IsExpired);
+        }
 
 
         public virtual void TakeDamage(float damage)

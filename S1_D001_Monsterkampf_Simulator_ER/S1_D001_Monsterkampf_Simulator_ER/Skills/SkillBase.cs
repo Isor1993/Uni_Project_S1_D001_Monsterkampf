@@ -21,15 +21,17 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Skills
         None = 0,
         Aktive= 1,
         Passive= 2,
+        Meta= 3,
     }
 
 
     public enum DamageType
     {
-        Unknown = 0,
+        None = 0,
         Physical= 1,
         Fire= 2,
         Water= 3,
+        Poision= 4,
     }
 
 

@@ -29,11 +29,15 @@ namespace S1_D001_Monsterkampf_Simulator_ER
         public float Physical {  get; set; }
 
 
-        public MonsterResistance( float fire,float water,float physical)
+        public float Poision { get; set; }
+
+
+        public MonsterResistance( float fire, float water, float physical, float poision)
         {
             Fire = fire;
             Water = water;
             Physical = physical;
+            Poision = poision;
         }
 
     }
