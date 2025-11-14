@@ -12,7 +12,7 @@
 
 using S1_D001_Monsterkampf_Simulator_ER.Skills.Slime;
 
-namespace S1_D001_Monsterkampf_Simulator_ER
+namespace S1_D001_Monsterkampf_Simulator_ER.Monsters
 {
     internal class MonsterResistance
     {

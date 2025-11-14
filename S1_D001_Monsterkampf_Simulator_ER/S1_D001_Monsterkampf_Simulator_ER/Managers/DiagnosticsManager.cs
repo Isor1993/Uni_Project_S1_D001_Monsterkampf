@@ -14,9 +14,8 @@
 * xx.xx.2025 ER Created / 
 ******************************************************************************/
 
-using S1_D001_Monsterkampf_Simulator_ER.Managers;
 
-namespace Semester1_D001_Escape_Room_Rosenberg
+namespace S1_D001_Monsterkampf_Simulator_ER.Managers
 {
     /// <summary>
     /// Central diagnostics hub that captures and prints categorized log messages.

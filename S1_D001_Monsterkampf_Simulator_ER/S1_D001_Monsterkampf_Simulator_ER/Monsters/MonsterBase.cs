@@ -11,6 +11,8 @@
 ******************************************************************************/
 
 
+using S1_D001_Monsterkampf_Simulator_ER.Managers;
+using S1_D001_Monsterkampf_Simulator_ER.Skills;
 using S1_D001_Monsterkampf_Simulator_ER.Systems.StatusEffects;
 
 namespace S1_D001_Monsterkampf_Simulator_ER.Monsters
@@ -35,12 +37,15 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Monsters
     internal abstract class MonsterBase
     {
         // === Dependencies ===
+        protected readonly DiagnosticsManager _diagnostics;
+        // === Fields ===
         protected MonsterMeta _meta;
         protected MonsterResistance _resistance;
-
-        // === Fields ===
+        protected SkillPackage _skills;
         private List<StatusEffectBase> _statusEffects = new List<StatusEffectBase>();
 
+
+        public SkillPackage Skills => _skills;
 
         public RaceType Race { get; }
 
@@ -48,12 +53,14 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Monsters
         public int Level { get; }
 
 
-        protected MonsterBase(MonsterMeta meta, MonsterResistance resistance, RaceType race, int level)
+        protected MonsterBase(MonsterMeta meta, MonsterResistance resistance, RaceType race, int level,SkillPackage skills,DiagnosticsManager diagnosticsManager)
         {
             Race = race;
             Level = level;
             _meta = meta;
             _resistance = resistance;
+            _diagnostics = diagnosticsManager;
+            _skills=skills;
         }
 
 
@@ -75,11 +82,22 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Monsters
         public virtual void UseAktiveSkill() { }
 
 
-        public virtual void Heal() { }
+        public virtual void Heal(float heal)
+        {
+            Meta.CurrentHP += heal;
+            if ( Meta.MaxHP==Meta.CurrentHP || Meta.MaxHP> Meta.CurrentHP)
+            {
+                Meta.CurrentHP = Meta.MaxHP;
+            }
+
+            _diagnostics.AddCheck($"{nameof(MonsterBase)}.{nameof(Heal)}: {Race} got {heal} Hp healed.");
+
+        }
 
         public void AddStatusEffect(StatusEffectBase effect)
         {
             _statusEffects.Add(effect);
+            _diagnostics.AddCheck($"{nameof(MonsterBase)}.{nameof(AddStatusEffect)}: Added {effect} on {Race}");
         }
 
         public void ProcessStatusEffects()
@@ -88,19 +106,21 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Monsters
                 effect.ApplyEffect(this);
 
             _statusEffects.RemoveAll(effect => effect.IsExpired);
+            _diagnostics.AddCheck($"{nameof(MonsterBase)}.{nameof(ProcessStatusEffects)}: Processed all status effects successfully.");
         }
 
 
         public virtual void TakeDamage(float damage)
         {
-            _meta.HP -= damage;
-            if (_meta.HP < 0)
+            _meta.MaxHP -= damage;
+            if (_meta.MaxHP < 0)
             {
-                _meta.HP = 0;
+                _meta.MaxHP = 0;
             }
+            _diagnostics.AddCheck($"{nameof(MonsterBase)}.{nameof(TakeDamage)}: {Race} took {damage} damage.");
         }
 
 
-        public bool IsAlive => _meta.HP > 0;
+        public bool IsAlive => _meta.MaxHP > 0;
     }
 }

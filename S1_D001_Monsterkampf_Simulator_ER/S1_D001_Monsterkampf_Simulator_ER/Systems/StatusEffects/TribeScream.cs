@@ -12,33 +12,25 @@
 
 using S1_D001_Monsterkampf_Simulator_ER.Managers;
 using S1_D001_Monsterkampf_Simulator_ER.Monsters;
+using System.Diagnostics.Tracing;
 
-namespace S1_D001_Monsterkampf_Simulator_ER.Skills.Orc
+namespace S1_D001_Monsterkampf_Simulator_ER.Systems.StatusEffects
 {
-    
-    internal class TribeScream:SkillBase
+    internal class TribeScream:StatusEffectBase
     {
-
-        // === Fields ===
-        private const float Multiplier= 1.5f;
+        private readonly float _percent;
 
         public TribeScream(DiagnosticsManager diagnostics)
             :base(
                  "Tribe Scream",
-                 "A scream of the OrcTribe wich gives you 50% more damage for 5 rounds.",
-                 SkillType.Aktive,
-                 DamageType.None,
-                 0f,
+                 5,
                  diagnostics)
         {            
         }
 
-        public override void Apply(MonsterBase user, MonsterBase target)
+        public override void ApplyEffect(MonsterBase target)
         {
-            user.AddStatusEffect()
+            
         }
-
-
-
     }
 }

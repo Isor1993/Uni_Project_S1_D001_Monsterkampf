@@ -11,6 +11,7 @@
 ******************************************************************************/
 
 
+using S1_D001_Monsterkampf_Simulator_ER.Managers;
 using S1_D001_Monsterkampf_Simulator_ER.Monsters;
 
 namespace S1_D001_Monsterkampf_Simulator_ER.Skills
@@ -19,25 +20,26 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Skills
     public enum SkillType
     {
         None = 0,
-        Aktive= 1,
-        Passive= 2,
-        Meta= 3,
+        Aktive = 1,
+        Passive = 2,
+        Meta = 3,
     }
 
 
     public enum DamageType
     {
         None = 0,
-        Physical= 1,
-        Fire= 2,
-        Water= 3,
-        Poision= 4,
+        Physical = 1,
+        Fire = 2,
+        Water = 3,
+        Poision = 4,
     }
 
 
     internal class SkillBase
     {
         // === Dependencies ===
+        protected readonly DiagnosticsManager _diagnostics;
 
         // === Fields ===
 
@@ -55,21 +57,24 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Skills
 
         public float Power { get; }
 
-        public SkillBase(string name, string description, SkillType type,DamageType damageType,float power)
+        public SkillBase(string name, string description, SkillType type, DamageType damageType, float power, DiagnosticsManager diagnosticsManager)
         {
             Name = name;
             Description = description;
             Type = type;
             DamageType = damageType;
             Power = power;
+            _diagnostics = diagnosticsManager;
         }
 
-        public virtual float CalculateDamage(MonsterBase attacker,MonsterBase target)
+        public virtual float CalculateDamage(MonsterBase attacker, MonsterBase target)
         {
-            return attacker.Meta.AP * Power;
+            float damage = attacker.Meta.AP * Power;
+            _diagnostics.AddCheck($"{nameof(SkillBase)}.{nameof(CalculateDamage)}: Calculated damage = {damage}.");
+            return damage;
         }
 
 
-        public virtual void Apply (MonsterBase user, MonsterBase target) { }
+        public virtual void Apply(MonsterBase user, MonsterBase target) { }
     }
 }

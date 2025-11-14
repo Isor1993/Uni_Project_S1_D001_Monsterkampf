@@ -20,15 +20,17 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Monsters
     internal class MonsterMeta
     {
 
-        public float HP { get; set; }
+        public float MaxHP { get; set; }
+        public float CurrentHP { get; set; }
         public float AP { get; set; }
         public float DP { get; set; }
         public float Speed { get; set; }
       
 
-        public MonsterMeta(float hp, float ap, float dp, float speed)
+        public MonsterMeta(float maxHp,float currentHp, float ap, float dp, float speed)
         {
-            HP = hp;
+            MaxHP = maxHp;
+            CurrentHP = currentHp ;
             AP = ap;
             DP = dp;
             Speed = speed;     

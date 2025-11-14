@@ -13,24 +13,23 @@
 using S1_D001_Monsterkampf_Simulator_ER.Managers;
 using S1_D001_Monsterkampf_Simulator_ER.Monsters;
 
-
 namespace S1_D001_Monsterkampf_Simulator_ER.Systems.StatusEffects
 {
-    internal class PoisonEffect : StatusEffectBase
+    internal class RegenerationEffect : PermanentStatusEffect
     {
-        private readonly float _damagePercent;
+        private readonly float _percent;
 
-        public PoisonEffect(int duration, float damagePercent,DiagnosticsManager diagnostics)
-            : base("Poison", duration,diagnostics)
+        public RegenerationEffect(float percent, DiagnosticsManager diagnostics)
+            : base("Regeneration", diagnostics)
         {
-            _damagePercent = damagePercent;
+            _percent = percent;
         }
 
         public override void ApplyEffect(MonsterBase target)
-        {            
-            float damage = target.Meta.MaxHP * _damagePercent;
-            target.TakeDamage(damage);
-            _diagnostics.AddCheck($"{nameof(PoisonEffect)}.{nameof(ApplyEffect)}: {target.Race} took {damage} damage.");
+        {
+            float regeneration = target.Meta.MaxHP * _percent;
+            target.Heal(regeneration);
+            _diagnostics.AddCheck($"{nameof(RegenerationEffect)}.{nameof(ApplyEffect)}: {target.Race} regenerated {regeneration} Hp.");
         }
     }
 }

@@ -10,20 +10,23 @@
 * xx.xx.2025 ER Created
 ******************************************************************************/
 
+using S1_D001_Monsterkampf_Simulator_ER.Managers;
 using S1_D001_Monsterkampf_Simulator_ER.Monsters;
-
 
 namespace S1_D001_Monsterkampf_Simulator_ER.Systems.StatusEffects
 {
     internal abstract class StatusEffectBase
     {
+
+        protected readonly DiagnosticsManager _diagnostics;
         public string Name { get; }
         public int Duration { get; protected set; }
 
-        protected StatusEffectBase(string name, int duration)
+        protected StatusEffectBase(string name, int duration,DiagnosticsManager diagnosticsManager)
         {
             Name = name;
             Duration = duration;
+            _diagnostics = diagnosticsManager;
         }
 
         // Jede Runde Wirkung
@@ -33,6 +36,8 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Systems.StatusEffects
         public virtual void Tick()
         {
             Duration--;
+
+            _diagnostics.AddCheck($"{nameof(StatusEffectBase)}.{nameof(Tick)}: Successfully substracted duration {Duration}.");
         }
 
         public bool IsExpired => Duration <= 0;
