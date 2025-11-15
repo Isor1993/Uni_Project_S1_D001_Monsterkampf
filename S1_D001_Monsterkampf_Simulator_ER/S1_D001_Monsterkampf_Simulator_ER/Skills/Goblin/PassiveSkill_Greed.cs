@@ -31,6 +31,7 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Skills.Goblin
             0f,
             diagnostics)
         {
+            Cooldown = 0;
         }
 
         public float ApplyRewardBonus(float baseReward)

@@ -1,6 +1,6 @@
 ﻿using S1_D001_Monsterkampf_Simulator_ER.Dependencies;
 using S1_D001_Monsterkampf_Simulator_ER.Managers;
-using Semester1_D001_Escape_Room_Rosenberg;
+
 
 namespace S1_D001_Monsterkampf_Simulator_ER
 {

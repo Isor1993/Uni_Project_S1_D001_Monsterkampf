@@ -9,26 +9,32 @@
 * History :
 * xx.xx.2025 ER Created
 ******************************************************************************/
-
 using S1_D001_Monsterkampf_Simulator_ER.Managers;
 using S1_D001_Monsterkampf_Simulator_ER.Monsters;
-using S1_D001_Monsterkampf_Simulator_ER.Skills.Goblin;
 
-namespace S1_D001_Monsterkampf_Simulator_ER.Skills.Troll
+
+namespace S1_D001_Monsterkampf_Simulator_ER.Skills.Slime
 {
-    internal class PowerSmash:SkillBase
+    internal class Waterball:SkillBase
     {
-        public PowerSmash(DiagnosticsManager diagnostics)
-       : base(
-            "Power Smash",
-            "Unleashes a powerful smash that deals 80% additional damage.",
-            SkillType.Aktive,
-            DamageType.Physical,
-            1.8f,
-            diagnostics)
+        // === Dependencies ===
+
+        // === Fields ===
+
+
+
+        public Waterball(DiagnosticsManager diagnostics)
+            : base(
+                 "Waterball",
+                 "Shoots a waterball which deals 50% more damage.",
+                 SkillType.Aktive,
+                 DamageType.Water,
+                 1.5f,
+                 diagnostics)
         {
-            Cooldown = 3;
+            Cooldown = 2;
         }
+
         public override float CalculateDamage(MonsterBase attacker, MonsterBase target)
         {
             float rawDamage = attacker.Meta.AP * Power;
@@ -36,16 +42,15 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Skills.Troll
             float afterDefense = rawDamage - target.Meta.DP;
             afterDefense = Math.Max(1, afterDefense);
 
-            float resistance = target.Resistance.Physical;
+            float resistance = target.Resistance.Water;
 
             float finalDamage = afterDefense * (1f - resistance);
 
             finalDamage = Math.Max(1, finalDamage);
 
-            _diagnostics.AddCheck($"{nameof(PowerSmash)}.{nameof(CalculateDamage)}: Calculated damage is {finalDamage}");
+            _diagnostics.AddCheck($"{nameof(Waterball)}.{nameof(CalculateDamage)}: Calculated waterball damage {finalDamage}.");
 
             return finalDamage;
         }
-
     }
 }

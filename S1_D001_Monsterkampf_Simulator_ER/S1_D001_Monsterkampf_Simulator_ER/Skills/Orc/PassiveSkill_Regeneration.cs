@@ -30,6 +30,7 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Skills.Orc
                  0f,
                  diagnostics)
         {
+            Cooldown = 0;
         }
 
         public override void Apply(MonsterBase user, MonsterBase target)

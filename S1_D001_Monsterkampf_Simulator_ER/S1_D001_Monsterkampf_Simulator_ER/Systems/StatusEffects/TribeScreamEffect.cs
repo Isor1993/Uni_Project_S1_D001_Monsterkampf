@@ -19,7 +19,8 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Systems.StatusEffects
     internal class TribeScreamEffect : StatusEffectBase
     {
         private readonly float _multiplier;
-        private float _baseAp;       
+        private float _baseAp;
+        private bool _applied = false;
 
         public TribeScreamEffect(float multiplier,DiagnosticsManager diagnostics)
             : base(
@@ -33,13 +34,20 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Systems.StatusEffects
 
         public override void ApplyEffect(MonsterBase target)
         {
+            if (_applied)
+            {
+                return;
+            }
+            _applied = true;
             _baseAp = target.Meta.AP;
-            target.Meta.AP = _baseAp * _multiplier;           
+            target.Meta.AP = _baseAp * _multiplier;
+            _diagnostics.AddCheck($"{nameof(TribeScreamEffect)}.{nameof(ApplyEffect)}: Increased AP from {_baseAp} to {target.Meta.AP}.");
         }
 
         public override void OnExpire(MonsterBase target)
         {
             target.Meta.AP = _baseAp;
+            _diagnostics.AddCheck($"{nameof(TribeScreamEffect)}.{nameof(OnExpire)}: Restored AP back to {_baseAp}.");
         }
 
 

@@ -98,7 +98,7 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Monsters
         public void AddStatusEffect(StatusEffectBase effect)
         {
             _statusEffects.Add(effect);
-            _diagnostics.AddCheck($"{nameof(MonsterBase)}.{nameof(AddStatusEffect)}: Added {effect} on {Race}");
+            _diagnostics.AddCheck($"{nameof(MonsterBase)}.{nameof(AddStatusEffect)}: Added status effect '{effect.Name}' on {Race}.");
         }
 
         public void ProcessStatusEffects()

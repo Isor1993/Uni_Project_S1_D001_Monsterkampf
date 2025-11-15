@@ -27,22 +27,19 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Skills.Orc
         public TribeScream(DiagnosticsManager diagnostics)
             :base(
                  "Tribe Scream",
-                 "A scream of the OrcTribe wich gives you 50% more damage for 5 rounds.",
+                 "A scream of the Orc tribe that grants you 50% more damage for 5 rounds.",
                  SkillType.Aktive,
                  DamageType.None,
                  0f,
                  diagnostics)
-        {            
+        {
+            Cooldown = 5;
         }
 
         public override void Apply(MonsterBase user, MonsterBase target)
         {
             user.AddStatusEffect(new TribeScreamEffect(Multiplier,_diagnostics));
-            _diagnostics.AddCheck($"{nameof(TribeScream)}.{nameof(Apply)}: Applied {Name} effect for 5 rouds .");
-        }
-        
-
-
-
+            _diagnostics.AddCheck($"{nameof(TribeScream)}.{nameof(Apply)}: Applied {Name} effect for 5 rounds.");
+        }  
     }
 }

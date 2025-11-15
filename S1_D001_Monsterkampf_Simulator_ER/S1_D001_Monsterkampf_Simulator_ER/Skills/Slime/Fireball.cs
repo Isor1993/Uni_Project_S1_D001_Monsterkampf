@@ -12,23 +12,30 @@
 
 using S1_D001_Monsterkampf_Simulator_ER.Managers;
 using S1_D001_Monsterkampf_Simulator_ER.Monsters;
-using S1_D001_Monsterkampf_Simulator_ER.Skills.Goblin;
+using System.Diagnostics.Tracing;
 
-namespace S1_D001_Monsterkampf_Simulator_ER.Skills.Troll
+namespace S1_D001_Monsterkampf_Simulator_ER.Skills.Slime
 {
-    internal class PowerSmash:SkillBase
+    internal class Fireball : SkillBase
     {
-        public PowerSmash(DiagnosticsManager diagnostics)
-       : base(
-            "Power Smash",
-            "Unleashes a powerful smash that deals 80% additional damage.",
-            SkillType.Aktive,
-            DamageType.Physical,
-            1.8f,
-            diagnostics)
+        // === Dependencies ===
+
+        // === Fields ===
+        
+
+
+        public Fireball(DiagnosticsManager diagnostics)
+            : base(
+                 "Fireball",
+                 "Shoots a fireball which deals 50% more damage.",
+                 SkillType.Aktive,
+                 DamageType.Fire,
+                 1.5f,
+                 diagnostics)
         {
-            Cooldown = 3;
-        }
+            Cooldown = 2;
+        }            
+
         public override float CalculateDamage(MonsterBase attacker, MonsterBase target)
         {
             float rawDamage = attacker.Meta.AP * Power;
@@ -36,16 +43,15 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Skills.Troll
             float afterDefense = rawDamage - target.Meta.DP;
             afterDefense = Math.Max(1, afterDefense);
 
-            float resistance = target.Resistance.Physical;
+            float resistance = target.Resistance.Fire;
 
             float finalDamage = afterDefense * (1f - resistance);
-
+            
             finalDamage = Math.Max(1, finalDamage);
 
-            _diagnostics.AddCheck($"{nameof(PowerSmash)}.{nameof(CalculateDamage)}: Calculated damage is {finalDamage}");
+            _diagnostics.AddCheck($"{nameof(Fireball)}.{nameof(CalculateDamage)}: Calculated fireball damage {finalDamage}.");
 
             return finalDamage;
         }
-
     }
 }

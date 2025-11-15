@@ -22,7 +22,7 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Systems.StatusEffects
         public string Name { get; }
         public int Duration { get; protected set; }
 
-        protected StatusEffectBase(string name, int duration,DiagnosticsManager diagnosticsManager)
+        protected StatusEffectBase(string name, int duration, DiagnosticsManager diagnosticsManager)
         {
             Name = name;
             Duration = duration;
@@ -30,7 +30,10 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Systems.StatusEffects
         }
 
         // Jede Runde Wirkung
-        public abstract void ApplyEffect(MonsterBase target);
+        public virtual void ApplyEffect(MonsterBase target)
+        {
+
+        }
 
         // Wird am Rundenende aufgerufen
         public virtual void Tick()

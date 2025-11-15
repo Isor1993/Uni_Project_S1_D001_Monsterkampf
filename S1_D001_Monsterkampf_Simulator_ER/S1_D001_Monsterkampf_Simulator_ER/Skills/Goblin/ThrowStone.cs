@@ -28,14 +28,18 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Skills.Goblin
              1.3f,
              diagnostics)
         {
+            Cooldown = 1;
         }
         public override float CalculateDamage(MonsterBase attacker, MonsterBase target)
         {
             float rawDamage = attacker.Meta.AP * Power;
 
+            float afterDefense = rawDamage - target.Meta.DP;
+            afterDefense = Math.Max(1, afterDefense);
+
             float resistance = target.Resistance.Physical;
 
-            float finalDamage = rawDamage * (1f - resistance);
+            float finalDamage = afterDefense * (1f - resistance);
 
             finalDamage = Math.Max(1, finalDamage);
 

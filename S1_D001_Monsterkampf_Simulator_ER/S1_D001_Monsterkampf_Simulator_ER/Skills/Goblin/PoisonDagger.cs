@@ -16,39 +16,43 @@ using S1_D001_Monsterkampf_Simulator_ER.Systems.StatusEffects;
 
 namespace S1_D001_Monsterkampf_Simulator_ER.Skills.Goblin
 {
-    internal class PosionDagger : SkillBase
+    internal class PoisonDagger : SkillBase
     {
 
         // === Fields ===
 
 
-        public PosionDagger(DiagnosticsManager diagnostics) : base(
+        public PoisonDagger(DiagnosticsManager diagnostics) : base(
             "Posion Dagger",
-            "Attack with a posion dagger and inflict 10% poision damage for 2 rounds.",
+            "Attack with a posion dagger and inflict 10% poison damage for 2 rounds.",
             SkillType.Aktive,
-            DamageType.Poision,
+            DamageType.Poison,
             0.1f,
             diagnostics)
         {
+            Cooldown = 1;
         }
 
         public override void Apply(MonsterBase user, MonsterBase target)
         {
             target.AddStatusEffect(new PoisonEffect(2, 0.1f, _diagnostics));
-            _diagnostics.AddCheck($"{nameof(PosionDagger)}.{nameof(Apply)}: Applied poisoneffect");
+            _diagnostics.AddCheck($"{nameof(PoisonDagger)}.{nameof(Apply)}: Applied poison effect.");
         }
 
         public override float CalculateDamage(MonsterBase attacker, MonsterBase target)
         {
             float rawDamage = attacker.Meta.AP * Power;
 
-            float resistance = target.Resistance.Poision;
+            float afterDefense = rawDamage - target.Meta.DP;
+            afterDefense = Math.Max(1, afterDefense);
 
-            float finalDamage = rawDamage * (1f - resistance);
+            float resistance = target.Resistance.Poison;
+
+            float finalDamage = afterDefense * (1f - resistance);
 
             finalDamage = Math.Max(1, finalDamage);
 
-            _diagnostics.AddCheck($"{nameof(PosionDagger)}.{nameof(CalculateDamage)}: Calculated damage is {finalDamage}");
+            _diagnostics.AddCheck($"{nameof(PoisonDagger)}.{nameof(CalculateDamage)}: Calculated damage is {finalDamage}.");
 
             return Math.Max(1, finalDamage);
         }
