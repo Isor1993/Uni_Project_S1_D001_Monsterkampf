@@ -12,6 +12,8 @@
 
 using S1_D001_Monsterkampf_Simulator_ER.Managers;
 using S1_D001_Monsterkampf_Simulator_ER.Monsters;
+using S1_D001_Monsterkampf_Simulator_ER.Skills.Goblin;
+using S1_D001_Monsterkampf_Simulator_ER.Systems.StatusEffects;
 
 namespace S1_D001_Monsterkampf_Simulator_ER.Skills.Orc
 {
@@ -35,8 +37,10 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Skills.Orc
 
         public override void Apply(MonsterBase user, MonsterBase target)
         {
-            user.AddStatusEffect()
+            user.AddStatusEffect(new TribeScreamEffect(Multiplier,_diagnostics));
+            _diagnostics.AddCheck($"{nameof(TribeScream)}.{nameof(Apply)}: Applied {Name} effect for 5 rouds .");
         }
+        
 
 
 

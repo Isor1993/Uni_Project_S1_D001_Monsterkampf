@@ -18,17 +18,17 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Systems.StatusEffects
 {
     internal class PoisonEffect : StatusEffectBase
     {
-        private readonly float _damagePercent;
+        private readonly float _percent;
 
         public PoisonEffect(int duration, float damagePercent,DiagnosticsManager diagnostics)
             : base("Poison", duration,diagnostics)
         {
-            _damagePercent = damagePercent;
+            _percent = damagePercent;
         }
 
         public override void ApplyEffect(MonsterBase target)
         {            
-            float damage = target.Meta.MaxHP * _damagePercent;
+            float damage = target.Meta.MaxHP * _percent;
             target.TakeDamage(damage);
             _diagnostics.AddCheck($"{nameof(PoisonEffect)}.{nameof(ApplyEffect)}: {target.Race} took {damage} damage.");
         }

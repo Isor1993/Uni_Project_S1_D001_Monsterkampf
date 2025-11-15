@@ -16,21 +16,33 @@ using System.Diagnostics.Tracing;
 
 namespace S1_D001_Monsterkampf_Simulator_ER.Systems.StatusEffects
 {
-    internal class TribeScream:StatusEffectBase
+    internal class TribeScreamEffect : StatusEffectBase
     {
-        private readonly float _percent;
+        private readonly float _multiplier;
+        private float _baseAp;       
 
-        public TribeScream(DiagnosticsManager diagnostics)
-            :base(
+        public TribeScreamEffect(float multiplier,DiagnosticsManager diagnostics)
+            : base(
                  "Tribe Scream",
                  5,
                  diagnostics)
-        {            
+        {
+            _multiplier = multiplier;
+            
         }
 
         public override void ApplyEffect(MonsterBase target)
         {
-            
+            _baseAp = target.Meta.AP;
+            target.Meta.AP = _baseAp * _multiplier;           
         }
+
+        public override void OnExpire(MonsterBase target)
+        {
+            target.Meta.AP = _baseAp;
+        }
+
+
+
     }
 }

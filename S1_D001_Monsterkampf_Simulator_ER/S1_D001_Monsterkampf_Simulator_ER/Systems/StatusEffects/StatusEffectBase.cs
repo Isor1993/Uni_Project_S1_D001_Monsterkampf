@@ -37,7 +37,12 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Systems.StatusEffects
         {
             Duration--;
 
-            _diagnostics.AddCheck($"{nameof(StatusEffectBase)}.{nameof(Tick)}: Successfully substracted duration {Duration}.");
+            _diagnostics.AddCheck($"{nameof(StatusEffectBase)}.{nameof(Tick)}: Successfully substracted duration {Duration} from {Name}.");
+        }
+
+        public virtual void OnExpire(MonsterBase target)
+        {
+            _diagnostics.AddCheck($"{nameof(StatusEffectBase)}.{nameof(OnExpire)}: {Name} expired on {target.Race}");
         }
 
         public bool IsExpired => Duration <= 0;

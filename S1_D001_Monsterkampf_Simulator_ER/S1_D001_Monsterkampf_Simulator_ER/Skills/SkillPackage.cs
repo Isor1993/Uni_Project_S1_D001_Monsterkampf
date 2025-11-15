@@ -40,7 +40,7 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Skills
         public void AddActiveSkill(SkillBase active)
         {
             ActiveSkills.Add(active);
-            _diagnostics.AddCheck($"{nameof(SkillPackage)}.{nameof(AddActiveSkill)}: Added skill {active} in {ActiveSkills}");
+            _diagnostics.AddCheck($"{nameof(SkillPackage)}.{nameof(AddActiveSkill)}: Added skill {active.Name} in 'ActiveSkills'");
         }
     }
 }

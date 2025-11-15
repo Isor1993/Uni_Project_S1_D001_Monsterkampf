@@ -14,6 +14,7 @@
 using S1_D001_Monsterkampf_Simulator_ER.Managers;
 using S1_D001_Monsterkampf_Simulator_ER.Skills;
 using S1_D001_Monsterkampf_Simulator_ER.Systems.StatusEffects;
+using System.Net.WebSockets;
 
 namespace S1_D001_Monsterkampf_Simulator_ER.Monsters
 {
@@ -85,7 +86,7 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Monsters
         public virtual void Heal(float heal)
         {
             Meta.CurrentHP += heal;
-            if ( Meta.MaxHP==Meta.CurrentHP || Meta.MaxHP> Meta.CurrentHP)
+            if ( Meta.MaxHP< Meta.CurrentHP)
             {
                 Meta.CurrentHP = Meta.MaxHP;
             }
@@ -103,24 +104,39 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Monsters
         public void ProcessStatusEffects()
         {
             foreach (StatusEffectBase effect in _statusEffects)
+            {
                 effect.ApplyEffect(this);
+                effect.Tick();
+            }
+            List<StatusEffectBase> toRemove = new List<StatusEffectBase>();
 
-            _statusEffects.RemoveAll(effect => effect.IsExpired);
+            foreach (StatusEffectBase effect in _statusEffects)
+            {
+                if (effect.IsExpired)
+                {                    
+                    toRemove.Add(effect);
+                }
+            }
+            foreach(StatusEffectBase expired in toRemove)
+            {
+                expired.OnExpire(this);
+            _statusEffects.Remove(expired);
+            }
             _diagnostics.AddCheck($"{nameof(MonsterBase)}.{nameof(ProcessStatusEffects)}: Processed all status effects successfully.");
         }
 
 
         public virtual void TakeDamage(float damage)
         {
-            _meta.MaxHP -= damage;
-            if (_meta.MaxHP < 0)
+            _meta.CurrentHP -= damage;
+            if (_meta.CurrentHP < 0)
             {
-                _meta.MaxHP = 0;
+                _meta.CurrentHP = 0;
             }
             _diagnostics.AddCheck($"{nameof(MonsterBase)}.{nameof(TakeDamage)}: {Race} took {damage} damage.");
         }
 
 
-        public bool IsAlive => _meta.MaxHP > 0;
+        public bool IsAlive => _meta.CurrentHP > 0;
     }
 }
