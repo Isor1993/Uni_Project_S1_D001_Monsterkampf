@@ -11,6 +11,7 @@
 * xx.xx.2025 ER Created
 ******************************************************************************/
 
+using S1_D001_Monsterkampf_Simulator_ER.Managers;
 using S1_D001_Monsterkampf_Simulator_ER.Monsters;
 using S1_D001_Monsterkampf_Simulator_ER.Skills.Slime;
 
@@ -20,6 +21,7 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Balancing
     {
 
         // === Dependencies ===
+        private readonly DiagnosticsManager _diagnostics;
 
         // === Fields ===
 
@@ -34,8 +36,9 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Balancing
         private const float DPScaling = 0.5f;
         private const float SpeedScaling = 0.3f;
 
-        public MonsterBalancing()
+        public MonsterBalancing(DiagnosticsManager diagnostics)
         {
+            _diagnostics = diagnostics;
             _baseStats = new Dictionary<RaceType, BaseStats>();
             _baseResistances = new Dictionary<RaceType, BaseResistances>();
 
@@ -58,17 +61,19 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Balancing
             {
                 throw new Exception($"No BaseStats found for race: {race}.");
             }
+
             if (level < 1)
             {
                 throw new ArgumentException("level must be at least 1.");
             }
+
             int scale = level - 1;
             float scaledHp = stats.HP * (1 + HPScaling * scale);
             float scaledAp = stats.AP * (1 + APScaling * scale);
             float scaledDp = stats.DP + (DPScaling * scale);
             float scaledSpeed = stats.Speed + (SpeedScaling * scale);
 
-            
+            _diagnostics.AddCheck($"{nameof(MonsterBalancing)}.{nameof(GetMeta)}: Successfully got balanced meta data.");
 
             return new MonsterMeta(scaledHp,scaledHp,scaledAp,scaledDp,scaledSpeed);
            
@@ -80,7 +85,8 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Balancing
             {
                 throw new Exception($"No BaseResistances found for race: {race}.");
             }
-            
+            _diagnostics.AddCheck($"{nameof(MonsterBalancing)}.{nameof(GetResistance)}: Successfully got balanced resistance data.");
+
             return new MonsterResistance(physical:resistances.Physical,fire:resistances.Fire,water:resistances.Water,poison:resistances.Poison);
         }
    
