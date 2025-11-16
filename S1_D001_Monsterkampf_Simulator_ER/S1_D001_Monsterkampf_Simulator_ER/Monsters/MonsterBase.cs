@@ -54,16 +54,17 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Monsters
         public int Level { get; }
 
 
-        protected MonsterBase(MonsterMeta meta, MonsterResistance resistance, RaceType race, int level,SkillPackage skills,DiagnosticsManager diagnosticsManager)
+        protected MonsterBase(MonsterMeta meta, MonsterResistance resistance, RaceType race, int level,SkillPackage skill,DiagnosticsManager diagnosticsManager)
         {
             Race = race;
             Level = level;
             _meta = meta;
             _resistance = resistance;
             _diagnostics = diagnosticsManager;
-            _skills=skills;
+            _skills=skill;
         }
 
+       
 
         public MonsterMeta Meta => _meta;
 
@@ -92,6 +93,10 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Monsters
             }
 
             _diagnostics.AddCheck($"{nameof(MonsterBase)}.{nameof(Heal)}: {Race} got {heal} Hp healed.");
+
+
+            
+
 
         }
 
