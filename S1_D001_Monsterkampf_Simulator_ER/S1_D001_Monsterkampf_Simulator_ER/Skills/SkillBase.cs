@@ -94,6 +94,20 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Skills
         public virtual void OnHit(MonsterBase attacker, MonsterBase target)
         {
             // Default: keine Effekte
-        }        
+        }
+        public void StartCooldown()
+        {
+            if (Cooldown > 0)
+            {
+                CurrentCooldown = Cooldown;
+            }
+        }
+        public void TickCooldown()
+        {
+            if (CurrentCooldown > 0)
+            {
+                CurrentCooldown--;
+            }
+        }
     }
 }

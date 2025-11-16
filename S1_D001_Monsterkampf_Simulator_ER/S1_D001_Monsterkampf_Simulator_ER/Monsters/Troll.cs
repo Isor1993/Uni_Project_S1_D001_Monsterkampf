@@ -51,7 +51,7 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Monsters
         }
         public override void Attack(MonsterBase target)
         {
-            throw new NotImplementedException();
+            base.Attack(target);
         }
 
     }

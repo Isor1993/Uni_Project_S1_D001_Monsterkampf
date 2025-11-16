@@ -51,10 +51,9 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Monsters
                 _diagnostics.AddError($"{nameof(Goblin)}.{nameof(Spawn)}: No passive skill assigned.");
             }
         }
-
         public override void Attack(MonsterBase target)
         {
-            throw new NotImplementedException();
+            base.Attack(target);
         }
     }
 }

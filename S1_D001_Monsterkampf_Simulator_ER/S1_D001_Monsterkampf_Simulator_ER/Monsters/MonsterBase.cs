@@ -13,6 +13,7 @@
 
 using S1_D001_Monsterkampf_Simulator_ER.Managers;
 using S1_D001_Monsterkampf_Simulator_ER.Skills;
+using S1_D001_Monsterkampf_Simulator_ER.Systems.Damage;
 using S1_D001_Monsterkampf_Simulator_ER.Systems.StatusEffects;
 using System.Net.WebSockets;
 
@@ -75,7 +76,75 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Monsters
         public abstract void Spawn();
 
 
-        public abstract void Attack(MonsterBase target);
+        public virtual float Attack(MonsterBase target,SkillBase skill,DamagePipeline pipeline)
+        {
+            if (target == null)
+            {
+                throw new ArgumentNullException(nameof(target));
+            }
+            if (skill == null)
+            {
+                throw new ArgumentNullException(nameof(skill));
+            }
+            float damage = pipeline.Execute(this, target, skill);
+
+            skill.StartCooldown();
+
+            //TODO Cooldown erst später implementieren
+            //TODO skill.TriggerCooldown() kommt später
+
+            return damage;
+        }
+        private SkillBase CreateBasicAttack()
+        {
+            return new BasicAttack(_diagnostics);
+        }
+        public SkillBase ChooseSkillForAI(RandomManager random)
+        {
+            // 1. Skills sammeln, die bereit sind (IsReady == true)
+            List<SkillBase> readySkills = Skills.ActiveSkills
+                .Where(skill => skill.IsReady)
+                .ToList();
+
+            // 2. Basic Attack als Fallback erzeugen
+            SkillBase basicAttack = CreateBasicAttack();
+
+            // 3. Falls KEIN Skill verfügbar → Basic Attack benutzen
+            if (readySkills.Count == 0)
+            {
+                _diagnostics.AddCheck($"{Race} AI uses BASIC ATTACK (no skills ready).");
+                return basicAttack;
+            }
+
+            // 4. Skills nach Stärke sortieren (stärkster Skill zuerst)
+            readySkills = readySkills
+                .OrderByDescending(skill => skill.Power)
+                .ToList();
+
+            // 5. Vorschaden für Basic vs Skill berechnen (ohne Pipeline, nur Preview)
+            float basicDamagePreview = Meta.AP * 1.0f; // BasicAttack.Power = 1.0f
+            SkillBase strongestSkill = readySkills[0];
+            float skillDamagePreview = Meta.AP * strongestSkill.Power;
+
+            // 6. Logische Entscheidung:
+            // Wenn der Skill deutlich stärker ist → Skill verwenden
+            if (skillDamagePreview >= basicDamagePreview * 1.1f)
+            {
+                _diagnostics.AddCheck($"{Race} AI chooses strongest SKILL '{strongestSkill.Name}'.");
+                return strongestSkill;
+            }
+           
+            // 7. Beide Angriffe sind ähnlich stark → Random entscheiden
+            int choice = random.Next(2);
+            if (choice == 0)
+            {
+                _diagnostics.AddCheck($"{Race} AI randomly chooses SKILL '{strongestSkill.Name}'.");
+                return strongestSkill;
+            }
+
+            _diagnostics.AddCheck($"{Race} AI randomly chooses BASIC ATTACK over skill.");
+            return basicAttack;
+        }
 
 
         public virtual void UsePasiveSkill() { }
@@ -107,27 +176,25 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Monsters
         }
 
         public void ProcessStatusEffects()
-        {
-            foreach (StatusEffectBase effect in _statusEffects)
-            {
-                effect.ApplyEffect(this);
-                effect.Tick();
-            }
-            List<StatusEffectBase> toRemove = new List<StatusEffectBase>();
+        {            
+            List<StatusEffectBase> effects = new List<StatusEffectBase>(_statusEffects);
 
-            foreach (StatusEffectBase effect in _statusEffects)
+            foreach (StatusEffectBase effect in effects)
             {
+            
+                effect.ApplyEffect(this);
+             
+                effect.Tick();
+          
                 if (effect.IsExpired)
-                {                    
-                    toRemove.Add(effect);
+                {
+                    effect.OnExpire(this);
+                    _statusEffects.Remove(effect);
+
+                    _diagnostics.AddCheck($"{nameof(MonsterBase)}.{nameof(ProcessStatusEffects)}: '{effect.Name}' expired on {Race}.");
                 }
             }
-            foreach(StatusEffectBase expired in toRemove)
-            {
-                expired.OnExpire(this);
-            _statusEffects.Remove(expired);
-            }
-            _diagnostics.AddCheck($"{nameof(MonsterBase)}.{nameof(ProcessStatusEffects)}: Processed all status effects successfully.");
+                _diagnostics.AddCheck($"{nameof(MonsterBase)}.{nameof(ProcessStatusEffects)}: Processed {effects.Count} status effects for {Race}.");
         }
 
 
@@ -139,6 +206,17 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Monsters
                 _meta.CurrentHP = 0;
             }
             _diagnostics.AddCheck($"{nameof(MonsterBase)}.{nameof(TakeDamage)}: {Race} took {damage} damage.");
+        }
+        //TODO
+        public IEnumerable<T> GetStatusEffects<T>() where T : StatusEffectBase
+        {
+            return _statusEffects.OfType<T>();
+        }
+
+        //TODO
+        public virtual float ModifyFinalDamage(float damage)
+        {
+            return damage; // wird später durch Absorb/Shield/Thorns modifiziert
         }
 
 
