@@ -22,7 +22,10 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Skills.Orc
     {
 
         // === Fields ===
-        private const float Multiplier= 1.5f;
+        private const float SkillMultiplier = 1.5f;
+        private const int SkillDuration = 5;
+        private const int SkillCooldown = 5;
+        
 
         public TribeScream(DiagnosticsManager diagnostics)
             :base(
@@ -33,13 +36,16 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Skills.Orc
                  0f,
                  diagnostics)
         {
-            Cooldown = 5;
+            Cooldown = SkillCooldown;
         }
-
-        public override void Apply(MonsterBase user, MonsterBase target)
+        public override void OnCast(MonsterBase caster)
         {
-            user.AddStatusEffect(new TribeScreamEffect(Multiplier,_diagnostics));
-            _diagnostics.AddCheck($"{nameof(TribeScream)}.{nameof(Apply)}: Applied {Name} effect for 5 rounds.");
-        }  
+            caster.AddStatusEffect(new TribeScreamEffect(
+                multiplier: SkillMultiplier,
+                duration: SkillDuration,
+                diagnostics: _diagnostics));
+
+            _diagnostics.AddCheck($"{nameof(TribeScream)}.{nameof(OnCast)}: Applied AP buff (+50%) for {SkillDuration} rounds to {caster.Race}.");
+        }
     }
 }

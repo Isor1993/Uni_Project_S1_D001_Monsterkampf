@@ -22,11 +22,8 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Systems.StatusEffects
         private float _baseAp;
         private bool _applied = false;
 
-        public TribeScreamEffect(float multiplier,DiagnosticsManager diagnostics)
-            : base(
-                 "Tribe Scream",
-                 5,
-                 diagnostics)
+        public TribeScreamEffect(float multiplier, int duration, DiagnosticsManager diagnostics)
+            : base("Tribe Scream",duration,diagnostics)
         {
             _multiplier = multiplier;
             

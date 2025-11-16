@@ -17,7 +17,9 @@ using S1_D001_Monsterkampf_Simulator_ER.Monsters;
 namespace S1_D001_Monsterkampf_Simulator_ER.Skills.Goblin
 {
     internal class ThrowStone : SkillBase
-    {     
+    {
+        private const float SkillMultiplier = 1.3f;        
+        private const int SkillCooldown = 1;
 
         public ThrowStone(DiagnosticsManager diagnostics)
         : base(
@@ -25,27 +27,16 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Skills.Goblin
              "Throw a stone and deal 30% more damage.",
              SkillType.Aktive,
              DamageType.Physical,
-             1.3f,
+             SkillMultiplier,
              diagnostics)
         {
-            Cooldown = 1;
+            Cooldown = SkillCooldown;
         }
-        public override float CalculateDamage(MonsterBase attacker, MonsterBase target)
+        public override float CalculateRawDamage(MonsterBase attacker)
         {
-            float rawDamage = attacker.Meta.AP * Power;
-
-            float afterDefense = rawDamage - target.Meta.DP;
-            afterDefense = Math.Max(1, afterDefense);
-
-            float resistance = target.Resistance.Physical;
-
-            float finalDamage = afterDefense * (1f - resistance);
-
-            finalDamage = Math.Max(1, finalDamage);
-
-            _diagnostics.AddCheck($"{nameof(ThrowStone)}.{nameof(CalculateDamage)}: Calculated damage is {finalDamage}");
-
-            return finalDamage;
-        }
+            float raw = attacker.Meta.AP * Power;
+            _diagnostics.AddCheck($"{nameof(ThrowStone)}.{nameof(CalculateRawDamage)}: RawDamage = {raw}.");
+            return raw;
+        }             
     }
 }

@@ -72,26 +72,28 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Skills
             _diagnostics = diagnosticsManager;
         }
 
-        /// <summary>
-        /// 1. Base Damege : rawDamage= AP*Power
-        /// 2. Reduktion DP :afterDefense= rawDamage-DP
-        /// 3. Reduktion Resistance: finalDamage=afterDefense*(1-Resistance)
-        /// 4. Minimal 1Damage: finalDamage = Math.Max(1,finalDamage)
-        /// 5. StatusEffects : Like Absorb
-        /// 6. AfterEffects : Like´Heal/Shields/thorns... .
-        /// 
-        /// </summary>
-        /// <param name="attacker"></param>
-        /// <param name="target"></param>
-        /// <returns></returns>
-        public virtual float CalculateDamage(MonsterBase attacker, MonsterBase target)
+       
+        public virtual float CalculateRawDamage(MonsterBase attacker)
         {
-            float damage = attacker.Meta.AP * Power;
-            _diagnostics.AddCheck($"{nameof(SkillBase)}.{nameof(CalculateDamage)}: Calculated damage = {damage}.");
-            return damage;
+            float raw = attacker.Meta.AP * Power;
+            _diagnostics.AddCheck($"{nameof(SkillBase)}.{nameof(CalculateRawDamage)}: RawDamage = {raw} (AP={attacker.Meta.AP}, Power={Power}).");
+            return raw;
         }
 
+        /// <summary>
+        /// Wird VOR dem Schaden ausgeführt (Buffs, Self-Effekte, Setup).
+        /// </summary>
+        public virtual void OnCast(MonsterBase caster)
+        {
+            // Default: keine Effekte
+        }
 
-        public virtual void Apply(MonsterBase user, MonsterBase target) { }
+        /// <summary>
+        /// Wird NACH dem Schaden ausgeführt (DoTs, Debuffs, StatusEffects).
+        /// </summary>
+        public virtual void OnHit(MonsterBase attacker, MonsterBase target)
+        {
+            // Default: keine Effekte
+        }        
     }
 }

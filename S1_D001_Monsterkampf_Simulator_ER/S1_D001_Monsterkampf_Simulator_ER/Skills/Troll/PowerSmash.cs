@@ -18,34 +18,27 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Skills.Troll
 {
     internal class PowerSmash:SkillBase
     {
+        private const float SkillMultiplier = 1.8f;        
+        private const int SkillCooldown = 3;
         public PowerSmash(DiagnosticsManager diagnostics)
        : base(
             "Power Smash",
-            "Unleashes a powerful smash that deals 80% additional damage.",
+            "Unleashes a powerful smash, dealing +80% physical damage",
             SkillType.Aktive,
             DamageType.Physical,
-            1.8f,
+            SkillMultiplier,
             diagnostics)
         {
-            Cooldown = 3;
+            Cooldown = SkillCooldown;
         }
-        public override float CalculateDamage(MonsterBase attacker, MonsterBase target)
+
+        public override float CalculateRawDamage(MonsterBase attacker)
         {
-            float rawDamage = attacker.Meta.AP * Power;
-
-            float afterDefense = rawDamage - target.Meta.DP;
-            afterDefense = Math.Max(1, afterDefense);
-
-            float resistance = target.Resistance.Physical;
-
-            float finalDamage = afterDefense * (1f - resistance);
-
-            finalDamage = Math.Max(1, finalDamage);
-
-            _diagnostics.AddCheck($"{nameof(PowerSmash)}.{nameof(CalculateDamage)}: Calculated damage is {finalDamage}");
-
-            return finalDamage;
+            float raw = attacker.Meta.AP * Power;
+            _diagnostics.AddCheck($"{nameof(PowerSmash)}.{nameof(CalculateRawDamage)}: RawDamage = {raw}.");
+            return raw;
         }
+       
 
     }
 }

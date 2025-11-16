@@ -12,6 +12,7 @@
 
 using S1_D001_Monsterkampf_Simulator_ER.Managers;
 using S1_D001_Monsterkampf_Simulator_ER.Monsters;
+using S1_D001_Monsterkampf_Simulator_ER.Skills.Goblin;
 using System.Diagnostics.Tracing;
 
 namespace S1_D001_Monsterkampf_Simulator_ER.Skills.Slime
@@ -21,7 +22,8 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Skills.Slime
         // === Dependencies ===
 
         // === Fields ===
-        
+        private const float SkillMultiplier = 1.5f;        
+        private const int SkillCooldown = 2;
 
 
         public Fireball(DiagnosticsManager diagnostics)
@@ -30,28 +32,17 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Skills.Slime
                  "Shoots a fireball which deals 50% more damage.",
                  SkillType.Aktive,
                  DamageType.Fire,
-                 1.5f,
+                 SkillMultiplier,
                  diagnostics)
         {
-            Cooldown = 2;
-        }            
-
-        public override float CalculateDamage(MonsterBase attacker, MonsterBase target)
-        {
-            float rawDamage = attacker.Meta.AP * Power;
-
-            float afterDefense = rawDamage - target.Meta.DP;
-            afterDefense = Math.Max(1, afterDefense);
-
-            float resistance = target.Resistance.Fire;
-
-            float finalDamage = afterDefense * (1f - resistance);
-            
-            finalDamage = Math.Max(1, finalDamage);
-
-            _diagnostics.AddCheck($"{nameof(Fireball)}.{nameof(CalculateDamage)}: Calculated fireball damage {finalDamage}.");
-
-            return finalDamage;
+            Cooldown = SkillCooldown;
         }
+        public override float CalculateRawDamage(MonsterBase attacker)
+        {
+            float raw = attacker.Meta.AP * Power;
+            _diagnostics.AddCheck($"{nameof(Fireball)}.{nameof(CalculateRawDamage)}: RawDamage = {raw}.");
+            return raw;
+        }
+       
     }
 }

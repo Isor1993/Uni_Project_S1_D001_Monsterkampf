@@ -18,16 +18,16 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Systems.StatusEffects
     internal class FearEffect:PermanentStatusEffect
     {
         // === Fields ===
-        private readonly float _percent;
+        private readonly float _multiplier;
         private float _baseSpeed;
         private bool _applied = false;
 
-        public FearEffect(float percent, DiagnosticsManager diagnostics)
+        public FearEffect(float multiplier, DiagnosticsManager diagnostics)
            : base(
                 "Fear",
                 diagnostics)
         {
-            _percent = percent;
+            _multiplier = multiplier;
         }
 
         public override void ApplyEffect(MonsterBase target)
@@ -39,15 +39,16 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Systems.StatusEffects
             _applied=true;
             
             _baseSpeed = target.Meta.Speed;
-            target.Meta.Speed= Math.Max(1,target.Meta.Speed * _percent);
+            target.Meta.Speed= Math.Max(1,target.Meta.Speed * _multiplier);
+            float percent = (1f - _multiplier) * 100f;
 
-            _diagnostics.AddCheck($"{nameof(FearEffect)}.{nameof(ApplyEffect)}: Reduced speed to {target.Meta.Speed}.");
+            _diagnostics.AddCheck($"{nameof(FearEffect)}.{nameof(ApplyEffect)}: Reduced speed by {percent:F0}% → New Speed = {target.Meta.Speed}.");
         }
 
         public override void OnExpire(MonsterBase target)
         {
             target.Meta.Speed = _baseSpeed;
-            _diagnostics.AddCheck($"{nameof(FearEffect)}.{nameof(OnExpire)}: gets back normal speed {target.Meta.Speed}.");
+            _diagnostics.AddCheck($"{nameof(FearEffect)}.{nameof(OnExpire)}: Speed restored to {target.Meta.Speed}.");
         }      
     }
 }

@@ -19,24 +19,27 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Skills.Troll
     internal class PassiveSkill_Regeneration : SkillBase
     {
         // === Fields ===
-        private const float Multiplier = 0.1f;
+        
+        private const float SkillMultiplier = 0.10f;       
+        private const int SkillCooldown = 0;
+
 
         public PassiveSkill_Regeneration(DiagnosticsManager diagnostics)
             : base(
                  "Regeneration",
-                 "Regenerates 10% Health each round",
+                 "Regenerates 10% of Max HP each round",
                  SkillType.Passive,
                  DamageType.None,
                  0f,
                  diagnostics)
         {
-            Cooldown = 0;
+            Cooldown = SkillCooldown;
         }
 
-        public override void Apply(MonsterBase user, MonsterBase target)
+        public  void ApplyPassive(MonsterBase user)
         {
-            user.AddStatusEffect(new RegenerationEffect(Multiplier, _diagnostics));
-            _diagnostics.AddCheck($"{nameof(PassiveSkill_Regeneration)}.{nameof(Apply)}: Applied regeneration effect with multiplier {Multiplier}.");
+            user.AddStatusEffect(new RegenerationEffect(SkillMultiplier, _diagnostics));
+            _diagnostics.AddCheck($"{nameof(PassiveSkill_Regeneration)}.{nameof(ApplyPassive)}: Applied regeneration effect (+10% Health) on {user.Race}.");
         }
     }
 }

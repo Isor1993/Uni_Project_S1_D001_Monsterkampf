@@ -21,8 +21,9 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Skills.Slime
         // === Dependencies ===
 
         // === Fields ===
-        private const float _percent = 0.3f;
-
+        private const float SkillMultiplier = 0.3f;        
+        private const int SkillCooldown = 0;
+      
 
 
         public PassiveSkill_Absorb(DiagnosticsManager diagnostics)
@@ -34,14 +35,14 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Skills.Slime
                  0f,
                  diagnostics)
         {
-            Cooldown = 0;
+            Cooldown = SkillCooldown;
         }
 
-        public override void Apply(MonsterBase user, MonsterBase target)
+        public  void ApplyPassive(MonsterBase user)
         {
-            user.AddStatusEffect(new AbsorbEffect(_percent,_diagnostics));
+            user.AddStatusEffect(new AbsorbEffect(SkillMultiplier,_diagnostics));
 
-            _diagnostics.AddCheck($"{nameof(PassiveSkill_Absorb)}.{nameof(Apply)}: Applied absorb effect.");
+            _diagnostics.AddCheck($"{nameof(PassiveSkill_Absorb)}.{nameof(ApplyPassive)}: Applied absorb effect on {user.Race}.");
 
         }
     }

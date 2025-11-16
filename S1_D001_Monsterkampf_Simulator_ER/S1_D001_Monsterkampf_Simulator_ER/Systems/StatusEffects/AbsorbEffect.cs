@@ -22,16 +22,16 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Systems.StatusEffects
     {
 
         // === Fields ===
-        private readonly float _percent;
+        private readonly float _multiplier;
 
 
         
-        public AbsorbEffect(float percent, DiagnosticsManager diagnostics)
+        public AbsorbEffect(float multiplier, DiagnosticsManager diagnostics)
             : base(
                  "Absorb",
                  diagnostics)
         {
-            _percent = percent;
+            _multiplier = multiplier;
         }
 
         /// <summary> 
@@ -40,11 +40,12 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Systems.StatusEffects
         /// </summary>
         public float AbsorbDamage(float incomingDamage)
         {
-            float reducedAmount = incomingDamage * _percent;
-            float finalDamage = incomingDamage - reducedAmount;
-            finalDamage = Math.Max(1, finalDamage);
+            float finalDamage = Math.Max(1,incomingDamage*(1f-_multiplier));
+            float reducedAmount = incomingDamage-finalDamage;
+            
+            
 
-            _diagnostics.AddCheck($"{nameof(AbsorbEffect)}.{nameof(AbsorbDamage)}: Incoming = {incomingDamage}, Reduced = {reducedAmount} ({_percent * 100:F0}%), Final = {finalDamage}.");
+            _diagnostics.AddCheck($"{nameof(AbsorbEffect)}.{nameof(AbsorbDamage)}: Incoming = {incomingDamage}, Reduced = {reducedAmount} ({_multiplier * 100:F0}%), Final = {finalDamage}.");
 
             return finalDamage;
         }

@@ -20,41 +20,36 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Skills.Goblin
     {
 
         // === Fields ===
+        private const float SkillMultiplier = 0.10f;
+        private const int SkillDuration = 2;
+        private const int SkillCooldown = 1;
 
 
         public PoisonDagger(DiagnosticsManager diagnostics) : base(
-            "Posion Dagger",
-            "Attack with a posion dagger and inflict 10% poison damage for 2 rounds.",
+            "Poison Dagger",
+            "Attack with a poison dagger and inflict 10% poison damage for 2 rounds.",
             SkillType.Aktive,
             DamageType.Poison,
-            0.1f,
+            SkillMultiplier,
             diagnostics)
         {
-            Cooldown = 1;
+            Cooldown = SkillCooldown;
         }
 
-        public override void Apply(MonsterBase user, MonsterBase target)
+        public override float CalculateRawDamage(MonsterBase attacker)
         {
-            target.AddStatusEffect(new PoisonEffect(2, 0.1f, _diagnostics));
-            _diagnostics.AddCheck($"{nameof(PoisonDagger)}.{nameof(Apply)}: Applied poison effect.");
+            float raw = attacker.Meta.AP * Power;
+            _diagnostics.AddCheck($"{nameof(PoisonDagger)}.{nameof(CalculateRawDamage)}: RawDamage = {raw}.");
+            return raw;
         }
-
-        public override float CalculateDamage(MonsterBase attacker, MonsterBase target)
+        public override void OnHit(MonsterBase attacker, MonsterBase target)
         {
-            float rawDamage = attacker.Meta.AP * Power;
+            target.AddStatusEffect(new PoisonEffect(
+                duration: SkillDuration,       
+                multiplier: SkillMultiplier,    
+                _diagnostics));
 
-            float afterDefense = rawDamage - target.Meta.DP;
-            afterDefense = Math.Max(1, afterDefense);
-
-            float resistance = target.Resistance.Poison;
-
-            float finalDamage = afterDefense * (1f - resistance);
-
-            finalDamage = Math.Max(1, finalDamage);
-
-            _diagnostics.AddCheck($"{nameof(PoisonDagger)}.{nameof(CalculateDamage)}: Calculated damage is {finalDamage}.");
-
-            return Math.Max(1, finalDamage);
-        }
+            _diagnostics.AddCheck($"{nameof(PoisonDagger)}.{nameof(OnHit)}: Applied PoisonEffect (10% for 2 rounds) on {target.Race}.");
+        }        
     }
 }

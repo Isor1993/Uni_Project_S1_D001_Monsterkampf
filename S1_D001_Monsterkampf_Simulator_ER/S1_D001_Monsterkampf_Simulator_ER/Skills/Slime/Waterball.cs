@@ -11,6 +11,7 @@
 ******************************************************************************/
 using S1_D001_Monsterkampf_Simulator_ER.Managers;
 using S1_D001_Monsterkampf_Simulator_ER.Monsters;
+using S1_D001_Monsterkampf_Simulator_ER.Skills.Goblin;
 
 
 namespace S1_D001_Monsterkampf_Simulator_ER.Skills.Slime
@@ -20,6 +21,8 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Skills.Slime
         // === Dependencies ===
 
         // === Fields ===
+        private const float SkillMultiplier = 1.5f;      
+        private const int SkillCooldown = 2;
 
 
 
@@ -29,28 +32,17 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Skills.Slime
                  "Shoots a waterball which deals 50% more damage.",
                  SkillType.Aktive,
                  DamageType.Water,
-                 1.5f,
+                 SkillMultiplier,
                  diagnostics)
         {
-            Cooldown = 2;
+            Cooldown = SkillCooldown;
         }
-
-        public override float CalculateDamage(MonsterBase attacker, MonsterBase target)
+        public override float CalculateRawDamage(MonsterBase attacker)
         {
-            float rawDamage = attacker.Meta.AP * Power;
-
-            float afterDefense = rawDamage - target.Meta.DP;
-            afterDefense = Math.Max(1, afterDefense);
-
-            float resistance = target.Resistance.Water;
-
-            float finalDamage = afterDefense * (1f - resistance);
-
-            finalDamage = Math.Max(1, finalDamage);
-
-            _diagnostics.AddCheck($"{nameof(Waterball)}.{nameof(CalculateDamage)}: Calculated waterball damage {finalDamage}.");
-
-            return finalDamage;
+            float raw = attacker.Meta.AP * Power;
+            _diagnostics.AddCheck($"{nameof(Waterball)}.{nameof(CalculateRawDamage)}: RawDamage = {raw}.");
+            return raw;
         }
+       
     }
 }

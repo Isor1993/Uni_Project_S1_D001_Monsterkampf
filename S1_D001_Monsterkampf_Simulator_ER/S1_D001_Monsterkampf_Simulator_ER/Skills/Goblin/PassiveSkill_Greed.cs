@@ -11,6 +11,7 @@
 ******************************************************************************/
 
 using S1_D001_Monsterkampf_Simulator_ER.Managers;
+using S1_D001_Monsterkampf_Simulator_ER.Monsters;
 using S1_D001_Monsterkampf_Simulator_ER.Systems.StatusEffects;
 
 namespace S1_D001_Monsterkampf_Simulator_ER.Skills.Goblin
@@ -19,7 +20,9 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Skills.Goblin
     {
 
         // === Fields ===
-        private const float Multiplier = 1.5f;
+        private const float SkillMultiplier = 1.5f;
+        private const int SkillCooldown = 0;
+
 
 
         public PassiveSkill_Greed(DiagnosticsManager diagnostics)
@@ -31,14 +34,28 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Skills.Goblin
             0f,
             diagnostics)
         {
-            Cooldown = 0;
+            Cooldown = SkillCooldown;
         }
 
+        /// <summary>
+        /// Einheitliche Passive-Schnittstelle für alle passiven Skills.
+        /// Greed hat keinen sofortigen Effekt beim Spawn.
+        /// </summary>
+        public void ApplyPassive(MonsterBase user)
+        {
+            _diagnostics.AddCheck($"{nameof(PassiveSkill_Greed)}.{nameof(ApplyPassive)}: No immediate spawn effect. Greed will modify rewards after victory.");
+        }
+
+        /// <summary>
+        /// Der eigentliche Reward-Bonus: +50% Reward nach gewonnenem Kampf.
+        /// </summary>
         public float ApplyRewardBonus(float baseReward)
         {
-            baseReward = baseReward * Multiplier;
-            _diagnostics.AddCheck($"{nameof(PassiveSkill_Greed)}.{nameof(ApplyRewardBonus)}: Applied multiplier {Multiplier} to base Reward.");
-            return baseReward;
+            float finalReward = baseReward * SkillMultiplier;
+
+            _diagnostics.AddCheck($"{nameof(PassiveSkill_Greed)}.{nameof(ApplyRewardBonus)}: BaseReward={baseReward} → FinalReward={finalReward} (+50%).");
+
+            return finalReward;
         }
 
     }
