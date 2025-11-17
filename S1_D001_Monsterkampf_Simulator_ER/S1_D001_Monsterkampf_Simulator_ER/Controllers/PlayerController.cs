@@ -1,11 +1,13 @@
 ﻿/*****************************************************************************
 * Project : Monsterkampf-Simulator (K1, S1, S4)
-* File    : 
+* File    : PlayerController.cs
 * Date    : xx.xx.2025
 * Author  : Eric Rosenberg
 *
 * Description :
-* *
+* Player controller that receives input from KeyboardInputManager (IPlayerInput).
+* Responsible only for choosing a skill based on UI-provided selection.
+*
 * History :
 * xx.xx.2025 ER Created
 ******************************************************************************/
@@ -48,19 +50,14 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Controllers
 
         private List<SkillBase> BuildSkillList()
         {
-            List<SkillBase> options = new();
-            
-            foreach (SkillBase skill in Monster.Skills.ActiveSkills.Where(skill=>skill.IsReady).ToList()) 
-            {
-                if(skill.IsReady)
-                {
-                    options.Add(skill);
-                }
-            }
-            options.Add(new BasicAttack(_diagnostics));
-            _diagnostics.AddCheck($"{nameof(PlayerController)}.{nameof(BuildSkillList)}:Successfully built {options.Count} options.");
+            List<SkillBase> list = Monster.Skills.ActiveSkills
+                .Where(skill => skill.IsReady)
+                .ToList();
+            list.Add(new BasicAttack(_diagnostics));
+
+            _diagnostics.AddCheck($"{nameof(PlayerController)}.{nameof(BuildSkillList)}: Built {list.Count} skills for player.");
            
-            return options;
+            return list;
         }
 
         private string[] BuildOptionTexts(List<SkillBase> options)

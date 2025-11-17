@@ -1,11 +1,13 @@
 ﻿/*****************************************************************************
 * Project : Monsterkampf-Simulator (K1, S1, S4)
-* File    : 
+* File    : EnemyController.cs
 * Date    : xx.xx.2025
 * Author  : Eric Rosenberg
 *
 * Description :
-* *
+* Controller used for enemy AI. Delegates skill selection to the AI logic
+* inside the associated MonsterBase.
+*
 * History :
 * xx.xx.2025 ER Created
 ******************************************************************************/
@@ -25,12 +27,16 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Controllers
 
         public EnemyController(MonsterBase monster,DiagnosticsManager diagnostics,RandomManager random):base(monster, diagnostics)
         {
-            _random = random;
+            _random = random?? throw new ArgumentNullException(nameof(random));
         }
 
         public override SkillBase ChooseSkill()
         {
-            return Monster.ChooseSkillForAI(_random);
+            SkillBase chosen = Monster.ChooseSkillForAI(_random);
+
+            _diagnostics.AddCheck($"{nameof(EnemyController)}.{nameof(ChooseSkill)}: {Monster.Race} AI selected '{chosen.Name}'.");
+
+            return chosen;
         }
     }
 }

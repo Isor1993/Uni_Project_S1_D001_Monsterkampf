@@ -5,8 +5,8 @@
 * Author  : Eric Rosenberg
 *
 * Description :
-* Base class for any battle controller that decides how a monster acts
-* during its turn (player-controlled or AI-controlled).
+* Base class for all controllers (Player & Enemy).
+* Provides core references and a unified interface.
 *
 * History :
 * xx.xx.2025 ER Created
@@ -18,7 +18,7 @@ using S1_D001_Monsterkampf_Simulator_ER.Skills;
 
 namespace S1_D001_Monsterkampf_Simulator_ER.Controllers
 {
-    internal class ControllerBase
+    internal abstract class ControllerBase
     {
         // === Dependencies ===
         protected readonly DiagnosticsManager _diagnostics;
@@ -26,7 +26,7 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Controllers
         // === Fields ===
         public MonsterBase Monster { get; }
 
-        public ControllerBase(MonsterBase monster,DiagnosticsManager diagnostics)
+        protected ControllerBase(MonsterBase monster,DiagnosticsManager diagnostics)
         {
             Monster = monster ?? throw new ArgumentNullException(nameof(monster));
             _diagnostics = diagnostics ?? throw new ArgumentNullException(nameof(diagnostics));
@@ -34,8 +34,8 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Controllers
         }
 
         /// <summary>
-        /// Decides which skill this controller wants to use for its monster.
-        /// The actual damage execution is handled by the BattleManager / DamagePipeline.
+        /// Must be implemented by PlayerController and EnemyController.
+        /// Returns a valid SkillBase object chosen for this turn.
         /// </summary>
         public abstract SkillBase ChooseSkill();
     }
