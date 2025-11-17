@@ -36,6 +36,4 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
             return _random.Next(minInclusive, maxExclusive);
         }
     }
-
-}
 }

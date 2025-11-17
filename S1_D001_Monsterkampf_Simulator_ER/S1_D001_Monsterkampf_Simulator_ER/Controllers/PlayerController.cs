@@ -1,12 +1,80 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿/*****************************************************************************
+* Project : Monsterkampf-Simulator (K1, S1, S4)
+* File    : 
+* Date    : xx.xx.2025
+* Author  : Eric Rosenberg
+*
+* Description :
+* *
+* History :
+* xx.xx.2025 ER Created
+******************************************************************************/
+using S1_D001_Monsterkampf_Simulator_ER.Controllers.Input;
+using S1_D001_Monsterkampf_Simulator_ER.Managers;
+using S1_D001_Monsterkampf_Simulator_ER.Monsters;
+using S1_D001_Monsterkampf_Simulator_ER.Skills;
 
 namespace S1_D001_Monsterkampf_Simulator_ER.Controllers
 {
-    internal class PlayerController
+    internal class PlayerController:ControllerBase
     {
+
+        // === Dependencies ===       
+        private readonly IPlayerInput _input;
+
+        // === Fields ===
+
+        public PlayerController(MonsterBase monster,DiagnosticsManager diagnostics,IPlayerInput input):
+            base(monster,diagnostics)
+        {
+            _input= input ?? throw new ArgumentNullException(nameof(input));
+        }
+
+        public override SkillBase ChooseSkill()
+        {
+            List<SkillBase> options = BuildSkillList();
+
+            string[] optionTexts = BuildOptionTexts(options);
+
+            int index = _input.ChooseIndex(optionTexts);
+
+            SkillBase chosen = options[index];
+
+            _diagnostics.AddCheck($"{nameof(PlayerController)}.{nameof(ChooseSkill)}: {Monster.Race} PLAYER chose skill '{chosen.Name}'.");           
+
+            return chosen;
+
+        }
+
+        private List<SkillBase> BuildSkillList()
+        {
+            List<SkillBase> options = new();
+            
+            foreach (SkillBase skill in Monster.Skills.ActiveSkills.Where(skill=>skill.IsReady).ToList()) 
+            {
+                if(skill.IsReady)
+                {
+                    options.Add(skill);
+                }
+            }
+            options.Add(new BasicAttack(_diagnostics));
+            _diagnostics.AddCheck($"{nameof(PlayerController)}.{nameof(BuildSkillList)}:Successfully built {options.Count} options.");
+           
+            return options;
+        }
+
+        private string[] BuildOptionTexts(List<SkillBase> options)
+        {
+            string[] texts =new string[options.Count];
+
+            for (int i =0;i<options.Count; i++)
+            {
+                SkillBase skill = options[i];
+                texts[i] = skill.Name;
+            }
+            _diagnostics.AddCheck($"{nameof(PlayerController)}.{nameof(BuildOptionTexts)}: Successfully built {texts.Length} option texts.");
+
+            return texts;
+        }
     }
 }

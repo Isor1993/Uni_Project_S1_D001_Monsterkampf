@@ -42,13 +42,14 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Monsters
             if (Skills.PassiveSkill != null)
             {
                 UsePasiveSkill();
-                _diagnostics.AddError($"{nameof(Troll)}.{nameof(Spawn)}: Activated passive skill '{Skills.PassiveSkill.Name}'.");
+                _diagnostics.AddCheck($"{nameof(Troll)}.{nameof(Spawn)}: Activated passive skill '{Skills.PassiveSkill.Name}'.");
             }
             else
             {
                 _diagnostics.AddError($"{nameof(Troll)}.{nameof(Spawn)}: No passive skill assigned.");
             }
         }
+        //TODO alle Monsterclassen anpassen parameter... .
         public override void Attack(MonsterBase target)
         {
             base.Attack(target);

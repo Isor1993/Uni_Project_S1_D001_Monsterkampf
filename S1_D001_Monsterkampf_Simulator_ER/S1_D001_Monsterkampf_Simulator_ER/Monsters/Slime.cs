@@ -39,7 +39,7 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Monsters
             if (Skills.PassiveSkill != null)
             {
                 UsePasiveSkill();
-                _diagnostics.AddError($"{nameof(Slime)}.{nameof(Spawn)}: Activated passive skill '{Skills.PassiveSkill.Name}'.");
+                _diagnostics.AddCheck($"{nameof(Slime)}.{nameof(Spawn)}: Activated passive skill '{Skills.PassiveSkill.Name}'.");
             }
             else
             {

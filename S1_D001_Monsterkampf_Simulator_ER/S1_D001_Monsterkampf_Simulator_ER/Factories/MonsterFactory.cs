@@ -76,6 +76,7 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Factories
 
         }
 
+        //TODO Soll man hier viell Basickattack mit hinzufügen oder viel in monsterbase?
         private void AssignGoblinSkills(SkillPackage package)
         {
             package.SetPassiveSkill(new PassiveSkill_Greed(_diagnostics));
