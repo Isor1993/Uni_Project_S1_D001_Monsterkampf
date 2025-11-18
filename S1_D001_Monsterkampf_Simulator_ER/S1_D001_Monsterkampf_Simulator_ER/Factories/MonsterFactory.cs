@@ -76,11 +76,12 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Factories
 
         }
 
-        //TODO Soll man hier viell Basickattack mit hinzufügen oder viel in monsterbase?
+        
         private void AssignGoblinSkills(SkillPackage package)
         {
             package.SetPassiveSkill(new PassiveSkill_Greed(_diagnostics));
 
+            package.AddActiveSkill(new BasicAttack(_diagnostics));
             package.AddActiveSkill(new PoisonDagger(_diagnostics));
             package.AddActiveSkill(new ThrowStone(_diagnostics));
            
@@ -92,8 +93,10 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Factories
         {
             package.SetPassiveSkill(new PassiveSkill_Absorb(_diagnostics));
 
+            package.AddActiveSkill(new BasicAttack(_diagnostics));
             package.AddActiveSkill(new Fireball(_diagnostics));
             package.AddActiveSkill(new Waterball(_diagnostics));
+
 
             _diagnostics.AddCheck($"{nameof(MonsterFactory)}.{nameof(AssignSlimeSkills)}: Slime skills assigned.");
         }
@@ -101,6 +104,7 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Factories
         {
             package.SetPassiveSkill(new PassiveSkill_Regeneration(_diagnostics));
 
+            package.AddActiveSkill(new BasicAttack(_diagnostics));
             package.AddActiveSkill(new PowerSmash(_diagnostics));
 
             _diagnostics.AddCheck($"{nameof(MonsterFactory)}.{nameof(AssignTrollSkills)}: Troll skills assigned.");
@@ -109,6 +113,7 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Factories
         {
             package.SetPassiveSkill(new PassiveSkill_Fear(_diagnostics));
 
+            package.AddActiveSkill(new BasicAttack(_diagnostics));
             package.AddActiveSkill(new TribeScream(_diagnostics));
 
             _diagnostics.AddCheck($"{nameof(MonsterFactory)}.{nameof(AssignOrcSkills)}: Orc skills assigned.");

@@ -89,8 +89,7 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Monsters
                 throw new ArgumentNullException(nameof(skill));
             }
             float finalDamage = pipeline.Execute(this, target, skill);
-                        
-
+                
             skill.StartCooldown();
 
             return finalDamage;
@@ -202,17 +201,7 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Monsters
 
             _diagnostics.AddCheck($"{nameof(MonsterBase)}.{nameof(ProcessStatusEffectDurations)}: Duration tick processed for {Race}.");
         }
-        //TODO in battelmanager einfügen
-        public void ProcessAfterSkillUse()
-        {
-            foreach (StatusEffectBase effect in _statusEffects)
-            {
-                effect.ApplyEffect(this);
-            }
-
-            _diagnostics.AddCheck($"{nameof(MonsterBase)}.{nameof(ProcessAfterSkillUse)}: Start-of-turn effects processed for {Race}.");
-
-        }
+        
         public void ProcessStartOfTurnEffects()
         {
             foreach (StatusEffectBase effect in _statusEffects)
@@ -241,13 +230,17 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Monsters
             }
             _diagnostics.AddCheck($"{nameof(MonsterBase)}.{nameof(TakeDamage)}: {Race} took {damage} damage.");
         }
-        //TODO
+        
         public IEnumerable<T> GetStatusEffects<T>() where T : StatusEffectBase
         {
             return _statusEffects.OfType<T>();
         }
 
-        //TODO
+        /// <summary>
+        /// für später efecte die finaldamage manupulieren
+        /// </summary>
+        /// <param name="damage"></param>
+        /// <returns></returns>
         public virtual float ModifyFinalDamage(float damage)
         {
             float modified = damage;

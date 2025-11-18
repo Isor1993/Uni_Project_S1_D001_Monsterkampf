@@ -72,14 +72,12 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
                 if (CheckDeathsAfterEndOfTurn())
                 {
                     break;
-                }
-                _deps.Diagnostics.AddCheck($"{nameof(BattleManager)}.{nameof(HandleEndOfTurnEffects)}: End-of-turn Effects begin.");
-                TickCooldowns();
-                _deps.Diagnostics.AddCheck($"{nameof(BattleManager)}.{nameof(HandleEndOfTurnEffects)}: Cooldowns tick.");
+                }                      
+                
                 round++;
             }
             _deps.Diagnostics.AddCheck($"{nameof(BattleManager)}.{nameof(HandleEndOfTurnEffects)}: Battle ended!");
-            //TODO erklären
+            
             BattleResult result = DetermineBattleResult();
 
             ControllerBase? winner = result switch
