@@ -12,7 +12,9 @@
 
 
 using S1_D001_Monsterkampf_Simulator_ER.Managers;
+using S1_D001_Monsterkampf_Simulator_ER.Player;
 using S1_D001_Monsterkampf_Simulator_ER.Skills;
+using S1_D001_Monsterkampf_Simulator_ER.Skills.Goblin;
 using S1_D001_Monsterkampf_Simulator_ER.Systems.Damage;
 using S1_D001_Monsterkampf_Simulator_ER.Systems.StatusEffects;
 using System.Net.WebSockets;
@@ -47,7 +49,7 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Monsters
         private List<StatusEffectBase> _statusEffects = new List<StatusEffectBase>();
 
 
-        public SkillPackage Skills => _skills;
+        public SkillPackage SkillPackage => _skills;
 
         public RaceType Race { get; }
 
@@ -55,17 +57,17 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Monsters
         public int Level { get; }
 
 
-        protected MonsterBase(MonsterMeta meta, MonsterResistance resistance, RaceType race, int level,SkillPackage skill,DiagnosticsManager diagnosticsManager)
+        protected MonsterBase(MonsterMeta meta, MonsterResistance resistance, RaceType race, int level, SkillPackage skill, DiagnosticsManager diagnosticsManager)
         {
             Race = race;
             Level = level;
             _meta = meta;
             _resistance = resistance;
             _diagnostics = diagnosticsManager;
-            _skills=skill;
+            _skills = skill;
         }
 
-       
+
 
         public MonsterMeta Meta => _meta;
 
@@ -76,7 +78,7 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Monsters
         public abstract void Spawn();
 
 
-        public virtual float Attack(MonsterBase target,SkillBase skill,DamagePipeline pipeline)
+        public virtual float Attack(MonsterBase target, SkillBase skill, DamagePipeline pipeline)
         {
             if (target == null)
             {
@@ -86,14 +88,12 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Monsters
             {
                 throw new ArgumentNullException(nameof(skill));
             }
-            float damage = pipeline.Execute(this, target, skill);
+            float finalDamage = pipeline.Execute(this, target, skill);
+                        
 
             skill.StartCooldown();
 
-            //TODO Cooldown erst später implementieren
-            //TODO skill.TriggerCooldown() kommt später
-
-            return damage;
+            return finalDamage;
         }
         private SkillBase CreateBasicAttack()
         {
@@ -102,7 +102,7 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Monsters
         public SkillBase ChooseSkillForAI(RandomManager random)
         {
             // 1. Skills sammeln, die bereit sind (IsReady == true)
-            List<SkillBase> readySkills = Skills.ActiveSkills
+            List<SkillBase> readySkills = SkillPackage.ActiveSkills
                 .Where(skill => skill.IsReady)
                 .ToList();
 
@@ -133,7 +133,7 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Monsters
                 _diagnostics.AddCheck($"{Race} AI chooses strongest SKILL '{strongestSkill.Name}'.");
                 return strongestSkill;
             }
-           
+
             // 7. Beide Angriffe sind ähnlich stark → Random entscheiden
             int choice = random.Next(2);
             if (choice == 0)
@@ -147,7 +147,17 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Monsters
         }
 
 
-        public virtual void UsePasiveSkill() { }
+        public virtual void UsePasiveSkill()
+        {
+            if (_skills.PassiveSkill is IPassiveSkill passive)
+            {
+                passive.ApplyPassive(this);
+            }
+            else
+            {
+                _diagnostics.AddCheck($"{nameof(MonsterBase)}.{nameof(UsePasiveSkill)}: No spawn passive to apply for {Race}.");
+            }
+        }
 
 
         public virtual void UseAktiveSkill() { }
@@ -156,17 +166,12 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Monsters
         public virtual void Heal(float heal)
         {
             Meta.CurrentHP += heal;
-            if ( Meta.MaxHP< Meta.CurrentHP)
+            if (Meta.MaxHP < Meta.CurrentHP)
             {
                 Meta.CurrentHP = Meta.MaxHP;
             }
 
             _diagnostics.AddCheck($"{nameof(MonsterBase)}.{nameof(Heal)}: {Race} got {heal} Hp healed.");
-
-
-            
-
-
         }
 
         public void AddStatusEffect(StatusEffectBase effect)
@@ -175,28 +180,57 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Monsters
             _diagnostics.AddCheck($"{nameof(MonsterBase)}.{nameof(AddStatusEffect)}: Added status effect '{effect.Name}' on {Race}.");
         }
 
-        public void ProcessStatusEffects()
-        {            
-            List<StatusEffectBase> effects = new List<StatusEffectBase>(_statusEffects);
+        public void ProcessStatusEffectDurations()
+        {
+            List<StatusEffectBase> expired = new();
 
-            foreach (StatusEffectBase effect in effects)
+            foreach (StatusEffectBase effect in _statusEffects)
             {
-            
-                effect.ApplyEffect(this);
-             
                 effect.Tick();
-          
+
                 if (effect.IsExpired)
                 {
-                    effect.OnExpire(this);
-                    _statusEffects.Remove(effect);
-
-                    _diagnostics.AddCheck($"{nameof(MonsterBase)}.{nameof(ProcessStatusEffects)}: '{effect.Name}' expired on {Race}.");
+                    expired.Add(effect);
                 }
             }
-                _diagnostics.AddCheck($"{nameof(MonsterBase)}.{nameof(ProcessStatusEffects)}: Processed {effects.Count} status effects for {Race}.");
-        }
 
+            foreach (StatusEffectBase effect in expired)
+            {
+                effect.OnExpire(this);
+                _statusEffects.Remove(effect);
+            }
+
+            _diagnostics.AddCheck($"{nameof(MonsterBase)}.{nameof(ProcessStatusEffectDurations)}: Duration tick processed for {Race}.");
+        }
+        //TODO in battelmanager einfügen
+        public void ProcessAfterSkillUse()
+        {
+            foreach (StatusEffectBase effect in _statusEffects)
+            {
+                effect.ApplyEffect(this);
+            }
+
+            _diagnostics.AddCheck($"{nameof(MonsterBase)}.{nameof(ProcessAfterSkillUse)}: Start-of-turn effects processed for {Race}.");
+
+        }
+        public void ProcessStartOfTurnEffects()
+        {
+            foreach (StatusEffectBase effect in _statusEffects)
+            {
+                effect.ApplyStartOfTurn(this);
+            }
+
+            _diagnostics.AddCheck($"{nameof(MonsterBase)}.{nameof(ProcessStartOfTurnEffects)}: Start-of-turn effects processed for {Race}.");
+        }
+        public void ProcessEndOfTurnEffects()
+        {
+            foreach (StatusEffectBase effect in _statusEffects)
+            {
+                effect.ApplyEndOfTurn(this);   // DOT, Burn, Bleed, Poison etc.
+            }
+
+            _diagnostics.AddCheck($"{nameof(MonsterBase)}.{nameof(ProcessEndOfTurnEffects)}: End-of-turn effects processed for {Race}.");
+        }
 
         public virtual void TakeDamage(float damage)
         {
@@ -216,9 +250,23 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Monsters
         //TODO
         public virtual float ModifyFinalDamage(float damage)
         {
-            return damage; // wird später durch Absorb/Shield/Thorns modifiziert
-        }
+            float modified = damage;
+            foreach (StatusEffectBase effect in _statusEffects)
+            {
+                modified = effect.ModifyFinalDamage(this, modified);
+            }
 
+            modified = Math.Max(1, modified);
+            return modified;
+        }
+        public void ProcessSkillCooldowns()
+        {
+            foreach (SkillBase skill in _skills.AllSkills)
+            {
+                skill.TickCooldown();
+            }
+            _diagnostics.AddCheck($"{nameof(MonsterBase)}.{nameof(ProcessSkillCooldowns)}: Cooldowns ticked for {Race}.");
+        }       
 
         public bool IsAlive => _meta.CurrentHP > 0;
     }

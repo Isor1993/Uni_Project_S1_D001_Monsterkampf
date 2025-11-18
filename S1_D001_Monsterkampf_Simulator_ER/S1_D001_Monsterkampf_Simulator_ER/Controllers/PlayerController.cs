@@ -50,7 +50,7 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Controllers
 
         private List<SkillBase> BuildSkillList()
         {
-            List<SkillBase> list = Monster.Skills.ActiveSkills
+            List<SkillBase> list = Monster.SkillPackage.ActiveSkills
                 .Where(skill => skill.IsReady)
                 .ToList();
             list.Add(new BasicAttack(_diagnostics));

@@ -13,6 +13,7 @@
 
 using S1_D001_Monsterkampf_Simulator_ER.Managers;
 using S1_D001_Monsterkampf_Simulator_ER.Monsters;
+using S1_D001_Monsterkampf_Simulator_ER.Player;
 
 namespace S1_D001_Monsterkampf_Simulator_ER.Skills
 {
@@ -72,7 +73,7 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Skills
             _diagnostics = diagnosticsManager;
         }
 
-       
+
         public virtual float CalculateRawDamage(MonsterBase attacker)
         {
             float raw = attacker.Meta.AP * Power;
@@ -100,6 +101,7 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Skills
             if (Cooldown > 0)
             {
                 CurrentCooldown = Cooldown;
+                _diagnostics.AddCheck($"{nameof(SkillBase)}.{nameof(StartCooldown)}: {Name} cooldown → {CurrentCooldown}");
             }
         }
         public void TickCooldown()
@@ -107,7 +109,12 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Skills
             if (CurrentCooldown > 0)
             {
                 CurrentCooldown--;
+                _diagnostics.AddCheck($"{nameof(SkillBase)}.{nameof(TickCooldown)}: {Name} cooldown → {CurrentCooldown}");
             }
+        }
+        public virtual void OnVictory(MonsterBase owner, PlayerData playerData, DiagnosticsManager diagnostics)
+        {
+            // Default: nichts tun
         }
     }
 }

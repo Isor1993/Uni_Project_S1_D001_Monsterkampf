@@ -31,6 +31,7 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Balancing
 
 
         // Skalierungsfaktoren
+        public int BaseVictoryReward => 1;
         private const float HPScaling = 0.10f;
         private const float APScaling = 0.04f;
         private const float DPScaling = 0.5f;

@@ -28,11 +28,18 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Systems.StatusEffects
             Duration = duration;
             _diagnostics = diagnosticsManager;
         }
-
+        public virtual void ApplyStartOfTurn(MonsterBase target)
+        {
+            // standardmäßig nichts
+        }
+        public virtual void ApplyEndOfTurn(MonsterBase target)
+        {
+            // standardmäßig nichts
+        }
         // Jede Runde Wirkung
         public virtual void ApplyEffect(MonsterBase target)
         {
-
+            //standardmäßig nichts
         }
 
         // Wird am Rundenende aufgerufen
@@ -48,6 +55,17 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Systems.StatusEffects
             _diagnostics.AddCheck($"{nameof(StatusEffectBase)}.{nameof(OnExpire)}: {Name} expired on {target.Race}");
         }
 
+        public virtual void OnTurnStart(MonsterBase target)
+        {
+            // Standardmäßig passiert nichts
+        }
         public bool IsExpired => Duration <= 0;
+
+       
+        public virtual float ModifyFinalDamage(MonsterBase target, float damage)
+        {
+            //Later for something like debuff wich also inflict true damage
+            return damage; // default: do nothing
+        }
     }
 }

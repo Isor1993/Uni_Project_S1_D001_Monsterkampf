@@ -30,7 +30,7 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Systems.StatusEffects
             _multiplier = multiplier;
         }
 
-        public override void ApplyEffect(MonsterBase target)
+        public override void ApplyStartOfTurn (MonsterBase target)
         {
             if (_applied)
             {
@@ -42,7 +42,7 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Systems.StatusEffects
             target.Meta.Speed= Math.Max(1,target.Meta.Speed * _multiplier);
             float percent = (1f - _multiplier) * 100f;
 
-            _diagnostics.AddCheck($"{nameof(FearEffect)}.{nameof(ApplyEffect)}: Reduced speed by {percent:F0}% → New Speed = {target.Meta.Speed}.");
+            _diagnostics.AddCheck($"{nameof(FearEffect)}.{nameof(ApplyStartOfTurn)}: Reduced speed by {percent:F0}% → New Speed = {target.Meta.Speed}.");
         }
 
         public override void OnExpire(MonsterBase target)

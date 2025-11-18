@@ -40,20 +40,16 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Monsters
         public override void Spawn()
         {
 
-            if (Skills.PassiveSkill != null)
+            if (SkillPackage.PassiveSkill != null)
             {
                 UsePasiveSkill();
 
-                _diagnostics.AddCheck($"{nameof(Goblin)}.{nameof(Spawn)}: Activated passive skill '{Skills.PassiveSkill.Name}'.");
+                _diagnostics.AddCheck($"{nameof(Goblin)}.{nameof(Spawn)}: Activated passive skill '{SkillPackage.PassiveSkill.Name}'.");
             }
             else
             {
                 _diagnostics.AddError($"{nameof(Goblin)}.{nameof(Spawn)}: No passive skill assigned.");
             }
-        }
-        public override void Attack(MonsterBase target)
-        {
-            base.Attack(target);
-        }
+        }        
     }
 }

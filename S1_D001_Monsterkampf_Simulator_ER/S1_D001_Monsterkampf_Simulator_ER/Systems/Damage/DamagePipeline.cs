@@ -53,7 +53,9 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Systems.Damage
            _diagnostics.AddCheck($"{nameof(DamagePipeline)}: AfterDefense = {afterDefense} (DP={target.Meta.DP}).");
             float afterResistance=GetAfterResistance(target,skill,afterDefense);
             float afterAbsorb = ApplyAbsorb(target, afterResistance);
-            float finalDamage = afterAbsorb;
+            float afterModify = target.ModifyFinalDamage(afterAbsorb);
+            float finalDamage = afterModify;
+
             target.TakeDamage(finalDamage);
             _diagnostics.AddCheck($"{nameof(DamagePipeline)}: {target.Race} took {finalDamage} damage.");
             skill.OnHit(attacker, target);

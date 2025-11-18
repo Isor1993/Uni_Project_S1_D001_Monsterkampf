@@ -25,12 +25,12 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Systems.StatusEffects
             _multiplier = multiplier;
         }
 
-        public override void ApplyEffect(MonsterBase target)
+        public override void ApplyStartOfTurn(MonsterBase target)
         {
             float regeneration = target.Meta.MaxHP * _multiplier;
             regeneration = (Math.Max(1, regeneration));
             target.Heal(regeneration);
-            _diagnostics.AddCheck($"{nameof(RegenerationEffect)}.{nameof(ApplyEffect)}: {target.Race} regenerated {regeneration} Hp ({_multiplier * 100:F0}%).");
+            _diagnostics.AddCheck($"{nameof(RegenerationEffect)}.{nameof(ApplyStartOfTurn)}: {target.Race} regenerated {regeneration} Hp ({_multiplier * 100:F0}%).");
         }
     }
 }

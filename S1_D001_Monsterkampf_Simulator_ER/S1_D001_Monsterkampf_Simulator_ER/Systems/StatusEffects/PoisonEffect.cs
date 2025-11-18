@@ -26,12 +26,12 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Systems.StatusEffects
             _multiplier = multiplier;
         }
 
-        public override void ApplyEffect(MonsterBase target)
+        public override void ApplyEndOfTurn(MonsterBase target)
         {
             float damage = target.Meta.MaxHP * _multiplier;
             damage = Math.Max(1, damage);
             target.TakeDamage(damage);
-            _diagnostics.AddCheck($"{nameof(PoisonEffect)}.{nameof(ApplyEffect)}: {target.Race} took {damage} poison damage ({(_multiplier * 100):F0}% of MaxHP).");
+            _diagnostics.AddCheck($"{nameof(PoisonEffect)}.{nameof(ApplyEndOfTurn)}: {target.Race} took {damage} poison damage ({(_multiplier * 100):F0}% of MaxHP).");
         }
     }
 }

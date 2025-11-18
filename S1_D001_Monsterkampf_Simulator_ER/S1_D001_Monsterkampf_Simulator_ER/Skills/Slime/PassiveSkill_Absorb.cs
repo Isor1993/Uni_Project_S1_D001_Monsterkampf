@@ -16,7 +16,7 @@ using S1_D001_Monsterkampf_Simulator_ER.Systems.StatusEffects;
 
 namespace S1_D001_Monsterkampf_Simulator_ER.Skills.Slime
 {
-    internal class PassiveSkill_Absorb:SkillBase
+    internal class PassiveSkill_Absorb:SkillBase,IPassiveSkill
     {
         // === Dependencies ===
 

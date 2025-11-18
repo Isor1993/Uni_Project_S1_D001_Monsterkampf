@@ -79,10 +79,11 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Factories
         //TODO Soll man hier viell Basickattack mit hinzufügen oder viel in monsterbase?
         private void AssignGoblinSkills(SkillPackage package)
         {
-            package.SetPassiveSkill(new PassiveSkill_Greed(_diagnostics));
+            package.AddEventPassive(new PassiveSkill_Greed(_diagnostics));
 
             package.AddActiveSkill(new PoisonDagger(_diagnostics));
             package.AddActiveSkill(new ThrowStone(_diagnostics));
+           
 
             _diagnostics.AddCheck($"{nameof(MonsterFactory)}.{nameof(AssignGoblinSkills)}: Goblin skills assigned.");
 

@@ -9,18 +9,23 @@
 * History :
 * xx.xx.2025 ER Created
 ******************************************************************************/
+using S1_D001_Monsterkampf_Simulator_ER.Balancing;
+using S1_D001_Monsterkampf_Simulator_ER.Controllers;
 using S1_D001_Monsterkampf_Simulator_ER.Managers;
 using S1_D001_Monsterkampf_Simulator_ER.Monsters;
+using S1_D001_Monsterkampf_Simulator_ER.Player;
 using S1_D001_Monsterkampf_Simulator_ER.Systems.Damage;
 
 namespace S1_D001_Monsterkampf_Simulator_ER.Dependencies
 {
     internal record BattleManagerDependencies
     (
-        MonsterBase Player,
-        MonsterBase Enemy,
+        ControllerBase PlayerController,
+        ControllerBase EnemyController,
         DiagnosticsManager Diagnostics,
         RandomManager Random,
-        DamagePipeline Pipeline
+        DamagePipeline Pipeline,
+        PlayerData PlayerData,
+        MonsterBalancing Balancing
     );
 }

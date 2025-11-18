@@ -12,13 +12,13 @@
 
 
 using S1_D001_Monsterkampf_Simulator_ER.Dependencies;
+using S1_D001_Monsterkampf_Simulator_ER.Player;
 
 namespace S1_D001_Monsterkampf_Simulator_ER.Managers
 {
 
     internal class GameManager
     {
-
         private enum GameState { Start, Tutorial, ChooseMonster, BattleStart, HandleRewards, NextStage, End, Quit }
 
         // === Dependencies ===
@@ -27,6 +27,7 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
         // === Fields ===
         private GameState _currentState = GameState.Start;
         private bool isRunning = true;
+        public PlayerData PlayerData { get; } = new PlayerData();
 
         /// <summary>
         /// 
