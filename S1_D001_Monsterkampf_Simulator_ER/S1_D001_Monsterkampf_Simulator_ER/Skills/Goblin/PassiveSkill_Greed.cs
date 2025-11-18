@@ -49,11 +49,11 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Skills.Goblin
         /// <summary>
         /// Der eigentliche Reward-Bonus: +50% Reward nach gewonnenem Kampf.
         /// </summary>
-        public float ApplyRewardBonus(float baseReward)
+        public override float ModifyVictoryReward(float baseReward)
         {
             float finalReward = baseReward * SkillMultiplier;
 
-            _diagnostics.AddCheck($"{nameof(PassiveSkill_Greed)}.{nameof(ApplyRewardBonus)}: BaseReward={baseReward} → FinalReward={finalReward} (+50%).");
+            _diagnostics.AddCheck($"{nameof(PassiveSkill_Greed)}.{nameof(ModifyVictoryReward)}: BaseReward={baseReward} → FinalReward={finalReward} (+50%).");
 
             return finalReward;
         }

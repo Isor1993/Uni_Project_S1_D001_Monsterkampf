@@ -112,9 +112,10 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Skills
                 _diagnostics.AddCheck($"{nameof(SkillBase)}.{nameof(TickCooldown)}: {Name} cooldown → {CurrentCooldown}");
             }
         }
-        public virtual void OnVictory(MonsterBase owner, PlayerData playerData, DiagnosticsManager diagnostics)
+       
+        public virtual float ModifyVictoryReward(float reward)
         {
-            // Default: nichts tun
+            return reward;
         }
     }
 }

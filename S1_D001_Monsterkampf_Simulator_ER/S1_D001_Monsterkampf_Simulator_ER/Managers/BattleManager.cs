@@ -254,33 +254,36 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
             bool winnerIsPlayer = winner == PlayerController;
 
             _deps.Diagnostics.AddCheck($"{nameof(BattleManager)}.{nameof(HandleVictory)}: Victory triggered for {winnerMonster.Race}. WinnerIsPlayer={winnerIsPlayer}");
+
             if (!winnerIsPlayer)
                 return;
 
-            // === Base Reward bestimmen ===
-            int baseReward = _deps.Balancing.BaseVictoryReward;
+            // === Base Reward ===
+            float reward = _deps.Balancing.BaseVictoryReward;
 
-            _deps.Diagnostics.AddCheck($"{nameof(BattleManager)}.{nameof(HandleVictory)}: BaseReward={baseReward} (Balancing)");
+            _deps.Diagnostics.AddCheck($"{nameof(BattleManager)}.{nameof(HandleVictory)}: BaseReward={reward} (Balancing)");
 
-            var greed = winnerMonster.SkillPackage.EventPassives.OfType<PassiveSkill_Greed>().FirstOrDefault();
-
-            int finalReward = baseReward;
-
-            if (greed != null)
+            // === Passive Victory-Modifikatoren (Greed, future skills) ===
+            if (winnerMonster.SkillPackage.PassiveSkill != null)
             {
-                finalReward = (int)greed.ApplyRewardBonus(baseReward);
+                reward = winnerMonster.SkillPackage.PassiveSkill.ModifyVictoryReward(reward);
 
-                _deps.Diagnostics.AddCheck($"{nameof(BattleManager)}.{nameof(HandleVictory)}: Greed active → FinalReward={finalReward}");
+                _deps.Diagnostics.AddCheck(
+                    $"{nameof(BattleManager)}.{nameof(HandleVictory)}: Passive victory modifier applied → Reward now {reward}");
             }
             else
             {
-                _deps.Diagnostics.AddCheck($"{nameof(BattleManager)}.{nameof(HandleVictory)}: No Greed passive found.");
-
+                _deps.Diagnostics.AddCheck(
+                    $"{nameof(BattleManager)}.{nameof(HandleVictory)}: No passive victory modifier found.");
             }
+            
+            int finalReward = (int)MathF.Round(reward); // oder MathF.Round(reward)
+            // === PlayerData aktualisieren ===
             _deps.PlayerData.UnassignedStatPoints += finalReward;
             _deps.PlayerData.CompletedBattles++;
 
-            _deps.Diagnostics.AddCheck($"{nameof(BattleManager)}.{nameof(HandleVictory)}: Player receives {finalReward} stat point(s).Total={_deps.PlayerData.UnassignedStatPoints}, Battles={_deps.PlayerData.CompletedBattles}");
+            _deps.Diagnostics.AddCheck(
+                $"{nameof(BattleManager)}.{nameof(HandleVictory)}: Player receives {finalReward} stat point(s). Total={_deps.PlayerData.UnassignedStatPoints}, Battles={_deps.PlayerData.CompletedBattles}");
         }
     }
 }
