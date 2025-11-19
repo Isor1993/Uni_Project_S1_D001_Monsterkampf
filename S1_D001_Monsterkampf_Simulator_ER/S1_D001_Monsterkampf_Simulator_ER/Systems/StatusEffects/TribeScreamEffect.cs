@@ -29,7 +29,7 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Systems.StatusEffects
             
         }
 
-        public override void ApplyEffect(MonsterBase target)
+        public override void ApplyStartOfTurn(MonsterBase target)
         {
             if (_applied)
             {
@@ -38,7 +38,7 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Systems.StatusEffects
             _applied = true;
             _baseAp = target.Meta.AP;
             target.Meta.AP = _baseAp * _multiplier;
-            _diagnostics.AddCheck($"{nameof(TribeScreamEffect)}.{nameof(ApplyEffect)}: Increased AP from {_baseAp} to {target.Meta.AP}.");
+            _diagnostics.AddCheck($"{nameof(TribeScreamEffect)}.{nameof(ApplyStartOfTurn)}: Increased AP from {_baseAp} to {target.Meta.AP}.");
         }
 
         public override void OnExpire(MonsterBase target)

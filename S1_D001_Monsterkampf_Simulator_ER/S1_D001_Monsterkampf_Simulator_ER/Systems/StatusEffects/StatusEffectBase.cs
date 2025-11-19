@@ -35,12 +35,7 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Systems.StatusEffects
         public virtual void ApplyEndOfTurn(MonsterBase target)
         {
             // standardmäßig nichts
-        }
-        // Jede Runde Wirkung
-        public virtual void ApplyEffect(MonsterBase target)
-        {
-            //standardmäßig nichts
-        }
+        }         
 
         // Wird am Rundenende aufgerufen
         public virtual void Tick()

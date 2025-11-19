@@ -24,9 +24,9 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Controllers
         protected readonly DiagnosticsManager _diagnostics;
 
         // === Fields ===
-        public MonsterBase Monster { get; }
+        public MonsterBase Monster { get; private set; }
 
-        protected ControllerBase(MonsterBase monster,DiagnosticsManager diagnostics)
+        protected ControllerBase(MonsterBase monster, DiagnosticsManager diagnostics)
         {
             Monster = monster ?? throw new ArgumentNullException(nameof(monster));
             _diagnostics = diagnostics ?? throw new ArgumentNullException(nameof(diagnostics));
@@ -38,5 +38,11 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Controllers
         /// Returns a valid SkillBase object chosen for this turn.
         /// </summary>
         public abstract SkillBase ChooseSkill();
+
+        public void SetMonster(MonsterBase monster)
+        {
+            Monster = monster ?? throw new ArgumentNullException(nameof(monster));
+            _diagnostics.AddCheck($"{nameof(ControllerBase)}.{nameof(SetMonster)}: Selected monster is {monster.Race}");
+        }
     }
 }

@@ -15,6 +15,7 @@
 using S1_D001_Monsterkampf_Simulator_ER.Managers;
 using S1_D001_Monsterkampf_Simulator_ER.Monsters;
 using S1_D001_Monsterkampf_Simulator_ER.Skills;
+using System;
 
 namespace S1_D001_Monsterkampf_Simulator_ER.Controllers
 {
@@ -37,6 +38,11 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Controllers
             _diagnostics.AddCheck($"{nameof(EnemyController)}.{nameof(ChooseSkill)}: {Monster.Race} AI selected '{chosen.Name}'.");
 
             return chosen;
+        }
+        
+        public void SetMonster(MonsterBase controller)
+        {
+
         }
     }
 }

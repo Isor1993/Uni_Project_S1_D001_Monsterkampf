@@ -31,11 +31,20 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Balancing
 
 
         // Skalierungsfaktoren
+        // --- Stat Point Scaling for Level up---
+        public int LevelUpScaling => 1;
+        public int BonusLevels => 5;
         public int BaseVictoryReward => 1;
-        private const float HPScaling = 0.10f;
-        private const float APScaling = 0.04f;
-        private const float DPScaling = 0.5f;
-        private const float SpeedScaling = 0.3f;
+        public float HPScaling => 0.10f;
+        public float APScaling => 0.04f;
+        public float DPScaling => 0.5f;
+        public float SpeedScaling => 0.3f;
+
+        // --- Stat Point deffinition Scaling  ---
+        public int StatIncrease_HP => 10;
+        public int StatIncrease_AP => 1;
+        public int StatIncrease_DP => 1;
+        public float StatIncrease_Speed => 0.5f;
 
         public MonsterBalancing(DiagnosticsManager diagnostics)
         {
@@ -53,7 +62,7 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Balancing
             _baseResistances[RaceType.Troll] = new BaseResistances(Physical: 0.05f, Fire: 0.00f, Water: 0.00f, Poison: -0.20f);
             _baseResistances[RaceType.Orc] = new BaseResistances(Physical: 0.15f, Fire: -0.10f, Water: 0.00f, Poison: 0.00f);
 
-           
+
         }
 
         public MonsterMeta GetMeta(RaceType race, int level)
@@ -76,21 +85,21 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Balancing
 
             _diagnostics.AddCheck($"{nameof(MonsterBalancing)}.{nameof(GetMeta)}: Successfully got balanced meta data.");
 
-            return new MonsterMeta(scaledHp,scaledHp,scaledAp,scaledDp,scaledSpeed);
-           
+            return new MonsterMeta(scaledHp, scaledHp, scaledAp, scaledDp, scaledSpeed);
+
         }
 
         public MonsterResistance GetResistance(RaceType race)
         {
-            if(!_baseResistances.TryGetValue(race,out BaseResistances resistances))
+            if (!_baseResistances.TryGetValue(race, out BaseResistances resistances))
             {
                 throw new Exception($"No BaseResistances found for race: {race}.");
             }
             _diagnostics.AddCheck($"{nameof(MonsterBalancing)}.{nameof(GetResistance)}: Successfully got balanced resistance data.");
 
-            return new MonsterResistance(physical:resistances.Physical,fire:resistances.Fire,water:resistances.Water,poison:resistances.Poison);
+            return new MonsterResistance(physical: resistances.Physical, fire: resistances.Fire, water: resistances.Water, poison: resistances.Poison);
         }
-   
+
         private record struct BaseStats(int HP, int AP, int DP, int Speed);
         private record struct BaseResistances(float Physical, float Fire, float Water, float Poison);
     }

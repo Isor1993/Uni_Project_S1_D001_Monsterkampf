@@ -12,6 +12,7 @@
 
 
 using S1_D001_Monsterkampf_Simulator_ER.Dependencies;
+using S1_D001_Monsterkampf_Simulator_ER.Monsters;
 using S1_D001_Monsterkampf_Simulator_ER.Player;
 
 namespace S1_D001_Monsterkampf_Simulator_ER.Managers
@@ -116,7 +117,8 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
 
         private void ChooseMonster()
         {
-
+            _deps.UI.ShowMonsterSelectionMenu();
+            RaceType choosenRace = _deps.Input.ReadMonsterChoice();
         }
 
 
@@ -128,13 +130,58 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
 
         private void HandleRewards()
         {
+            _deps.Diagnostics.AddCheck($"{nameof(GameManager)}.{nameof(HandleRewards)}: Handling rewards...");
 
+            MonsterBase player = _deps.PlayerController.Monster;
+
+            while (PlayerData.UnassignedStatPoints > 0)
+            {
+                _deps.Diagnostics.AddCheck($"{nameof(GameManager)}.{nameof(HandleRewards)}: Player has {PlayerData.UnassignedStatPoints} stat point(s) to assign.");
+                //TODO siehe UIManager
+                _deps.UI.ShowStatDistributionMenu(PlayerData.UnassignedStatPoints);
+
+                StatType choice = _deps.Input.ReadStatIncreaseChoice();
+
+                player.ApplyStatPointIncrease(choice, _deps.Balancing);
+
+                PlayerData.UnassignedStatPoints--;
+
+                _deps.Diagnostics.AddCheck($"{nameof(GameManager)}.{nameof(HandleRewards)}: Assigned 1 point to {choice}. Remaining={PlayerData.UnassignedStatPoints}.");
+            }
+
+            int newLevel = player.Level + _deps.Balancing.LevelUpScaling;
+
+            MonsterMeta newMeta = _deps.Balancing.GetMeta(player.Race, newLevel);
+            player.ApplyLevelUp(newMeta);
+
+            _deps.Diagnostics.AddCheck($"{nameof(GameManager)}.{nameof(HandleRewards)}: Player leveled up to {player.Level}. Stats updated!");
+
+            _currentState = GameState.NextStage;
         }
 
 
         private void NextStage()
         {
+            _deps.Diagnostics.AddCheck($"{nameof(GameManager)}.{nameof(NextStage)}: Preparing next stage...");
 
+            MonsterBase player= _deps.PlayerController.Monster;
+
+            player.Meta.CurrentHP = player.Meta.MaxHP;
+
+            int completed = PlayerData.CompletedBattles;
+            int bonusLevels= completed/_deps.Balancing.BonusLevels;
+
+            int enemyLevel = player.Level + bonusLevels;
+            _deps.Diagnostics.AddCheck($"{nameof(GameManager)}.{nameof(NextStage)}: EnemyLevel = {enemyLevel} (player {player.Level}, bonus {bonusLevels}).");
+
+            RaceType enemyRace= _deps.Random.PickRandomRace(player.Race);
+            _deps.Diagnostics.AddCheck($"{nameof(GameManager)}.{nameof(NextStage)}: Next enemy is {enemyRace}.");
+
+            MonsterBase enemy = _deps.MonsterFactory.Create(enemyRace, enemyLevel);
+
+            _deps.EnemyController.SetMonster(enemy);
+            _deps.Diagnostics.AddCheck($"{nameof(GameManager)}.{nameof(NextStage)}: Enemy created & assigned.");
+            _currentState = GameState.BattleStart;
         }
 
 

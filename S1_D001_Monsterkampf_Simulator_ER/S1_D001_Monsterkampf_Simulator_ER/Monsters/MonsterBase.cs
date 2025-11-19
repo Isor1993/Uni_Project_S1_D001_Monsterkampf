@@ -11,6 +11,7 @@
 ******************************************************************************/
 
 
+using S1_D001_Monsterkampf_Simulator_ER.Balancing;
 using S1_D001_Monsterkampf_Simulator_ER.Managers;
 using S1_D001_Monsterkampf_Simulator_ER.Player;
 using S1_D001_Monsterkampf_Simulator_ER.Skills;
@@ -32,8 +33,13 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Monsters
         Slime = 4,
 
     }
-    public enum EfectsType
+    //TODO alle enums viel in eine cs datei ??
+    public enum StatType
     {
+        MaxHP,
+        AP,
+        DP,
+        Speed
 
     }
 
@@ -54,7 +60,7 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Monsters
         public RaceType Race { get; }
 
 
-        public int Level { get; }
+        public int Level { get; set ; }
 
 
         protected MonsterBase(MonsterMeta meta, MonsterResistance resistance, RaceType race, int level, SkillPackage skill, DiagnosticsManager diagnosticsManager)
@@ -259,7 +265,51 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Monsters
                 skill.TickCooldown();
             }
             _diagnostics.AddCheck($"{nameof(MonsterBase)}.{nameof(ProcessSkillCooldowns)}: Cooldowns ticked for {Race}.");
-        }       
+        }
+
+        public void ApplyStatPointIncrease(StatType stat,MonsterBalancing balancing)
+        {
+            
+            switch (stat)
+            {
+                case StatType.MaxHP:
+                    float oldMaxHP = Meta.MaxHP;
+                    Meta.MaxHP +=  balancing.StatIncrease_HP;
+                    Meta.CurrentHP = Meta.MaxHP;
+                    _diagnostics.AddCheck($"{nameof(MonsterBase)}.{nameof(ApplyStatPointIncrease)}: Increased max HP {oldMaxHP} to {Meta.MaxHP}.");
+                    break;
+                case StatType.AP:
+                    float oldAP = Meta.AP;
+                    Meta.AP += balancing.StatIncrease_AP;
+                    _diagnostics.AddCheck($"{nameof(MonsterBase)}.{nameof(ApplyStatPointIncrease)}: Increased max AP {oldAP} to {Meta.AP}.");
+                    break;
+                case StatType.DP:
+                    float oldDP = Meta.DP;
+                    Meta.DP+= balancing.StatIncrease_DP;
+                    _diagnostics.AddCheck($"{nameof(MonsterBase)}.{nameof(ApplyStatPointIncrease)}: Increased max DP {oldDP} to {Meta.DP}.");
+                    break;
+                case StatType.Speed:
+                    float oldMaxSpeed = Meta.Speed;
+                    Meta.Speed += balancing.StatIncrease_Speed;
+                    _diagnostics.AddCheck($"{nameof(MonsterBase)}.{nameof(ApplyStatPointIncrease)}: Increased max Speed {oldMaxSpeed} to {Meta.Speed}.");
+                    break;
+                default:
+                    _diagnostics.AddError($"{nameof(MonsterBase)}.{nameof(ApplyStatPointIncrease)}: No StatType found.");
+                    break;
+            }
+
+        }
+        public void ApplyLevelUp(MonsterMeta newMeta)
+        {
+            Level++;
+
+            Meta.MaxHP=newMeta.MaxHP;
+            Meta.CurrentHP = newMeta.MaxHP;
+            Meta.AP=newMeta.AP;
+            Meta.DP=newMeta.DP;
+            Meta.Speed=newMeta.Speed;
+            _diagnostics.AddCheck($"{nameof(MonsterBase)}.{nameof(ApplyLevelUp)}: LevelUp to {Level} and updated stats.");
+        }
 
         public bool IsAlive => _meta.CurrentHP > 0;
     }
