@@ -13,6 +13,9 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
 
 
 
-        public StatType ReadStatIncreaseChoice();
+         public StatType ReadStatIncreaseChoice()
+        {
+            return StatType.MaxHP;//TODO wegmachen nach UI Test:
+        }
     }
 }

@@ -8,6 +8,19 @@ namespace S1_D001_Monsterkampf_Simulator_ER
     {
         static void Main(string[] args)
         {
+            DiagnosticsManager diagnostics=new DiagnosticsManager();
+            SymbolManager symbol=new SymbolManager();
+            UIManager ui = new UIManager(symbol);
+            Console.WriteLine($"Width: {Console.WindowWidth},  Height: {Console.WindowHeight}");
+            ui.PrintOutlineLayout(29, 100);
+            ui.PrintMonsterInfoBox(20, 3);
+            ui.PrintMonsterInfoBox(63, 3);
+            ui.PrintMessageBoxLayout(20,23);
+            ui.PrintSkillBoxLayout(0, 23);
+            // ui.PrintMonsterInfoLayout(6,34,(20,3));
+            // ui.PrintMonsterInfoLayout(6, 34, (63, 3));
+            Console.ReadKey(true);
+                        /*
             Console.Title = "Monsterkampf-Simulator 🧩";
             Console.OutputEncoding = System.Text.Encoding.UTF8;
 
@@ -25,6 +38,7 @@ namespace S1_D001_Monsterkampf_Simulator_ER
 
             Console.WriteLine("\nDrücke eine beliebige Taste, um das Programm zu beenden...");
             Console.ReadKey();
+            */
         }
     }
 }

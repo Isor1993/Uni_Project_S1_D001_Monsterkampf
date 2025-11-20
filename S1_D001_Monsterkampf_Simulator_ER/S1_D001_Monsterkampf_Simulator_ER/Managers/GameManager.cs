@@ -117,8 +117,8 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
 
         private void ChooseMonster()
         {
-            _deps.UI.ShowMonsterSelectionMenu();
-            RaceType choosenRace = _deps.Input.ReadMonsterChoice();
+            //TODO wegmachen nach UI Test: _deps.UI.ShowMonsterSelectionMenu();
+            //TODO wegmachen nach UI Test: RaceType choosenRace = _deps.Input.ReadMonsterChoice();
         }
 
 
