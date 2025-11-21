@@ -50,6 +50,37 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Monsters
             {
                 _diagnostics.AddError($"{nameof(Goblin)}.{nameof(Spawn)}: No passive skill assigned.");
             }
-        }        
+            string goblin = @"
+    
+               ____          
+              (   O)_       
+              |    __)       
+              |  ,_| 
+               \_ _| 
+               _/ /__ _   / ) 
+              |    \ \ \_/ / 
+              |    |\ \_/ / 
+              |    | \___/ 
+             /______\        
+            |  |  |  | 
+            |__|  |__| 
+            (___) (___)       
+    ";
+            string goblin2 = @"   
+                   ____
+                 _(O   )         
+                (__    |          
+                  |_,  |
+          _       |_ _/                                                                                          
+         ( \   __ _\ \_                                                         
+          \ \_/ / /    |                                                        
+           \ \_/ /|    |                                                   
+            \___/ |    |                      
+                 /______\                      
+                |  |  |  |
+                |__|  |__|                      
+              (___)  (___)
+";
+        }
     }
 }

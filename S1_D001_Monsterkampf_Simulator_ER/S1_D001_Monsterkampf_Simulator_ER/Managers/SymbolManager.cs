@@ -17,11 +17,26 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
     /// </summary>
     internal class SymbolManager
     {
-   
-    // Private fields for symbols
-    // Some Symbols are needed for later updates
 
-    private char _wallTDownSymbol = '\u2566'; //                     ' ╦ '
+        // Private fields for symbols
+        // Some Symbols are needed for later updates
+        private char _infoboxCornerTopLeftSymbol = '\u250c';//       ' ┌ '
+
+        private char _infoBoxCornerTopRightSymbol = '\u2510'; //     ' ┐ '
+
+        private char _infoBoxCornerBottomLeftSymbol = '\u2514'; //   ' └ '
+
+        private char _infoBoxCornerBottomRightSymbol = '\u2518'; //  ' ┘ '
+
+        private char _infoBoxHorizontalLineSymbol = '\u2500'; //     ' ─ '
+
+        private char _infoBoxVerticalLineSymbol = '\u2502'; //       ' │ '
+
+        private char _filledHpBar = '\u2588'; //       ' █ '
+
+        private char _unfilledHpBar = '\u2591'; //       ' ░ '
+
+        private char _wallTDownSymbol = '\u2566'; //                 ' ╦ '
 
         private char _wallTUpSymbol = '\u2569'; //                   ' ╩ '
 
@@ -70,6 +85,46 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
         private char _hearthSymbol = '\u2764';//                      ' ❤ '
 
         // Properties with get and set for possible upgrades later
+
+        /// <summary>
+        /// Hp Bar for current HP: █
+        /// </summary>
+        public char filledHpBar { get => _filledHpBar; }
+
+        /// <summary>
+        /// Hp Bar for HP range to max HP: ░
+        /// </summary>
+        public char unfilledBar {  get => _unfilledHpBar; }
+
+        /// <summary>
+        /// Infobox Top-left corner: ┌
+        /// </summary>
+        public char InfoBoxCornerTopLeftSymbol { get => _infoboxCornerTopLeftSymbol;}
+
+        /// <summary>
+        /// Infobox Top-right corner: ┐
+        /// </summary>
+        public char InfoBoxCornerTopRightSymbol { get => _infoBoxCornerTopRightSymbol; }
+
+        /// <summary>
+        /// Infobox Bottom-left corner: └
+        /// </summary>
+        public char InfoBoxCornerBottomLeftSymbol { get => _infoBoxCornerBottomLeftSymbol; }
+
+        /// <summary>
+        /// Infobox Bottom-right corner: ┘
+        /// </summary>
+        public char InfoBoxCornerBottomRightSymbol { get => _infoBoxCornerBottomRightSymbol; }
+
+        /// <summary>
+        /// Infobox horizontal line symbol: ─
+        /// </summary>
+        public char InfoBoxHorizontalLineSymbol { get => _infoBoxHorizontalLineSymbol; }
+
+        /// <summary>
+        /// Infobox vertical line symbol: │
+        /// </summary>
+        public char InfoBoxVerticalLineSymbol { get => _infoBoxVerticalLineSymbol; }
 
         /// <summary>
         /// Wall intersection (top-down): ╦

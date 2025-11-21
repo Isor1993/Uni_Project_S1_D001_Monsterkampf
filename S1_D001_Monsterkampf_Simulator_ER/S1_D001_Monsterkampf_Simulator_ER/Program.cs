@@ -1,5 +1,8 @@
-﻿using S1_D001_Monsterkampf_Simulator_ER.Dependencies;
+﻿using S1_D001_Monsterkampf_Simulator_ER.Balancing;
+using S1_D001_Monsterkampf_Simulator_ER.Dependencies;
+using S1_D001_Monsterkampf_Simulator_ER.Factories;
 using S1_D001_Monsterkampf_Simulator_ER.Managers;
+using S1_D001_Monsterkampf_Simulator_ER.Monsters;
 
 
 namespace S1_D001_Monsterkampf_Simulator_ER
@@ -13,10 +16,22 @@ namespace S1_D001_Monsterkampf_Simulator_ER
             UIManager ui = new UIManager(symbol);
             Console.WriteLine($"Width: {Console.WindowWidth},  Height: {Console.WindowHeight}");
             ui.PrintOutlineLayout(29, 100);
-            ui.PrintMonsterInfoBox(20, 3);
-            ui.PrintMonsterInfoBox(63, 3);
+            ui.PrintMonsterInfoBoxPlayer();
+            ui.PrintMonsterInfoBoxEnemy();
             ui.PrintMessageBoxLayout(20,23);
             ui.PrintSkillBoxLayout(0, 23);
+            ui.PrintSlimeP(30,10);
+            ui.PrintSlimeE(73,10);
+            MonsterBalancing balancing = new MonsterBalancing(diagnostics);
+            MonsterFactory factory = new MonsterFactory(diagnostics,balancing);
+            MonsterBase Player = factory.Create(RaceType.Slime, 3);
+            MonsterBase Enemy = factory.Create(RaceType.Orc, 3);
+            Player.TakeDamage(40);
+            Enemy.TakeDamage(33);
+
+
+            ui.UpdateMonsterBox(Player, 20, 3);
+            ui.UpdateMonsterBox(Enemy,63,3);
             // ui.PrintMonsterInfoLayout(6,34,(20,3));
             // ui.PrintMonsterInfoLayout(6, 34, (63, 3));
             Console.ReadKey(true);

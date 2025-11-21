@@ -45,6 +45,26 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Monsters
             {
                 _diagnostics.AddError($"{nameof(Slime)}.{nameof(Spawn)}: No passive skill assigned.");
             }
-        }    
+        }
+
+        public string slime = @"                                                                                              
+             ____     
+            (    ) 
+           (   O O)
+          (    __ )
+          (    V V)
+          (________)
+    ";
+        public string slime2 = @"
+            ____
+           (    )
+          (O O   )
+          (__     )
+          (V V    )
+         (________) 
+        ";
     }
 }
+
+
+
