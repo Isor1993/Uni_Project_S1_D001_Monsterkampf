@@ -25,7 +25,7 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Skills
         private const int SkillCooldown = 0;
         public BasicAttack(DiagnosticsManager diagnostics)
             : base(
-                  "BasicAttack",
+                  "Basic Attack",
                   "A standard physical attack based on AP.",
                   SkillType.Aktive,
                   DamageType.Physical,

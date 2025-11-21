@@ -11,9 +11,10 @@ namespace S1_D001_Monsterkampf_Simulator_ER
     {
         static void Main(string[] args)
         {
+            Console.OutputEncoding = System.Text.Encoding.UTF8;
             DiagnosticsManager diagnostics=new DiagnosticsManager();
             SymbolManager symbol=new SymbolManager();
-            UIManager ui = new UIManager(symbol);
+            UIManager ui = new UIManager(symbol,diagnostics);
             Console.WriteLine($"Width: {Console.WindowWidth},  Height: {Console.WindowHeight}");
             ui.PrintOutlineLayout(29, 100);
             ui.PrintMonsterInfoBoxPlayer();
@@ -32,6 +33,7 @@ namespace S1_D001_Monsterkampf_Simulator_ER
 
             ui.UpdateMonsterBox(Player, 20, 3);
             ui.UpdateMonsterBox(Enemy,63,3);
+            ui.UpdateSkillBox(Player.SkillPackage,0,0,23);
             // ui.PrintMonsterInfoLayout(6,34,(20,3));
             // ui.PrintMonsterInfoLayout(6, 34, (63, 3));
             Console.ReadKey(true);

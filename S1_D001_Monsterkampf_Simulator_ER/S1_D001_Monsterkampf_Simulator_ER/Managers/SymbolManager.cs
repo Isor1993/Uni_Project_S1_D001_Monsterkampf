@@ -20,6 +20,8 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
 
         // Private fields for symbols
         // Some Symbols are needed for later updates
+        private char _pointerSymbol = '\u25BA';//                      ' ► '
+
         private char _infoboxCornerTopLeftSymbol = '\u250c';//       ' ┌ '
 
         private char _infoBoxCornerTopRightSymbol = '\u2510'; //     ' ┐ '
@@ -85,6 +87,11 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
         private char _hearthSymbol = '\u2764';//                      ' ❤ '
 
         // Properties with get and set for possible upgrades later
+
+        /// <summary>
+        /// Pointer Symbol: ►
+        /// </summary>
+        public char PointerSymbol { get => _pointerSymbol; }
 
         /// <summary>
         /// Hp Bar for current HP: █

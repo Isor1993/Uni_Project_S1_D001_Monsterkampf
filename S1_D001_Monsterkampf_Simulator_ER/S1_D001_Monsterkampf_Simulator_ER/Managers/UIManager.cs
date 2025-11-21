@@ -11,6 +11,7 @@
 ******************************************************************************/
 
 using S1_D001_Monsterkampf_Simulator_ER.Monsters;
+using S1_D001_Monsterkampf_Simulator_ER.Skills;
 using System.ComponentModel;
 
 namespace S1_D001_Monsterkampf_Simulator_ER.Managers
@@ -18,11 +19,13 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
     internal class UIManager
     {
         private readonly SymbolManager _symbol;
+        private readonly DiagnosticsManager _diagnostics;
 
 
-        public UIManager(SymbolManager symbol)
+        public UIManager(SymbolManager symbol, DiagnosticsManager diagnostics)
         {
             _symbol = symbol;
+            _diagnostics = diagnostics;
         }
         //TODO könnte veraltet sein muss geändert werden später viel.
         public void ShowStatDistributionMenu(int unassignedStatPoints)
@@ -110,7 +113,7 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
             const int LableOffsetRight = 20;
             int LableStartY = 1;
             int yOffset = LableStartY;
-           
+
 
             Console.SetCursorPosition(x + LabelOffsetLeft, y + yOffset);
             Console.Write("HP :");
@@ -132,41 +135,6 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
 
             Console.SetCursorPosition(x + LableOffsetRight, y + yOffset);
             Console.Write("DP   :");
-        }
-        private void ClearMonsterLabelStats(int x, int y)
-        {
-            const int DrawLabelOffsetLeft = 2; ;
-            const int DrawLableOffsetRight = 20;
-            // "HP :", "AP :", "LVL:"
-            const int StatStringOffset_1 = 4;
-            // "Speed:", "DP   :"
-            const int StatStringOffset_2 = 6;
-            const int maxValueCharSpace = 6;
-            const int maxValueCharSpaceHP = 16;
-
-            int LableStartY = 1;
-            int yOffset = LableStartY;
-
-            Console.SetCursorPosition(x + DrawLabelOffsetLeft + StatStringOffset_2, y + yOffset);
-            Console.Write(new string(' ', maxValueCharSpaceHP));
-            yOffset++;
-
-            Console.SetCursorPosition(x + DrawLabelOffsetLeft + StatStringOffset_1, y + yOffset);
-            Console.Write(new string(' ', maxValueCharSpace));
-            yOffset++;
-
-            Console.SetCursorPosition(x + DrawLabelOffsetLeft + StatStringOffset_1, y + yOffset);
-            Console.Write(new string(' ', maxValueCharSpace));
-
-            Console.SetCursorPosition(x + DrawLableOffsetRight + StatStringOffset_2, y + yOffset);
-            Console.Write(new string(' ', maxValueCharSpace));
-            yOffset++;
-
-            Console.SetCursorPosition(x + DrawLabelOffsetLeft + StatStringOffset_1, y + yOffset);
-            Console.Write(new string(' ', maxValueCharSpace));
-
-            Console.SetCursorPosition(x + DrawLableOffsetRight + StatStringOffset_2, y + yOffset);
-            Console.Write(new string(' ', maxValueCharSpace));
         }
         public void PrintMonsterInfoBoxPlayer()
         {
@@ -240,6 +208,49 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
         {
             UpdateMonsterLabelStats(x, y, monster);
         }
+
+        public void UpdateSkillBox(SkillPackage skills, int pointerIndex, int x, int y)
+        {
+            const int FrameOffset = 1;
+            const int height = 6;
+            const int width = 21;
+            const int ClearWidth = width - FrameOffset * 2;
+            const int ClearHeight = height - FrameOffset * 2;
+            const int PointerOffset = 1;
+            const int MaxShownSkills = 4;
+            int lineY = y + FrameOffset;
+            int pointerX = x + 1;
+            int pointerY = y + 1 + pointerIndex;
+            int skillCount = 0;
+
+            ClearArea(x + FrameOffset, y + FrameOffset, ClearWidth, ClearHeight);
+
+            for (int i = 0; i < skills.ActiveSkills.Count; i++)
+            {
+                if (skillCount >= MaxShownSkills)
+                {
+                    _diagnostics.AddError($"{nameof(UIManager)}.{nameof(UpdateSkillBox)}: Too many skills ({skills.ActiveSkills.Count}). Only 4 can be displayed.");
+                    break;
+                }
+                Console.SetCursorPosition(x + FrameOffset + PointerOffset, lineY);
+                SkillBase skill = skills.ActiveSkills[i];
+
+                if (skill.CurrentCooldown == 0)
+                {
+                    Console.Write(skill.Name);
+                }
+                else
+                {
+                    Console.Write("");
+                    _diagnostics.AddCheck($"{nameof(UIManager)}.{nameof(UpdateSkillBox)}: Skill {skill.Name} is still on cooldown.");
+                }
+                skillCount++;
+                lineY++;
+            }
+            Console.SetCursorPosition(pointerX, pointerY);
+            Console.Write(_symbol.PointerSymbol);
+        }
+
         private void UpdateMonsterLabelStats(int x, int y, MonsterBase monster)
         {
             const int MaxValue = 999999;
@@ -262,7 +273,7 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
             {
                 Console.Write($"HP : {monster.Meta.CurrentHP:0}/{monster.Meta.MaxHP}");
             }
-            else Console.Write("HP  : < 9999");
+            else Console.Write("HP  : > 9999");
             yOffset++;
 
             Console.SetCursorPosition(x + LabelOffsetLeft, y + yOffset);
@@ -270,14 +281,14 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
             {
                 Console.Write($"LVL: {monster.Level:0}");
             }
-            else Console.Write("LVL: < 9999");
+            else Console.Write("LVL: > 9999");
 
             Console.SetCursorPosition(x + LableOffsetRight, y + yOffset);
             if (monster.Meta.Speed < MaxValue)
             {
                 Console.Write($"Speed: {monster.Meta.Speed}");
             }
-            else Console.Write("Speed: < 9999");
+            else Console.Write("Speed: > 9999");
             yOffset++;
 
             Console.SetCursorPosition(x + LabelOffsetLeft, y + yOffset);
@@ -285,14 +296,14 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
             {
                 Console.Write($"AP : {monster.Meta.AP:0.0}");
             }
-            else Console.Write("AP : < 9999");
+            else Console.Write("AP : > 9999");
 
             Console.SetCursorPosition(x + LableOffsetRight, y + yOffset);
             if (monster.Meta.DP < MaxValue)
             {
                 Console.Write($"DP   : {monster.Meta.DP:0.0}");
             }
-            else Console.Write("DP   : < 9999");
+            else Console.Write("DP   : > 9999");
         }
         private void DrawHPBar(float currentHP, float maxHP, int maxBar)
         {
@@ -304,6 +315,51 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
             Console.Write(new string(_symbol.filledHpBar, filledBars));
             Console.Write(new string(_symbol.unfilledBar, unfilledBars));
             Console.ResetColor();
+        }
+        private void ClearMonsterLabelStats(int x, int y)
+        {
+            const int DrawLabelOffsetLeft = 2; ;
+            const int DrawLableOffsetRight = 20;
+            // "HP :", "AP :", "LVL:"
+            const int StatStringOffset_1 = 4;
+            // "Speed:", "DP   :"
+            const int StatStringOffset_2 = 6;
+            const int maxValueCharSpace = 6;
+            const int maxValueCharSpaceHP = 16;
+
+            int LableStartY = 1;
+            int yOffset = LableStartY;
+
+            Console.SetCursorPosition(x + DrawLabelOffsetLeft + StatStringOffset_2, y + yOffset);
+            Console.Write(new string(' ', maxValueCharSpaceHP));
+            yOffset++;
+
+            Console.SetCursorPosition(x + DrawLabelOffsetLeft + StatStringOffset_1, y + yOffset);
+            Console.Write(new string(' ', maxValueCharSpace));
+            yOffset++;
+
+            Console.SetCursorPosition(x + DrawLabelOffsetLeft + StatStringOffset_1, y + yOffset);
+            Console.Write(new string(' ', maxValueCharSpace));
+
+            Console.SetCursorPosition(x + DrawLableOffsetRight + StatStringOffset_2, y + yOffset);
+            Console.Write(new string(' ', maxValueCharSpace));
+            yOffset++;
+
+            Console.SetCursorPosition(x + DrawLabelOffsetLeft + StatStringOffset_1, y + yOffset);
+            Console.Write(new string(' ', maxValueCharSpace));
+
+            Console.SetCursorPosition(x + DrawLableOffsetRight + StatStringOffset_2, y + yOffset);
+            Console.Write(new string(' ', maxValueCharSpace));
+        }
+        private void ClearArea(int x, int y, int width, int height)
+        {
+            string blank = new string(' ', width);
+
+            for (int row = 0; row < height; row++)
+            {
+                Console.SetCursorPosition(x, y + row);
+                Console.Write(blank);
+            }
         }
 
 
@@ -353,7 +409,7 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
 
         }
 
-      
+
     }
 
 }
