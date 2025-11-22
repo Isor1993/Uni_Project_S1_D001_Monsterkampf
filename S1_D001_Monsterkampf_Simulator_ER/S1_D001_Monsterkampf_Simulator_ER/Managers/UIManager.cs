@@ -12,6 +12,7 @@
 
 using S1_D001_Monsterkampf_Simulator_ER.Monsters;
 using S1_D001_Monsterkampf_Simulator_ER.Skills;
+using S1_D001_Monsterkampf_Simulator_ER.Systems.StatusEffects;
 using System.ComponentModel;
 
 namespace S1_D001_Monsterkampf_Simulator_ER.Managers
@@ -362,9 +363,123 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
             }
         }
 
+        public void UpdateMessageBoxForAttack(MonsterBase attacker, MonsterBase target, SkillBase usedSkill, float finalDamage, StatusEffectBase? triggeredEffect, int x, int y)
+        {
+            // === Innenbereich bestimmen ===
+            const int FrameOffset = 1;
+            const int InnerWidth = 78;
+            const int InnerHeight = 4;
+
+            int contentX = x + FrameOffset;
+            int contentY = y + FrameOffset;
+            int lineY = contentY;
+
+            // === Clear old content ===
+            ClearArea(contentX, contentY, InnerWidth, InnerHeight);
+
+            // === Text vorbereiten ===
+            string line1 = $" {attacker.Race} attacks the {target.Race} using [{usedSkill.Name}].";
+            string line2 = $" You dealt [{finalDamage:0}] damage.";
+            string line3 = triggeredEffect != null ? $" The effect [{triggeredEffect.Name}] has been triggered." : "";
+            string line4 = $" {_symbol.PointerSymbol} [Enter]";
+
+            // === Zeichnen ===
+            Console.SetCursorPosition(contentX, lineY);
+            Console.Write(line1);
+            lineY++;
+
+            Console.SetCursorPosition(contentX, lineY);
+            Console.Write(line2);
+            lineY++;
+
+            if (!string.IsNullOrEmpty(line3))
+            {
+                Console.SetCursorPosition(contentX, lineY);
+                Console.Write(line3);
+            }
+
+            // Enter unten rechts
+            Console.SetCursorPosition(contentX + InnerWidth - line4.Length, contentY + InnerHeight - 1);
+            Console.Write(line4);
+        }
 
 
 
+        public void UpdateMessageBoxForTakeDamage(MonsterBase attacker, MonsterBase defender, SkillBase skill, float damage, StatusEffectBase? triggeredEffect, int x, int y)
+        {
+            // Innenbereich der MessageBox bestimmen
+            const int FrameOffset = 1;
+            const int InnerWidth = 78;
+            const int InnerHeight = 4;
+
+            int contentX = x + FrameOffset;
+            int contentY = y + FrameOffset;
+            int lineY = contentY;
+
+            // Box leeren
+            ClearArea(contentX, contentY, InnerWidth, InnerHeight);
+
+            // Textzeilen
+            string line1 = $" {attacker.Race} hits you using [{skill.Name}].";
+            string line2 = $" You received [{damage:0}] damage.";
+
+            string line3 = triggeredEffect != null ? $" The effect [{triggeredEffect.Name}] has been triggered on you." : string.Empty;
+
+            string enterLine = $"{_symbol.PointerSymbol} [Enter]";
+
+            // Schreiben
+            Console.SetCursorPosition(contentX, lineY++);
+            Console.Write(line1);
+
+            Console.SetCursorPosition(contentX, lineY++);
+            Console.Write(line2);
+
+            if (!string.IsNullOrEmpty(line3))
+            {
+                Console.SetCursorPosition(contentX, lineY++);
+                Console.Write(line3);
+            }
+
+            // Enter unten rechts
+            Console.SetCursorPosition(contentX + InnerWidth - enterLine.Length, contentY + InnerHeight - 1);
+            Console.Write(enterLine);
+        }
+
+        public void UpdateMessageBoxForChooseSkill(SkillBase skill, int x, int y)
+        {
+            // Innenbereich der MessageBox bestimmen
+            const int FrameOffset = 1;
+            const int InnerWidth = 78;   // 80 Gesamtbreite - 2 Rahmen
+            const int InnerHeight = 4;   // 6 Gesamt - 2 Rahmen
+
+            int contentX = x + FrameOffset;
+            int contentY = y + FrameOffset;
+            int contentLineY = contentY;
+
+            // alten Inhalt löschen
+            ClearArea(contentX, contentY, InnerWidth, InnerHeight);
+
+            // Schritt 2: hier kommen gleich Description / Cooldown / Power hin
+            string line1 = $"Skill      : {skill.Name}   DamageType: {skill.DamageType}";
+            string line2 = $"Power      : {(skill.Power * 100):0}%                   CD: {skill.Cooldown}";
+            string line3 = $"Description: {skill.Description}";
+            string line4 = $"{_symbol.PointerSymbol} [Enter]";
+
+            // Schreiben
+            Console.SetCursorPosition(contentX, contentLineY);
+            Console.Write(line1);
+            contentLineY++;
+
+            Console.SetCursorPosition(contentX, contentLineY);
+            Console.Write(line2);
+            contentLineY++;
+            Console.SetCursorPosition(contentX, contentLineY);
+            Console.Write(line3);
+
+            // rechts unten:
+            Console.SetCursorPosition(contentX + InnerWidth - line4.Length, contentY + InnerHeight - 1);
+            Console.Write(line4);
+        }
 
 
         //TODO kommt später in die richtige monsterklasse

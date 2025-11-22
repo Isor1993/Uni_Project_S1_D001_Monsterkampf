@@ -3,6 +3,8 @@ using S1_D001_Monsterkampf_Simulator_ER.Dependencies;
 using S1_D001_Monsterkampf_Simulator_ER.Factories;
 using S1_D001_Monsterkampf_Simulator_ER.Managers;
 using S1_D001_Monsterkampf_Simulator_ER.Monsters;
+using S1_D001_Monsterkampf_Simulator_ER.Skills;
+using S1_D001_Monsterkampf_Simulator_ER.Systems.StatusEffects;
 
 
 namespace S1_D001_Monsterkampf_Simulator_ER
@@ -34,6 +36,10 @@ namespace S1_D001_Monsterkampf_Simulator_ER
             ui.UpdateMonsterBox(Player, 20, 3);
             ui.UpdateMonsterBox(Enemy,63,3);
             ui.UpdateSkillBox(Player.SkillPackage,0,0,23);
+            SkillBase chosen = Player.SkillPackage.ActiveSkills[0];
+            //ui.UpdateMessageBoxForChooseSkill(chosen, 20, 23);
+            //ui.UpdateMessageBoxForAttack(Player,Enemy,chosen,40,new PoisonEffect(3,2.5f,diagnostics),20,23);
+            ui.UpdateMessageBoxForTakeDamage(Player, Enemy, chosen, 40, new PoisonEffect(3, 2.5f, diagnostics), 20, 23);
             // ui.PrintMonsterInfoLayout(6,34,(20,3));
             // ui.PrintMonsterInfoLayout(6, 34, (63, 3));
             Console.ReadKey(true);
