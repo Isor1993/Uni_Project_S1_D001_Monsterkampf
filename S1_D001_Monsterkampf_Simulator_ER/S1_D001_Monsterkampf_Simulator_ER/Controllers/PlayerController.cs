@@ -5,73 +5,121 @@
 * Author  : Eric Rosenberg
 *
 * Description :
-* Player controller that receives input from KeyboardInputManager (IPlayerInput).
-* Responsible only for choosing a skill based on UI-provided selection.
+* Handles all player skill selection via pointer movement.
+* - Pointer movement (up/down)
+* - Live UI updates (SkillBox + MessageBox)
+* - Confirming a selected skill
 *
 * History :
 * xx.xx.2025 ER Created
 ******************************************************************************/
-using S1_D001_Monsterkampf_Simulator_ER.Controllers.Input;
+
 using S1_D001_Monsterkampf_Simulator_ER.Managers;
 using S1_D001_Monsterkampf_Simulator_ER.Monsters;
 using S1_D001_Monsterkampf_Simulator_ER.Skills;
 
 namespace S1_D001_Monsterkampf_Simulator_ER.Controllers
 {
-    internal class PlayerController:ControllerBase
+    internal class PlayerController : ControllerBase
     {
-
-        // === Dependencies ===       
+        // === Dependencies ===
+        private readonly UIManager _ui;
         private readonly IPlayerInput _input;
 
         // === Fields ===
+        private int _pointerIndex = 0;
+        private const int MaxSkillsShown = 4;
 
-        public PlayerController(MonsterBase monster,DiagnosticsManager diagnostics,IPlayerInput input):
-            base(monster,diagnostics)
+        private bool _skillConfirmed = false;
+
+        public PlayerController(MonsterBase monster, DiagnosticsManager diagnostics, UIManager ui, IPlayerInput input)
+            : base(monster, diagnostics)
         {
-            _input= input ?? throw new ArgumentNullException(nameof(input));
+            _ui = ui ?? throw new ArgumentNullException(nameof(ui));
+            _input = input ?? throw new ArgumentNullException(nameof(input));
         }
 
+        /// <summary>
+        /// SKILL CHOICE (MAIN ENTRY POINT)
+        /// </summary>
+        /// <returns></returns>
         public override SkillBase ChooseSkill()
         {
-            List<SkillBase> options = BuildSkillList();
+            _skillConfirmed = false;
 
-            string[] optionTexts = BuildOptionTexts(options);
+            RefreshSkillUI();
+            _diagnostics.AddCheck($"{nameof(PlayerController)}.{nameof(ChooseSkill)}: Starting skill selection for {Monster.Race}.");
 
-            int index = _input.ChooseIndex(optionTexts);
+            while (!_skillConfirmed)
+            {
+                PlayerCommand cmd = _input.ReadCommand();
 
-            SkillBase chosen = options[index];
+                switch (cmd)
+                {
+                    case PlayerCommand.MoveUp:
+                        MovePointer(-1);
+                        _diagnostics.AddCheck($"{nameof(PlayerController)}.{nameof(ChooseSkill)}: Input → MoveUp.");
+                        break;
 
-            _diagnostics.AddCheck($"{nameof(PlayerController)}.{nameof(ChooseSkill)}: {Monster.Race} PLAYER chose skill '{chosen.Name}'.");           
+                    case PlayerCommand.MoveDown:
+                        MovePointer(+1);
+                        _diagnostics.AddCheck($"{nameof(PlayerController)}.{nameof(ChooseSkill)}: Input → MoveDown.");
+                        break;
+
+                    case PlayerCommand.Confirm:
+                        _skillConfirmed = true;
+                        _diagnostics.AddCheck($"{nameof(PlayerController)}.{nameof(ChooseSkill)}: Input → Confirm.");
+                        break;
+                }
+            }
+
+            SkillBase chosen = Monster.SkillPackage.ActiveSkills[_pointerIndex];
+            _diagnostics.AddCheck($"{nameof(PlayerController)}.{nameof(ChooseSkill)}: Selected '{chosen.Name}' at index {_pointerIndex}.");
 
             return chosen;
-
         }
 
-        private List<SkillBase> BuildSkillList()
+        /// <summary>
+        /// POINTER MOVEMENT
+        /// </summary>
+        /// <param name="direction"></param>
+        private void MovePointer(int direction)
         {
-            List<SkillBase> list = Monster.SkillPackage.ActiveSkills
-                .Where(skill => skill.IsReady)
-                .ToList();
-            list.Add(new BasicAttack(_diagnostics));
+            int oldIndex = _pointerIndex;
+            _pointerIndex += direction;
 
-            _diagnostics.AddCheck($"{nameof(PlayerController)}.{nameof(BuildSkillList)}: Built {list.Count} skills for player.");
-           
-            return list;
-        }
-
-        private string[] BuildOptionTexts(List<SkillBase> options)
-        {
-            string[] texts =new string[options.Count];
-
-            for (int i =0;i<options.Count; i++)
+            if (_pointerIndex < 0)
             {
-                SkillBase skill = options[i];
-                texts[i] = skill.Name;
+                _pointerIndex = 0;
             }
-            _diagnostics.AddCheck($"{nameof(PlayerController)}.{nameof(BuildOptionTexts)}: Successfully built {texts.Length} option texts.");
 
-            return texts;
+            if (_pointerIndex >= MaxSkillsShown)
+            {
+                _pointerIndex = MaxSkillsShown - 1;
+            }
+
+            RefreshSkillUI();
+            _diagnostics.AddCheck($"{nameof(PlayerController)}.{nameof(MovePointer)}: Pointer {oldIndex} → {_pointerIndex}.");
+        }
+
+        /// <summary>
+        /// UI REFRESH
+        /// </summary>
+        private void RefreshSkillUI()
+        {
+            SkillPackage pack = Monster.SkillPackage;
+
+            if (pack.ActiveSkills.Count == 0)
+            {
+                _diagnostics.AddWarning($"{nameof(PlayerController)}.{nameof(RefreshSkillUI)}: No skills available.");
+                return;
+            }
+
+            SkillBase current = pack.ActiveSkills[_pointerIndex];
+
+            _ui.UpdateSkillBox(pack, _pointerIndex, 0, 23);
+            _ui.UpdateMessageBoxForChooseSkill(current, 20, 23);
+            _diagnostics.AddCheck($"{nameof(PlayerController)}.{nameof(RefreshSkillUI)}: Refreshed skill UI.");
         }
     }
 }

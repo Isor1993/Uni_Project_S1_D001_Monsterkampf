@@ -72,12 +72,12 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
                 if (CheckDeathsAfterEndOfTurn())
                 {
                     break;
-                }                      
-                
+                }
+
                 round++;
             }
             _deps.Diagnostics.AddCheck($"{nameof(BattleManager)}.{nameof(HandleEndOfTurnEffects)}: Battle ended!");
-            
+
             BattleResult result = DetermineBattleResult();
 
             ControllerBase? winner = result switch
@@ -173,7 +173,7 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
                 return true;
             }
 
-            
+
 
             return false;
         }
@@ -182,15 +182,15 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
         {
             _deps.Diagnostics.AddCheck($"{nameof(BattleManager)}.{nameof(HandleEndOfTurnEffects)}: End-of-turn Effects begin.");
 
-            
+
             Player.ProcessEndOfTurnEffects();
             Enemy.ProcessEndOfTurnEffects();
 
-            
+
             Player.ProcessStatusEffectDurations();
             Enemy.ProcessStatusEffectDurations();
 
-           
+
             TickCooldowns();
 
             _deps.Diagnostics.AddCheck($"{nameof(BattleManager)}.{nameof(HandleEndOfTurnEffects)}: End-of-turn Effects complete.");
@@ -274,7 +274,7 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
                 _deps.Diagnostics.AddCheck(
                     $"{nameof(BattleManager)}.{nameof(HandleVictory)}: No passive victory modifier found.");
             }
-            
+
             int finalReward = (int)MathF.Round(reward); // oder MathF.Round(reward)
             // === PlayerData aktualisieren ===
             _deps.PlayerData.UnassignedStatPoints += finalReward;
@@ -282,6 +282,77 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
 
             _deps.Diagnostics.AddCheck(
                 $"{nameof(BattleManager)}.{nameof(HandleVictory)}: Player receives {finalReward} stat point(s). Total={_deps.PlayerData.UnassignedStatPoints}, Battles={_deps.PlayerData.CompletedBattles}");
+        }
+
+        private void WaitForNext()
+        {
+            _deps.Diagnostics.AddCheck($"{nameof(BattleManager)}.{nameof(WaitForNext)}: Waiting for user input...");
+            Console.ReadKey(true);
+        }
+
+        private void RefreshUI()
+        {
+            _deps.UI.UpdateMonsterBox(Player, 20, 3);
+            _deps.UI.UpdateMonsterBox(Enemy, 63, 3);
+
+            // SkillBox NICHT anfassen – PlayerController macht das selbst
+            _deps.Diagnostics.AddCheck($"{nameof(BattleManager)}.{nameof(RefreshUI)}: Monster UI refreshed.");
+        }
+
+        private bool PlayerTurn()
+        {
+            _deps.Diagnostics.AddCheck($"{nameof(BattleManager)}.{nameof(PlayerTurn)}: Player turn started.");
+
+            // 1. Skill auswählen
+            SkillBase skill = PlayerController.ChooseSkill();
+
+            // 2. Schaden berechnen
+            float damage = Player.Attack(Enemy, skill, _deps.Pipeline);
+
+            // 3. Attack-MessageBox anzeigen
+            _deps.UI.UpdateMessageBoxForAttack(Player, Enemy, skill, damage, null/*später ergänzen*/, 20, 23);
+
+            // 4. Warten auf Bestätigung
+            WaitForNext();
+
+            // 5. UI aktualisieren
+            RefreshUI();
+
+            // 6. Enemy tot?
+            if (!Enemy.IsAlive)
+            {
+                _deps.Diagnostics.AddCheck($"{nameof(BattleManager)}.{nameof(PlayerTurn)}: Enemy died from player attack.");
+                return true;
+            }
+
+            return false;
+        }
+        private bool EnemyTurn()
+        {
+            _deps.Diagnostics.AddCheck($"{nameof(BattleManager)}.{nameof(EnemyTurn)}: Enemy turn started.");
+
+            // 1. Gegner wählt Skill
+            SkillBase skill = EnemyController.ChooseSkill();
+
+            // 2. Schaden berechnen
+            float damage = Enemy.Attack(Player, skill, _deps.Pipeline);
+
+            // 3. TakeDamage MessageBox anzeigen
+            _deps.UI.UpdateMessageBoxForTakeDamage(Player, Enemy, skill: skill, damage: damage, null/*später ergänzen*/, 20, 23);
+            // 4. Spieler muss ENTER drücken
+            WaitForNext();
+
+            // 5. UI aktualisieren
+            RefreshUI();
+
+            // 6. Player tot?
+            if (!Player.IsAlive)
+            {
+                _deps.Diagnostics.AddCheck($"{nameof(BattleManager)}.{nameof(EnemyTurn)}: Player died from enemy attack.");
+                return true;
+            }
+
+            return false;
         }
     }
 }

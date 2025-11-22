@@ -26,6 +26,7 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Dependencies
         RandomManager Random,
         DamagePipeline Pipeline,
         PlayerData PlayerData,
-        MonsterBalancing Balancing
+        MonsterBalancing Balancing,
+        UIManager UI
     );
 }
