@@ -117,8 +117,8 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Controllers
 
             SkillBase current = pack.ActiveSkills[_pointerIndex];
 
-            _ui.UpdateSkillBox(pack, _pointerIndex, 0, 23);
-            _ui.UpdateMessageBoxForChooseSkill(current, 20, 23);
+            _ui.UpdateSkillBox(pack, _pointerIndex);
+            _ui.UpdateMessageBoxForChooseSkill(current);
             _diagnostics.AddCheck($"{nameof(PlayerController)}.{nameof(RefreshSkillUI)}: Refreshed skill UI.");
         }
     }

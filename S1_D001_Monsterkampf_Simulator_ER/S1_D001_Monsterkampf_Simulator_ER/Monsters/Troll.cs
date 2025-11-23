@@ -21,7 +21,7 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Monsters
         // === Dependencies ===
 
         // === Fields ===
-
+        public override string Description => "A slow but extremely durable monster. Regenerates health naturally.";
 
 
         public Troll(MonsterMeta meta, MonsterResistance resistance, int level, SkillPackage skill, DiagnosticsManager diagnostics)

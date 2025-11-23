@@ -21,7 +21,7 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Monsters
 
         // === Fields ===    }
 
-
+        public override string Description => "A weak but resilient creature made of gelatin with low damage.";
 
         public Slime(MonsterMeta meta, MonsterResistance resistance, int level, SkillPackage skill, DiagnosticsManager diagnostics)
             : base(

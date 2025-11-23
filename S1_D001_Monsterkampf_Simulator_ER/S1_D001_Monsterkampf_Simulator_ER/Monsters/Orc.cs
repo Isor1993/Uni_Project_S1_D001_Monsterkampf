@@ -21,7 +21,7 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Monsters
         // === Dependencies ===
 
         // === Fields ===
-
+        public override string Description => "A brute with overwhelming physical strength. High AP, low speed.";
 
 
         public Orc(MonsterMeta meta, MonsterResistance resistance, int level, SkillPackage skill, DiagnosticsManager diagnostics)

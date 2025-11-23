@@ -3,6 +3,7 @@ using S1_D001_Monsterkampf_Simulator_ER.Controllers;
 using S1_D001_Monsterkampf_Simulator_ER.Factories;
 using S1_D001_Monsterkampf_Simulator_ER.Managers;
 using S1_D001_Monsterkampf_Simulator_ER.Monsters;
+using S1_D001_Monsterkampf_Simulator_ER.Systems.Damage;
 
 
 namespace S1_D001_Monsterkampf_Simulator_ER.Dependencies
@@ -19,10 +20,11 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Dependencies
     /// <param name="Diagnostics"></param>
     internal sealed record GameDependencies
     (
-        BattleManager Battle,
-        RulesManager Rules,
+        
+        DamagePipeline DamagePipeline,
         UIManager UI,
-        InputManager Input,
+        IPlayerInput Input,
+        InputManager InputManager,
         RandomManager Random,
         DiagnosticsManager Diagnostics,
         PrintManager Print,

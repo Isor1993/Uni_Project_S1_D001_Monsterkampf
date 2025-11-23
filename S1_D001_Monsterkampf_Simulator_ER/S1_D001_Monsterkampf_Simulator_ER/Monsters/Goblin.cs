@@ -22,6 +22,7 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Monsters
         // === Dependencies ===
 
         // === Fields ===
+        public override string Description => "A fast and aggressive fighter. Loves quick strikes and critical hits.";
 
 
 

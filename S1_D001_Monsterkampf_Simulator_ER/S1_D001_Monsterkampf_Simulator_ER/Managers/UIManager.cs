@@ -22,6 +22,13 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
         private readonly SymbolManager _symbol;
         private readonly DiagnosticsManager _diagnostics;
 
+        public int PlayerPositionX => 20;
+        public int PlayerPositionY => 3;
+        public int EnemyPositionX => 63;
+        public int EnemyPositionY => 3;
+
+        const int EmptyOffset=1;
+        
 
         public UIManager(SymbolManager symbol, DiagnosticsManager diagnostics)
         {
@@ -39,8 +46,14 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
             new NotImplementedException();
         }
 
-        public void PrintOutlineLayout(int maxRow, int maxColl)
+        public void PrintOutlineLayout()
         {
+            // Position Outline
+            int x = 29;
+            int y = 100;
+            // Size
+            int maxRow = x;
+            int maxColl = y;
             for (int row = 0; row < maxRow; row++)
             {
                 for (int col = 0; col < maxColl; col++)
@@ -62,81 +75,8 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
                 Console.WriteLine();
             }
         }
-        public void PrintSkillBoxLayout(int maxRow, int maxColl, (int x, int y) position)
-        {
-            for (int row = 0; row < maxRow; row++)
-            {
-                Console.SetCursorPosition(position.x, position.y + row);
-
-                for (int col = 0; col < maxColl; col++)
-                {
-                    bool top = row == 0;
-                    bool bottom = row == maxRow - 1;
-                    bool left = col == 0;
-                    bool right = col == maxColl - 1;
-
-                    if (top && left) Console.Write(_symbol.WallCornerTopLeftSymbol);
-                    else if (top && right) Console.Write(_symbol.WallCornerTopRightSymbol);
-                    else if (bottom && left) Console.Write(_symbol.WallCornerBottomLeftSymbol);
-                    else if (bottom && right) Console.Write(_symbol.WallCornerBottomRightSymbol);
-                    else if (top || bottom) Console.Write(_symbol.WallHorizontalSymbol);
-                    else if (left || right) Console.Write(_symbol.WallVerticalSymbol);
-                    else Console.Write(" ");
-                }
-            }
-        }
-        public void DrawMonsterBoxFrame(int x, int y, int height, int width)
-        {
-            for (int row = 0; row < height; row++)
-            {
-                Console.SetCursorPosition(x, y + row);
-
-                for (int col = 0; col < width; col++)
-                {
-                    bool top = row == 0;
-                    bool bottom = row == height - 1;
-                    bool left = col == 0;
-                    bool right = col == width - 1;
-
-                    if (top && left) Console.Write(_symbol.InfoBoxCornerTopLeftSymbol);
-                    else if (top && right) Console.Write(_symbol.InfoBoxCornerTopRightSymbol);
-                    else if (bottom && left) Console.Write(_symbol.InfoBoxCornerBottomLeftSymbol);
-                    else if (bottom && right) Console.Write(_symbol.InfoBoxCornerBottomRightSymbol);
-                    else if (top || bottom) Console.Write(_symbol.InfoBoxHorizontalLineSymbol);
-                    else if (left || right) Console.Write(_symbol.InfoBoxVerticalLineSymbol);
-                    else Console.Write(" ");
-                }
-            }
-        }
-        public void DrawMonsterLabelStats(int x, int y)
-        {
-            const int LabelOffsetLeft = 2; ;
-            const int LableOffsetRight = 20;
-            int LableStartY = 1;
-            int yOffset = LableStartY;
 
 
-            Console.SetCursorPosition(x + LabelOffsetLeft, y + yOffset);
-            Console.Write("HP :");
-            yOffset++;
-
-            Console.SetCursorPosition(x + LabelOffsetLeft, y + yOffset);
-            Console.Write("HP :");
-            yOffset++;
-
-            Console.SetCursorPosition(x + LabelOffsetLeft, y + yOffset);
-            Console.Write("LVL:");
-
-            Console.SetCursorPosition(x + LableOffsetRight, y + yOffset);
-            Console.Write("Speed:");
-            yOffset++;
-
-            Console.SetCursorPosition(x + LabelOffsetLeft, y + yOffset);
-            Console.Write("AP :");
-
-            Console.SetCursorPosition(x + LableOffsetRight, y + yOffset);
-            Console.Write("DP   :");
-        }
         public void PrintMonsterInfoBoxPlayer()
         {
             const int BoxHeight = 6;
@@ -155,8 +95,12 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
             DrawMonsterBoxFrame(BoxPositionX, BoxPositionY, BoxHeight, BoxWidth);
             DrawMonsterLabelStats(BoxPositionX, BoxPositionY);
         }
-        public void PrintMessageBoxLayout(int x, int y)
+        public void PrintMessageBoxLayout()
         {
+            // Position Outline
+            int x = 20;
+            int y = 23;
+
             int height = 6;
             int width = 80;
             for (int row = 0; row < height; row++)
@@ -180,8 +124,12 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
                 }
             }
         }
-        public void PrintSkillBoxLayout(int x, int y)
+        public void PrintSkillBoxLayout()
         {
+            // Position Outline
+            int x = 0;
+            int y = 23;
+
             int height = 6;
             int width = 21;
             for (int row = 0; row < height; row++)
@@ -205,13 +153,28 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
                 }
             }
         }
-        public void UpdateMonsterBox(MonsterBase monster, int x, int y)
+        public void UpdateMonsterBoxPlayer(MonsterBase monster)
         {
+            // Position Outline
+            int x = 20;
+            int y = 3;
+
             UpdateMonsterLabelStats(x, y, monster);
         }
-
-        public void UpdateSkillBox(SkillPackage skills, int pointerIndex, int x, int y)
+        public void UpdateMonsterBoxEnemy(MonsterBase monster)
         {
+            // Position Outline
+            int x = 63;
+            int y = 3;
+
+            UpdateMonsterLabelStats(x, y, monster);
+        }
+        public void UpdateSkillBox(SkillPackage skills, int pointerIndex)
+        {
+            // Position Outline
+            int x = 0;
+            int y = 23;
+            
             const int FrameOffset = 1;
             const int height = 6;
             const int width = 21;
@@ -220,8 +183,8 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
             const int PointerOffset = 1;
             const int MaxShownSkills = 4;
             int lineY = y + FrameOffset;
-            int pointerX = x + 1;
-            int pointerY = y + 1 + pointerIndex;
+            int pointerX = x + EmptyOffset;
+            int pointerY = y + EmptyOffset + pointerIndex;
             int skillCount = 0;
 
             ClearArea(x + FrameOffset, y + FrameOffset, ClearWidth, ClearHeight);
@@ -251,7 +214,6 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
             Console.SetCursorPosition(pointerX, pointerY);
             Console.Write(_symbol.PointerSymbol);
         }
-
         private void UpdateMonsterLabelStats(int x, int y, MonsterBase monster)
         {
             const int MaxValue = 999999;
@@ -362,9 +324,64 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
                 Console.Write(blank);
             }
         }
-
-        public void UpdateMessageBoxForAttack(MonsterBase attacker, MonsterBase target, SkillBase usedSkill, float finalDamage, StatusEffectBase? triggeredEffect, int x, int y)
+        private void DrawMonsterBoxFrame(int x, int y, int height, int width)
         {
+            for (int row = 0; row < height; row++)
+            {
+                Console.SetCursorPosition(x, y + row);
+
+                for (int col = 0; col < width; col++)
+                {
+                    bool top = row == 0;
+                    bool bottom = row == height - 1;
+                    bool left = col == 0;
+                    bool right = col == width - 1;
+
+                    if (top && left) Console.Write(_symbol.InfoBoxCornerTopLeftSymbol);
+                    else if (top && right) Console.Write(_symbol.InfoBoxCornerTopRightSymbol);
+                    else if (bottom && left) Console.Write(_symbol.InfoBoxCornerBottomLeftSymbol);
+                    else if (bottom && right) Console.Write(_symbol.InfoBoxCornerBottomRightSymbol);
+                    else if (top || bottom) Console.Write(_symbol.InfoBoxHorizontalLineSymbol);
+                    else if (left || right) Console.Write(_symbol.InfoBoxVerticalLineSymbol);
+                    else Console.Write(" ");
+                }
+            }
+        }
+        private void DrawMonsterLabelStats(int x, int y)
+        {
+            const int LabelOffsetLeft = 2; ;
+            const int LableOffsetRight = 20;
+            int LableStartY = 1;
+            int yOffset = LableStartY;
+
+
+            Console.SetCursorPosition(x + LabelOffsetLeft, y + yOffset);
+            Console.Write("HP :");
+            yOffset++;
+
+            Console.SetCursorPosition(x + LabelOffsetLeft, y + yOffset);
+            Console.Write("HP :");
+            yOffset++;
+
+            Console.SetCursorPosition(x + LabelOffsetLeft, y + yOffset);
+            Console.Write("LVL:");
+
+            Console.SetCursorPosition(x + LableOffsetRight, y + yOffset);
+            Console.Write("Speed:");
+            yOffset++;
+
+            Console.SetCursorPosition(x + LabelOffsetLeft, y + yOffset);
+            Console.Write("AP :");
+
+            Console.SetCursorPosition(x + LableOffsetRight, y + yOffset);
+            Console.Write("DP   :");
+        }
+
+        public void UpdateMessageBoxForAttack(MonsterBase attacker, MonsterBase target, SkillBase usedSkill, float finalDamage, StatusEffectBase? triggeredEffect)
+        {
+            // Position Outline
+            int x = 20;
+            int y = 23;
             // === Innenbereich bestimmen ===
             const int FrameOffset = 1;
             const int InnerWidth = 78;
@@ -405,8 +422,11 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
 
 
 
-        public void UpdateMessageBoxForTakeDamage(MonsterBase attacker, MonsterBase defender, SkillBase skill, float damage, StatusEffectBase? triggeredEffect, int x, int y)
+        public void UpdateMessageBoxForTakeDamage(MonsterBase attacker, MonsterBase defender, SkillBase skill, float damage, StatusEffectBase? triggeredEffect)
         {
+            // Position Outline
+            int x = 20;
+            int y = 23;
             // Innenbereich der MessageBox bestimmen
             const int FrameOffset = 1;
             const int InnerWidth = 78;
@@ -445,8 +465,11 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
             Console.Write(enterLine);
         }
 
-        public void UpdateMessageBoxForChooseSkill(SkillBase skill, int x, int y)
+        public void UpdateMessageBoxForChooseSkill(SkillBase skill)
         {
+            // Position Outline
+            int x = 20;
+            int y = 23;
             // Innenbereich der MessageBox bestimmen
             const int FrameOffset = 1;
             const int InnerWidth = 78;   // 80 Gesamtbreite - 2 Rahmen
@@ -480,7 +503,185 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
             Console.SetCursorPosition(contentX + InnerWidth - line4.Length, contentY + InnerHeight - 1);
             Console.Write(line4);
         }
+        /// <summary>
+        /// Shows 4 selectable monsters in the skill-box area using the same UI layout.
+        /// Pointer moves vertically exactly like skill selection.
+        /// </summary>
+        public void UpdateMonsterSelectionBox(RaceType[] races, int pointerIndex)
+        {
+            // SkillBox Layout Position
+            int x = 0;
+            int y = 23;
 
+            const int FrameOffset = 1;
+            const int height = 6;
+            const int width = 21;
+            const int ClearWidth = width - FrameOffset * 2;
+            const int ClearHeight = height - FrameOffset * 2;
+            const int PointerOffset = 1;
+            const int MaxShown = 4; // wie Skills
+
+            int lineY = y + FrameOffset;
+            int pointerX = x + EmptyOffset;
+            int pointerY = y + EmptyOffset + pointerIndex;
+
+            // Alten Text löschen
+            ClearArea(x + FrameOffset, y + FrameOffset, ClearWidth, ClearHeight);
+
+            // 4 Monster-Namen anzeigen
+            for (int i = 0; i < races.Length && i < MaxShown; i++)
+            {
+                Console.SetCursorPosition(x + FrameOffset + PointerOffset, lineY);
+                Console.Write(races[i].ToString());
+                lineY++;
+            }
+
+            // Pointer zeichnen
+            Console.SetCursorPosition(pointerX, pointerY);
+            Console.Write(_symbol.PointerSymbol);
+        }
+
+        /// <summary>
+        /// Shows the monster selection menu (simple console menu).
+        /// </summary>
+        public void ShowMonsterSelectionMenu()
+        {
+            PrintOutlineLayout();
+            PrintSkillBoxLayout();
+            PrintMessageBoxLayout();
+            //TODO alle monstersprites printen 
+
+        }
+        public void UpdateMessageBoxForMonsterChoice(RaceType race, MonsterMeta meta, string description)
+        {
+            // Position der MessageBox
+            int x = 20;
+            int y = 23;
+
+            const int FrameOffset = 1;
+            const int InnerWidth = 78;
+            const int InnerHeight = 4;
+
+            int contentX = x + FrameOffset;
+            int contentY = y + FrameOffset;
+            int lineY = contentY;
+
+            // Clear old content
+            ClearArea(contentX, contentY, InnerWidth, InnerHeight);
+
+            // Text vorbereiten
+            string line1 = $" Monster : {race}";
+            string line2 = $" Stats   : HP {meta.MaxHP:0} | AP {meta.AP:0.0} | DP {meta.DP:0.0} | SPD {meta.Speed}";
+            string line3 = $" Info    : {description}";
+            string enterLine = $"{_symbol.PointerSymbol} [Enter]";
+
+            // Schreiben
+            Console.SetCursorPosition(contentX, lineY++);
+            Console.Write(line1);
+
+            Console.SetCursorPosition(contentX, lineY++);
+            Console.Write(line2);
+
+            Console.SetCursorPosition(contentX, lineY++);
+            Console.Write(line3);
+
+            // Enter unten rechts
+            Console.SetCursorPosition(contentX + InnerWidth - enterLine.Length, contentY + InnerHeight - 1);
+            Console.Write(enterLine);
+
+        }
+       
+        public void UpdateStatChoiceBox(int pointerIndex)
+        {
+            // Position wie SkillBox
+            int x = 0;
+            int y = 23;
+
+            const int FrameOffset = 1;
+            const int height = 6;
+            const int width = 21;
+            const int ClearWidth = width - FrameOffset * 2;
+            const int ClearHeight = height - FrameOffset * 2;
+
+            int lineY = y + FrameOffset;
+            int pointerX = x + EmptyOffset;
+            int pointerY = y + EmptyOffset + pointerIndex;
+
+            // 1. Innenbereich löschen
+            ClearArea(x + FrameOffset, y + FrameOffset, ClearWidth, ClearHeight);
+
+            // 2. Stat-Namen anzeigen
+            string[] stats = { "Increase HP", "Increase AP", "Increase DP", "Increase Speed" };
+
+            for (int i = 0; i < stats.Length; i++)
+            {
+                Console.SetCursorPosition(x + FrameOffset + EmptyOffset, lineY);
+                Console.Write(stats[i]);
+                lineY++;
+            }
+
+            // 3. Pointer setzen
+            Console.SetCursorPosition(pointerX, pointerY);
+            Console.Write(_symbol.PointerSymbol);
+        }
+
+        public void UpdateMessageBoxForStatChoice(StatType stat, MonsterBase player)
+        {
+            // Position Outline (wie alle Message-Boxen)
+            int x = 20;
+            int y = 23;
+
+            const int FrameOffset = 1;
+            const int InnerWidth = 78;
+            const int InnerHeight = 4;
+
+            int contentX = x + FrameOffset;
+            int contentY = y + FrameOffset;
+            int lineY = contentY;
+
+            // Box leeren
+            ClearArea(contentX, contentY, InnerWidth, InnerHeight);
+
+            // Beschreibung pro Stat
+            string description = stat switch
+            {
+                StatType.MaxHP => "Increases maximum HP, improving survivability.",
+                StatType.AP => "Increases Attack Power. Your attacks deal more damage.",
+                StatType.DP => "Increases Defense Power. Reduces incoming damage.",
+                StatType.Speed => "Increases Speed. Determines turn order and lets you attack first.",
+                _ => "Unknown Stat."
+            };
+
+            // Aktuellen Wert holen
+            float currentValue = stat switch
+            {
+                StatType.MaxHP => player.Meta.MaxHP,
+                StatType.AP => player.Meta.AP,
+                StatType.DP => player.Meta.DP,
+                StatType.Speed => player.Meta.Speed,
+                _ => 0
+            };
+
+            // Textzeilen
+            string line1 = $" Stat      : {stat}";
+            string line2 = $" Current   : {currentValue:0.0}";
+            string line3 = $" Effect    : {description}";
+            string enterLine = $"{_symbol.PointerSymbol} [Enter]";
+
+            // Schreiben
+            Console.SetCursorPosition(contentX, lineY++);
+            Console.Write(line1);
+
+            Console.SetCursorPosition(contentX, lineY++);
+            Console.Write(line2);
+
+            Console.SetCursorPosition(contentX, lineY++);
+            Console.Write(line3);
+
+            Console.SetCursorPosition(contentX + InnerWidth - enterLine.Length,
+                                      contentY + InnerHeight - 1);
+            Console.Write(enterLine);
+        }
 
         //TODO kommt später in die richtige monsterklasse
         private readonly string[] SlimeSpriteE =

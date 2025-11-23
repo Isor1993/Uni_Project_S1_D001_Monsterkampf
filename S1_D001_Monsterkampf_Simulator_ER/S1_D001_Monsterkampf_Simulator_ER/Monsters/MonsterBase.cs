@@ -55,6 +55,8 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Monsters
         private List<StatusEffectBase> _statusEffects = new List<StatusEffectBase>();
 
 
+        public abstract string Description { get; }
+
         public SkillPackage SkillPackage => _skills;
 
         public RaceType Race { get; }

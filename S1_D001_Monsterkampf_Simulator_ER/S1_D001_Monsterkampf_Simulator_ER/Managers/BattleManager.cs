@@ -15,11 +15,7 @@ using S1_D001_Monsterkampf_Simulator_ER.Controllers;
 using S1_D001_Monsterkampf_Simulator_ER.Dependencies;
 using S1_D001_Monsterkampf_Simulator_ER.Monsters;
 using S1_D001_Monsterkampf_Simulator_ER.Skills;
-using S1_D001_Monsterkampf_Simulator_ER.Skills.Goblin;
-using S1_D001_Monsterkampf_Simulator_ER.Systems.Damage;
-using System.Diagnostics;
-using System.Runtime.CompilerServices;
-using System.Runtime.ExceptionServices;
+
 
 namespace S1_D001_Monsterkampf_Simulator_ER.Managers
 {
@@ -35,6 +31,7 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
         // === Dependencies ===
         private readonly BattleManagerDependencies _deps;
         // === Fields ===
+        private bool _playerStarts;
         private ControllerBase PlayerController => _deps.PlayerController;
         private ControllerBase EnemyController => _deps.EnemyController;
 
@@ -53,22 +50,42 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
 
             int round = 1;
             bool battleRunning = true;
+            if (Player.Meta.Speed >= Enemy.Meta.Speed)
+            {
+                _playerStarts = true;
+                _deps.Diagnostics.AddCheck($"{nameof(BattleManager)}.{nameof(RunBattle)}: Player begins the battle (Speed {Player.Meta.Speed} >= {Enemy.Meta.Speed}).");
+            }
+            else
+            {
+                _playerStarts = false;
+                _deps.Diagnostics.AddCheck($"{nameof(BattleManager)}.{nameof(RunBattle)}: Enemy begins the battle (Speed {Enemy.Meta.Speed} > {Player.Meta.Speed}).");
+            }
 
             while (battleRunning)
             {
-
                 _deps.Diagnostics.AddCheck($"{nameof(BattleManager)}.{nameof(RunBattle)}: === ROUND {round} ===");
 
-                HandleStartOfTurnEffects();
-                (SkillBase playerSkill, SkillBase enemySkill) = ChooseSkills();
-                var (first, second, firstSkill, secondSkill) = PrepareTurnOrder(playerSkill, enemySkill);
+                // UI vorbereiten
+                RefreshUI();
 
-                if (ExecuteAttackPhase(first, second, firstSkill, secondSkill))
+                // Start-of-turn Effekte
+                HandleStartOfTurnEffects();
+
+                if (_playerStarts)
                 {
-                    break;
+                    if (PlayerTurn()) break;
+                    if (EnemyTurn()) break;
+                }
+                else
+                {
+                    if (EnemyTurn()) break;
+                    if (PlayerTurn()) break;
                 }
 
+                // End-of-turn Effekte
                 HandleEndOfTurnEffects();
+
+                // DOT Death check
                 if (CheckDeathsAfterEndOfTurn())
                 {
                     break;
@@ -96,88 +113,13 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
             ShowBattleOutcome(result);
         }
 
-        private (ControllerBase first, ControllerBase second) DetermineTurnOrder()
-        {
-            float playerSpeed = Player.Meta.Speed;
-            float enemySpeed = Enemy.Meta.Speed;
-
-            if (playerSpeed > enemySpeed)
-            {
-                _deps.Diagnostics.AddCheck($"{nameof(BattleManager)}.{nameof(DetermineTurnOrder)}: Player goes first (Speed {playerSpeed} > {enemySpeed}).");
-                return (PlayerController, EnemyController);
-            }
-            if (enemySpeed > playerSpeed)
-            {
-                _deps.Diagnostics.AddCheck($"{nameof(BattleManager)}.{nameof(DetermineTurnOrder)}: Enemy goes first (Speed {enemySpeed} > {playerSpeed}).");
-                return (EnemyController, PlayerController);
-            }
-
-            int roll = _deps.Random.Next(2);
-
-            if (roll == 0)
-            {
-                _deps.Diagnostics.AddCheck($"{nameof(BattleManager)}.{nameof(DetermineTurnOrder)}: Equal speed -> Player randomly chosen to go first.");
-                return (PlayerController, EnemyController);
-            }
-
-            _deps.Diagnostics.AddCheck($"{nameof(BattleManager)}.{nameof(DetermineTurnOrder)}: Equal speed -> Enemy randomly chosen to go first.");
-            return (EnemyController, PlayerController);
-        }
+       
         private void HandleStartOfTurnEffects()
         {
             Player.ProcessStartOfTurnEffects();
             Enemy.ProcessStartOfTurnEffects();
         }
-
-        private void ExecuteAttack(ControllerBase attacker, ControllerBase defender, SkillBase skill)
-        {
-            float damage = attacker.Monster.Attack(defender.Monster, skill, _deps.Pipeline);
-            _deps.Diagnostics.AddCheck($"{nameof(BattleManager)}.{nameof(ExecuteAttack)}: {attacker.Monster.Race} used {skill.Name} and dealt {damage} damage to {defender.Monster.Race}.");
-        }
-
-        private (SkillBase playerSkill, SkillBase enemySkill) ChooseSkills()
-        {
-            SkillBase playerSkill = PlayerController.ChooseSkill();
-            SkillBase enemySkill = EnemyController.ChooseSkill();
-
-            return (playerSkill, enemySkill);
-        }
-
-        private (ControllerBase first, ControllerBase second, SkillBase firstSkill, SkillBase secondSkill) PrepareTurnOrder(SkillBase playerSkill, SkillBase enemySkill)
-        {
-            (ControllerBase first, ControllerBase second) = DetermineTurnOrder();
-
-            SkillBase firstSkill = first == PlayerController ? playerSkill : enemySkill;
-            SkillBase secondSkill = second == PlayerController ? playerSkill : enemySkill;
-
-            return (first, second, firstSkill, secondSkill);
-        }
-
-        private bool ExecuteAttackPhase(ControllerBase first, ControllerBase second, SkillBase firstSkill, SkillBase secondSkill)
-        {
-            // Attack 1
-            ExecuteAttack(first, second, firstSkill);
-
-            if (!second.Monster.IsAlive)
-            {
-                _deps.Diagnostics.AddCheck($"{nameof(BattleManager)}.{nameof(ExecuteAttackPhase)}: {second.Monster.Race} died! Battle over.");
-                return true;
-            }
-
-            // Attack 2
-            ExecuteAttack(second, first, secondSkill);
-
-            if (!first.Monster.IsAlive)
-            {
-                _deps.Diagnostics.AddCheck($"{nameof(BattleManager)}.{nameof(ExecuteAttackPhase)}: {first.Monster.Race} died! Battle over.");
-                return true;
-            }
-
-
-
-            return false;
-        }
-
+             
         private void HandleEndOfTurnEffects()
         {
             _deps.Diagnostics.AddCheck($"{nameof(BattleManager)}.{nameof(HandleEndOfTurnEffects)}: End-of-turn Effects begin.");
@@ -218,7 +160,7 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
             Player.ProcessSkillCooldowns();
             Enemy.ProcessSkillCooldowns();
         }
-        private BattleResult DetermineBattleResult()
+        public BattleResult DetermineBattleResult()
         {
             if (Player.IsAlive && !Enemy.IsAlive)
                 return BattleResult.PlayerWon;
@@ -292,8 +234,8 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
 
         private void RefreshUI()
         {
-            _deps.UI.UpdateMonsterBox(Player, 20, 3);
-            _deps.UI.UpdateMonsterBox(Enemy, 63, 3);
+            _deps.UI.UpdateMonsterBoxPlayer(Player);
+            _deps.UI.UpdateMonsterBoxEnemy(Enemy);
 
             // SkillBox NICHT anfassen – PlayerController macht das selbst
             _deps.Diagnostics.AddCheck($"{nameof(BattleManager)}.{nameof(RefreshUI)}: Monster UI refreshed.");
@@ -310,7 +252,7 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
             float damage = Player.Attack(Enemy, skill, _deps.Pipeline);
 
             // 3. Attack-MessageBox anzeigen
-            _deps.UI.UpdateMessageBoxForAttack(Player, Enemy, skill, damage, null/*später ergänzen*/, 20, 23);
+            _deps.UI.UpdateMessageBoxForAttack(Player, Enemy, skill, damage, null/*später ergänzen*/);
 
             // 4. Warten auf Bestätigung
             WaitForNext();
@@ -338,7 +280,7 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
             float damage = Enemy.Attack(Player, skill, _deps.Pipeline);
 
             // 3. TakeDamage MessageBox anzeigen
-            _deps.UI.UpdateMessageBoxForTakeDamage(Player, Enemy, skill: skill, damage: damage, null/*später ergänzen*/, 20, 23);
+            _deps.UI.UpdateMessageBoxForTakeDamage(Player, Enemy, skill: skill, damage: damage, null/*später ergänzen*/);
             // 4. Spieler muss ENTER drücken
             WaitForNext();
 

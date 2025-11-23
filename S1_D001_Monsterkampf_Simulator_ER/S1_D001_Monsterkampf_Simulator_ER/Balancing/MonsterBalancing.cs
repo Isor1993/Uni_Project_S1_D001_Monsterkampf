@@ -32,6 +32,7 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Balancing
 
         // Skalierungsfaktoren
         // --- Stat Point Scaling for Level up---
+        public int StartLevel => 1;
         public int LevelUpScaling => 1;
         public int BonusLevels => 5;
         public int BaseVictoryReward => 1;

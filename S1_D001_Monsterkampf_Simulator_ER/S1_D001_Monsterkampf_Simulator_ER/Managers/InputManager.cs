@@ -9,13 +9,37 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
 {
     internal class InputManager
     {
+        private readonly IPlayerInput _playerInput;
 
-
-
-
-         public StatType ReadStatIncreaseChoice()
+        public InputManager(IPlayerInput playerInput)
         {
-            return StatType.MaxHP;//TODO wegmachen nach UI Test:
+            _playerInput = playerInput;
+        }
+
+        public StatType ReadStatIncreaseChoice(UIManager ui, MonsterBase player)
+        {
+            int pointer = 0;
+            bool confirmed = false;
+
+            ui.UpdateStatChoiceBox(pointer);
+            ui.UpdateMessageBoxForStatChoice((StatType)pointer, player);
+
+            while (!confirmed)
+            {
+                PlayerCommand cmd = _playerInput.ReadCommand();
+
+                switch (cmd)
+                {
+                    case PlayerCommand.MoveUp: pointer = Math.Max(0, pointer - 1); break;
+                    case PlayerCommand.MoveDown: pointer = Math.Min(3, pointer + 1); break;
+                    case PlayerCommand.Confirm: confirmed = true; break;
+                }
+
+                ui.UpdateStatChoiceBox(pointer);
+                ui.UpdateMessageBoxForStatChoice((StatType)pointer, player);
+            }
+
+            return (StatType)pointer;
         }
     }
 }
