@@ -32,7 +32,7 @@ namespace S1_D001_Monsterkampf_Simulator_ER
             IPlayerInput playerInput = new KeyboardInputManager();
 
             // === UI SYSTEM ===
-            var ui = new UIManager(symbol, diagnostics);
+            var ui = new UIManager(symbol, diagnostics,balancing);
 
             // === FACTORIES ===
             var monsterFactory = new MonsterFactory(diagnostics, balancing);

@@ -10,6 +10,7 @@
 * xx.xx.2025 ER Created
 ******************************************************************************/
 
+using S1_D001_Monsterkampf_Simulator_ER.Balancing;
 using S1_D001_Monsterkampf_Simulator_ER.Monsters;
 using S1_D001_Monsterkampf_Simulator_ER.Skills;
 using S1_D001_Monsterkampf_Simulator_ER.Systems.StatusEffects;
@@ -21,6 +22,7 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
     {
         private readonly SymbolManager _symbol;
         private readonly DiagnosticsManager _diagnostics;
+        private readonly MonsterBalancing _balancing;
       
 
         public int PlayerPositionX => 20;
@@ -31,10 +33,11 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
         const int EmptyOffset = 1;
 
 
-        public UIManager(SymbolManager symbol, DiagnosticsManager diagnostics)
+        public UIManager(SymbolManager symbol, DiagnosticsManager diagnostics,MonsterBalancing balancing)
         {
             _symbol = symbol;
             _diagnostics = diagnostics;
+            _balancing = balancing;
            
         }
         //TODO könnte veraltet sein muss geändert werden später viel.
@@ -225,7 +228,7 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
                 else
                 {
                     Console.ForegroundColor= ConsoleColor.Red;
-                    Console.Write($"{skill.Name} CD:[{skill.CurrentCooldown}]");
+                    Console.Write($"{skill.Name} CD:{skill.CurrentCooldown}");
                     Console.ResetColor();
                     _diagnostics.AddCheck($"{nameof(UIManager)}.{nameof(UpdateSkillBox)}: Skill {skill.Name} is still on cooldown.");
                 }
@@ -255,7 +258,8 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
             Console.SetCursorPosition(x + LabelOffsetLeft, y + yOffset);
             if (monster.Meta.MaxHP < MaxValue)
             {
-                Console.Write($"HP : {monster.Meta.CurrentHP:0}/{monster.Meta.MaxHP}");
+                
+                Console.Write($"HP : {(int)monster.Meta.CurrentHP}/{(int)monster.Meta.MaxHP} ");
             }
             else Console.Write("HP  : > 9999");
             yOffset++;
@@ -270,7 +274,7 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
             Console.SetCursorPosition(x + LableOffsetRight, y + yOffset);
             if (monster.Meta.Speed < MaxValue)
             {
-                Console.Write($"Speed: {monster.Meta.Speed}");
+                Console.Write($"Speed: {monster.Meta.Speed:0.0}");
             }
             else Console.Write("Speed: > 9999");
             yOffset++;
@@ -684,10 +688,18 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
                 StatType.Speed => player.Meta.Speed,
                 _ => 0
             };
+            float newValue = stat switch
+            {
+                StatType.MaxHP => player.Meta.MaxHP+_balancing.StatIncrease_HP,
+                StatType.AP => player.Meta.AP+_balancing.StatIncrease_AP,
+                StatType.DP => player.Meta.DP+_balancing.StatIncrease_DP,
+                StatType.Speed => player.Meta.Speed+_balancing.StatIncrease_Speed,
+                _ => 0
+            };
 
             // Textzeilen
             string line1 = $" Stat      : {stat}";
-            string line2 = $" Current   : {currentValue:0.0}";
+            string line2 = $" Current   : {currentValue:0.0} -> {newValue}";
             string line3 = $" Effect    : {description}";
             string enterLine = $"{_symbol.PointerSymbol} [Enter]";
 

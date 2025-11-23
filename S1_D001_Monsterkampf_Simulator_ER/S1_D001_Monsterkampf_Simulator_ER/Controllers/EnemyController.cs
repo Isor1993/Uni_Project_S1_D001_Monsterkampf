@@ -40,7 +40,7 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Controllers
 
             return chosen;
         }
-        //TODO nachschauen ob noch was gemacht werden muss
+        
         public void SetMonster(MonsterBase monster)
         {
             base.SetMonster(monster);

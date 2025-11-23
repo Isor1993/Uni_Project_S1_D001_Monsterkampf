@@ -14,6 +14,7 @@
 using S1_D001_Monsterkampf_Simulator_ER.Dependencies;
 using S1_D001_Monsterkampf_Simulator_ER.Monsters;
 using S1_D001_Monsterkampf_Simulator_ER.Player;
+using System;
 using System.Diagnostics;
 using System.Reflection;
 using System.Reflection.Emit;
@@ -259,9 +260,9 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
             // --- 2. LevelUp berechnen ---
             int newLevel = player.Level + _deps.Balancing.LevelUpScaling;
 
-            MonsterMeta newMeta = _deps.Balancing.GetMeta(player.Race, newLevel);
-            player.ApplyLevelUp(newMeta);
-
+            
+            player.ApplyLevelUp(player.Meta,_deps.Balancing);
+            player.SkillPackage.ResetCooldowns();           
             _deps.Diagnostics.AddCheck(
                 $"{nameof(GameManager)}.{nameof(HandleRewards)}: Player leveled up to {player.Level}. Stats updated!");
 

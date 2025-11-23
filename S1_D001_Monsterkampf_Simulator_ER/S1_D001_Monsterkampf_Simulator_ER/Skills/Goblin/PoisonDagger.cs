@@ -23,6 +23,7 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Skills.Goblin
         private const float SkillMultiplier = 0.10f;
         private const int SkillDuration = 2;
         private const int SkillCooldown = 1;
+        private const float BasicDamage = 1f;
 
 
         public PoisonDagger(DiagnosticsManager diagnostics) : base(
@@ -30,7 +31,7 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Skills.Goblin
             "Attack with poison. Inflict 10% poison damage for 2 rounds.",
             SkillType.Aktive,
             DamageType.Poison,
-            SkillMultiplier,
+            BasicDamage,
             diagnostics)
         {
             Cooldown = SkillCooldown;

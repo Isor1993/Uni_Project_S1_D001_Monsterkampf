@@ -100,6 +100,7 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Balancing
 
             return new MonsterResistance(physical: resistances.Physical, fire: resistances.Fire, water: resistances.Water, poison: resistances.Poison);
         }
+        
 
         private record struct BaseStats(int HP, int AP, int DP, int Speed);
         private record struct BaseResistances(float Physical, float Fire, float Water, float Poison);

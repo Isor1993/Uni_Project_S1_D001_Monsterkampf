@@ -62,7 +62,7 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Monsters
         public RaceType Race { get; }
 
 
-        public int Level { get; set ; }
+        public int Level { get; set; }
 
 
         protected MonsterBase(MonsterMeta meta, MonsterResistance resistance, RaceType race, int level, SkillPackage skill, DiagnosticsManager diagnosticsManager)
@@ -97,7 +97,7 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Monsters
                 throw new ArgumentNullException(nameof(skill));
             }
             float finalDamage = pipeline.Execute(this, target, skill);
-                
+
             skill.StartCooldown();
 
             return finalDamage;
@@ -209,7 +209,7 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Monsters
 
             _diagnostics.AddCheck($"{nameof(MonsterBase)}.{nameof(ProcessStatusEffectDurations)}: Duration tick processed for {Race}.");
         }
-        
+
         public void ProcessStartOfTurnEffects()
         {
             foreach (StatusEffectBase effect in _statusEffects)
@@ -238,7 +238,7 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Monsters
             }
             _diagnostics.AddCheck($"{nameof(MonsterBase)}.{nameof(TakeDamage)}: {Race} took {damage} damage.");
         }
-        
+
         public IEnumerable<T> GetStatusEffects<T>() where T : StatusEffectBase
         {
             return _statusEffects.OfType<T>();
@@ -269,14 +269,14 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Monsters
             _diagnostics.AddCheck($"{nameof(MonsterBase)}.{nameof(ProcessSkillCooldowns)}: Cooldowns ticked for {Race}.");
         }
 
-        public void ApplyStatPointIncrease(StatType stat,MonsterBalancing balancing)
+        public void ApplyStatPointIncrease(StatType stat, MonsterBalancing balancing)
         {
-            
+
             switch (stat)
             {
                 case StatType.MaxHP:
                     float oldMaxHP = Meta.MaxHP;
-                    Meta.MaxHP +=  balancing.StatIncrease_HP;
+                    Meta.MaxHP += balancing.StatIncrease_HP;
                     Meta.CurrentHP = Meta.MaxHP;
                     _diagnostics.AddCheck($"{nameof(MonsterBase)}.{nameof(ApplyStatPointIncrease)}: Increased max HP {oldMaxHP} to {Meta.MaxHP}.");
                     break;
@@ -287,7 +287,7 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Monsters
                     break;
                 case StatType.DP:
                     float oldDP = Meta.DP;
-                    Meta.DP+= balancing.StatIncrease_DP;
+                    Meta.DP += balancing.StatIncrease_DP;
                     _diagnostics.AddCheck($"{nameof(MonsterBase)}.{nameof(ApplyStatPointIncrease)}: Increased max DP {oldDP} to {Meta.DP}.");
                     break;
                 case StatType.Speed:
@@ -301,15 +301,15 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Monsters
             }
 
         }
-        public void ApplyLevelUp(MonsterMeta newMeta)
+        public void ApplyLevelUp(MonsterMeta newMeta,MonsterBalancing balancing)
         {
             Level++;
-
-            Meta.MaxHP=newMeta.MaxHP;
-            Meta.CurrentHP = newMeta.MaxHP;
-            Meta.AP=newMeta.AP;
-            Meta.DP=newMeta.DP;
-            Meta.Speed=newMeta.Speed;
+            const int MultiplierBase = 1;
+            Meta.MaxHP *= (balancing.HPScaling+ MultiplierBase);
+            Meta.CurrentHP =Meta.MaxHP;
+            Meta.AP *= (balancing.APScaling+ MultiplierBase);
+            Meta.DP *= (balancing.DPScaling+ MultiplierBase);
+            Meta.Speed *= (balancing.SpeedScaling+ MultiplierBase);
             _diagnostics.AddCheck($"{nameof(MonsterBase)}.{nameof(ApplyLevelUp)}: LevelUp to {Level} and updated stats.");
         }
 

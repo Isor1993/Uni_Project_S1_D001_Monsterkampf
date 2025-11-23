@@ -15,6 +15,7 @@ using S1_D001_Monsterkampf_Simulator_ER.Controllers;
 using S1_D001_Monsterkampf_Simulator_ER.Dependencies;
 using S1_D001_Monsterkampf_Simulator_ER.Monsters;
 using S1_D001_Monsterkampf_Simulator_ER.Skills;
+using S1_D001_Monsterkampf_Simulator_ER.Systems.StatusEffects;
 
 
 namespace S1_D001_Monsterkampf_Simulator_ER.Managers
@@ -123,13 +124,13 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
             ShowBattleOutcome(result);
         }
 
-       
+
         private void HandleStartOfTurnEffects()
         {
             Player.ProcessStartOfTurnEffects();
             Enemy.ProcessStartOfTurnEffects();
         }
-             
+
         private void HandleEndOfTurnEffects()
         {
             _deps.Diagnostics.AddCheck($"{nameof(BattleManager)}.{nameof(HandleEndOfTurnEffects)}: End-of-turn Effects begin.");
@@ -260,12 +261,21 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
 
             _deps.UI.ClearSkillBox();
 
+            int effectCountBefore = Enemy.GetStatusEffects<StatusEffectBase>().Count();
             // 2. Schaden berechnen
             float damage = Player.Attack(Enemy, skill, _deps.Pipeline);
+            var effectsAfter = Enemy.GetStatusEffects<StatusEffectBase>().ToList();
+            StatusEffectBase? newEffect = null;
+            if (effectsAfter.Count > effectCountBefore)
+            {
+                newEffect = effectsAfter.Last(); // 🎯 den neuesten Effekt nehmen
+                _deps.Diagnostics.AddCheck(
+                    $"{nameof(BattleManager)}.{nameof(PlayerTurn)}: New effect triggered → {newEffect.Name}");
+            }
 
             // 3. Attack-MessageBox anzeigen
             RefreshUI();
-            _deps.UI.UpdateMessageBoxForAttack(Player, Enemy, skill, damage, null/*später ergänzen*/);
+            _deps.UI.UpdateMessageBoxForAttack(Player, Enemy, skill, damage, newEffect);
 
             // 4. Warten auf Bestätigung
             WaitForNext();
@@ -289,11 +299,22 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
             SkillBase skill = EnemyController.ChooseSkill();
 
             // 2. Schaden berechnen
+            int effectCountBefore = Player.GetStatusEffects<StatusEffectBase>().Count();
             float damage = Enemy.Attack(Player, skill, _deps.Pipeline);
+            var effectsAfter = Player.GetStatusEffects<StatusEffectBase>().ToList();
+            StatusEffectBase? newEffect = null;
+
+            if (effectsAfter.Count > effectCountBefore)
+            {
+                newEffect = effectsAfter.Last(); // 🎯 neuesten Effekt holen
+                _deps.Diagnostics.AddCheck(
+                    $"{nameof(BattleManager)}.{nameof(EnemyTurn)}: New effect triggered → {newEffect.Name}");
+            }
+
 
             // 3. TakeDamage MessageBox anzeigen
             RefreshUI();
-            _deps.UI.UpdateMessageBoxForTakeDamage(Player, Enemy, skill: skill, damage: damage, null/*später ergänzen*/);
+            _deps.UI.UpdateMessageBoxForTakeDamage(Enemy, Player, skill: skill, damage: damage, newEffect);
             // 4. Spieler muss ENTER drücken
             WaitForNext();
 

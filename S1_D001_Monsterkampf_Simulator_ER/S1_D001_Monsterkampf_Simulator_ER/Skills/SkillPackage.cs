@@ -71,5 +71,12 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Skills
                 _diagnostics.AddError($"{nameof(SkillPackage)}.{nameof(AddEventPassive)}: Tried to add non-event passive skill {passive.Name}");
             }
         }
+        public void ResetCooldowns()
+        {
+            foreach (SkillBase skill in AllSkills)
+            {
+                skill.CurrentCooldown = 0;
+            }
+        }
     }
 }
