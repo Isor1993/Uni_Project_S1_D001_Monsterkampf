@@ -28,7 +28,7 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Controllers
 
         protected ControllerBase(MonsterBase monster, DiagnosticsManager diagnostics)
         {
-            Monster = monster ?? throw new ArgumentNullException(nameof(monster));
+            Monster = monster;
             _diagnostics = diagnostics ?? throw new ArgumentNullException(nameof(diagnostics));
 
         }

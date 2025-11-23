@@ -30,7 +30,7 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Skills.Orc
         public TribeScream(DiagnosticsManager diagnostics)
             :base(
                  "Tribe Scream",
-                 "A scream of the Orc tribe that grants you 50% more damage for 5 rounds.",
+                 "A buff which grants 50% more damage for 5 rounds.",
                  SkillType.Aktive,
                  DamageType.None,
                  0f,

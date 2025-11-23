@@ -27,7 +27,7 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Skills.Goblin
 
         public PoisonDagger(DiagnosticsManager diagnostics) : base(
             "Poison Dagger",
-            "Attack with a poison dagger and inflict 10% poison damage for 2 rounds.",
+            "Attack with poison. Inflict 10% poison damage for 2 rounds.",
             SkillType.Aktive,
             DamageType.Poison,
             SkillMultiplier,

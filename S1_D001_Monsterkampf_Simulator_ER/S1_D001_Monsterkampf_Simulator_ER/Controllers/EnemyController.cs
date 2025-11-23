@@ -16,6 +16,7 @@ using S1_D001_Monsterkampf_Simulator_ER.Managers;
 using S1_D001_Monsterkampf_Simulator_ER.Monsters;
 using S1_D001_Monsterkampf_Simulator_ER.Skills;
 using System;
+using System.Threading;
 
 namespace S1_D001_Monsterkampf_Simulator_ER.Controllers
 {
@@ -40,9 +41,9 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Controllers
             return chosen;
         }
         //TODO nachschauen ob noch was gemacht werden muss
-        public void SetMonster(MonsterBase controller)
+        public void SetMonster(MonsterBase monster)
         {
-
+            base.SetMonster(monster);
         }
     }
 }

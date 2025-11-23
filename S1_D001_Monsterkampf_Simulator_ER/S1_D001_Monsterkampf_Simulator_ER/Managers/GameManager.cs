@@ -28,7 +28,8 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
 
         // === Dependencies ===
         private readonly GameDependencies _deps;
-
+        private readonly InputManager _inputManager;
+        private readonly IPlayerInput _playerInput;
 
         // === Fields ===
         private GameState _currentState = GameState.Start;
@@ -39,9 +40,11 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
         /// 
         /// </summary>
         /// <param name="gameDependencies"></param>
-        public GameManager(GameDependencies gameDependencies)
+        public GameManager(GameDependencies gameDependencies,InputManager inputManager,IPlayerInput playerInput)
         {
             _deps = gameDependencies;
+            _inputManager = inputManager;
+            _playerInput = playerInput;
         }
 
 
@@ -75,6 +78,7 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
 
                     case GameState.HandleRewards:
                         _deps.Diagnostics.AddCheck($"{nameof(GameManager)}.{nameof(RunGame)}: Entered GameState.HandleRewards successfully.");
+                        HandleRewards();
                         break;
 
                     case GameState.NextStage:
@@ -135,10 +139,10 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
             RaceType[] monsterChoices = new[] { RaceType.Slime, RaceType.Goblin, RaceType.Orc, RaceType.Troll };
 
             // 2. UI vorbereiten
-            _deps.UI.ShowMonsterSelectionMenu();
 
             int pointer = 0;
             bool confirmed = false;
+            _deps.UI.ShowMonsterSelectionMenu(monsterChoices,pointer);
             void RefreshMessageBox()
             {
                 RaceType race = monsterChoices[pointer];
@@ -175,6 +179,7 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
                         break;
                 }
 
+                
                 _deps.UI.UpdateMonsterSelectionBox(monsterChoices, pointer);
                 RefreshMessageBox();
             }
@@ -202,7 +207,7 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
             var battleDeps = new BattleManagerDependencies(_deps.PlayerController, _deps.EnemyController, _deps.Diagnostics, _deps.Random, _deps.DamagePipeline, PlayerData, _deps.Balancing, _deps.UI);
 
             // BattleManager erzeugen
-            BattleManager battle = new BattleManager(battleDeps);
+            BattleManager battle = new BattleManager(battleDeps,_inputManager,_playerInput);
 
             // Kampf ausführen
             battle.RunBattle();

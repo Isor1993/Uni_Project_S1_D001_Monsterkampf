@@ -30,6 +30,8 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
 
         // === Dependencies ===
         private readonly BattleManagerDependencies _deps;
+        private readonly InputManager _inputManager;
+        private readonly IPlayerInput _playerInput;
         // === Fields ===
         private bool _playerStarts;
         private ControllerBase PlayerController => _deps.PlayerController;
@@ -38,9 +40,11 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
         private MonsterBase Player => PlayerController.Monster;
         private MonsterBase Enemy => EnemyController.Monster;
 
-        public BattleManager(BattleManagerDependencies deps)
+        public BattleManager(BattleManagerDependencies deps, InputManager inputManager, IPlayerInput playerInput)
         {
             _deps = deps ?? throw new ArgumentNullException(nameof(deps));
+            _inputManager = inputManager;
+            _playerInput = playerInput;
         }
 
         public void RunBattle()
@@ -66,6 +70,12 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
                 _deps.Diagnostics.AddCheck($"{nameof(BattleManager)}.{nameof(RunBattle)}: === ROUND {round} ===");
 
                 // UI vorbereiten
+                _deps.UI.ClearSkillBox();
+                _deps.UI.PrintMonsterInfoBoxPlayer();
+                _deps.UI.PrintMonsterInfoBoxEnemy();
+                // TODO Sprites hier
+                _deps.UI.PrintSlimeP();
+                _deps.UI.PrintSlimeE();
                 RefreshUI();
 
                 // Start-of-turn Effekte
@@ -229,7 +239,7 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
         private void WaitForNext()
         {
             _deps.Diagnostics.AddCheck($"{nameof(BattleManager)}.{nameof(WaitForNext)}: Waiting for user input...");
-            Console.ReadKey(true);
+            _inputManager.WaitForEnter(_playerInput);
         }
 
         private void RefreshUI()
@@ -248,17 +258,19 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
             // 1. Skill auswählen
             SkillBase skill = PlayerController.ChooseSkill();
 
+            _deps.UI.ClearSkillBox();
+
             // 2. Schaden berechnen
             float damage = Player.Attack(Enemy, skill, _deps.Pipeline);
 
             // 3. Attack-MessageBox anzeigen
+            RefreshUI();
             _deps.UI.UpdateMessageBoxForAttack(Player, Enemy, skill, damage, null/*später ergänzen*/);
 
             // 4. Warten auf Bestätigung
             WaitForNext();
 
             // 5. UI aktualisieren
-            RefreshUI();
 
             // 6. Enemy tot?
             if (!Enemy.IsAlive)
@@ -280,12 +292,12 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
             float damage = Enemy.Attack(Player, skill, _deps.Pipeline);
 
             // 3. TakeDamage MessageBox anzeigen
+            RefreshUI();
             _deps.UI.UpdateMessageBoxForTakeDamage(Player, Enemy, skill: skill, damage: damage, null/*später ergänzen*/);
             // 4. Spieler muss ENTER drücken
             WaitForNext();
 
             // 5. UI aktualisieren
-            RefreshUI();
 
             // 6. Player tot?
             if (!Player.IsAlive)

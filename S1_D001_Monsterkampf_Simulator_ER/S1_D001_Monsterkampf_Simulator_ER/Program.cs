@@ -1,9 +1,12 @@
 ﻿using S1_D001_Monsterkampf_Simulator_ER.Balancing;
+using S1_D001_Monsterkampf_Simulator_ER.Controllers;
 using S1_D001_Monsterkampf_Simulator_ER.Dependencies;
 using S1_D001_Monsterkampf_Simulator_ER.Factories;
 using S1_D001_Monsterkampf_Simulator_ER.Managers;
 using S1_D001_Monsterkampf_Simulator_ER.Monsters;
+using S1_D001_Monsterkampf_Simulator_ER.Player;
 using S1_D001_Monsterkampf_Simulator_ER.Skills;
+using S1_D001_Monsterkampf_Simulator_ER.Systems.Damage;
 using S1_D001_Monsterkampf_Simulator_ER.Systems.StatusEffects;
 
 
@@ -14,54 +17,50 @@ namespace S1_D001_Monsterkampf_Simulator_ER
         static void Main(string[] args)
         {
             Console.OutputEncoding = System.Text.Encoding.UTF8;
-            DiagnosticsManager diagnostics=new DiagnosticsManager();
-            SymbolManager symbol=new SymbolManager();
-            UIManager ui = new UIManager(symbol,diagnostics);
-            Console.WriteLine($"Width: {Console.WindowWidth},  Height: {Console.WindowHeight}");
-           // ui.PrintOutlineLayout();
-           // ui.PrintMonsterInfoBoxPlayer();
-           // ui.PrintMonsterInfoBoxEnemy();
-            //ui.PrintMessageBoxLayout();
-            //ui.PrintSkillBoxLayout();
-            //ui.PrintSlimeP(30,10);
-            //ui.PrintSlimeE(73,10);
-            MonsterBalancing balancing = new MonsterBalancing(diagnostics);
-            MonsterFactory factory = new MonsterFactory(diagnostics,balancing);
-            MonsterBase Player = factory.Create(RaceType.Slime, 3);
-            MonsterBase Enemy = factory.Create(RaceType.Orc, 3);
-            //Player.TakeDamage(40);
-            //Enemy.TakeDamage(33);
-            
+            // === CORE SYSTEMS ===
+            var diagnostics = new DiagnosticsManager();
+            var random = new RandomManager();
+            var symbol = new SymbolManager();
+            var balancing = new MonsterBalancing(diagnostics);
+            var pipeline = new DamagePipeline(diagnostics);
+            var print = new PrintManager(diagnostics);
 
-            //ui.UpdateMonsterBoxPlayer(Player);
-            //ui.UpdateMonsterBoxEnemy(Enemy);
-            //ui.UpdateSkillBox(Player.SkillPackage,0,);
-            SkillBase chosen = Player.SkillPackage.ActiveSkills[0];
-            //ui.UpdateMessageBoxForChooseSkill(chosen);
-            //ui.UpdateMessageBoxForAttack(Player,Enemy,chosen,40,new PoisonEffect(3,2.5f,diagnostics));
-            //ui.UpdateMessageBoxForTakeDamage(Player, Enemy, chosen, 40, new PoisonEffect(3, 2.5f, diagnostics));
-             //ui.PrintMonsterInfoBoxLayoutPlayer();
-             //ui.PrintMonsterInfoBoxLayoutEnemy();
-            Console.ReadKey(true);
-                        /*
-            Console.Title = "Monsterkampf-Simulator 🧩";
-            Console.OutputEncoding = System.Text.Encoding.UTF8;
+            // === INPUT SYSTEM (Keyboard) ===
 
-            DiagnosticsManager diagnostic=new DiagnosticsManager();
-            PrintManager print = new PrintManager(diagnostic);
-            BattleManager battle = new BattleManager();
-            RulesManager rules = new RulesManager();
-            UIManager ui = new UIManager();
-            InputManager input = new InputManager();
-            RandomManager random = new RandomManager();
+            var keyboardInput = new KeyboardInputManager();      // implements IPlayerInput
+            var inputManager = new InputManager(keyboardInput);  // Stat choice menu controller
+            IPlayerInput playerInput = new KeyboardInputManager();
 
+            // === UI SYSTEM ===
+            var ui = new UIManager(symbol, diagnostics);
 
-            GameManager gameManager = new GameManager(new GameDependencies (battle, rules, ui, input, random, diagnostic,print));
-            gameManager.RunGame();
+            // === FACTORIES ===
+            var monsterFactory = new MonsterFactory(diagnostics, balancing);
 
-            Console.WriteLine("\nDrücke eine beliebige Taste, um das Programm zu beenden...");
-            Console.ReadKey();
-            */
+            // === CONTROLLER ===
+            var playerController = new PlayerController(null!, diagnostics, ui, keyboardInput);
+            var enemyController = new EnemyController(null!, diagnostics, random);
+
+            // === GAME DEPENDENCIES ===
+            var gameDeps = new GameDependencies(pipeline, ui, playerInput, inputManager, random, diagnostics, print, playerController, balancing, enemyController, monsterFactory);
+
+            // === BATTLEMANAGER DEPENDENCIES (initial leer) ===
+            var emptyBattleDeps = new BattleManagerDependencies(
+                PlayerController: playerController,
+                EnemyController: enemyController,
+                Diagnostics: diagnostics,
+                Random: random,
+                Pipeline: pipeline,
+                PlayerData: new PlayerData(),
+                Balancing: balancing,
+                UI: ui
+            );
+
+            // === GAMEMANAGER erstellen ===
+            var game = new GameManager(gameDeps, inputManager, playerInput);
+
+            // === SPIEL STARTEN ===
+            game.RunGame();
         }
     }
 }

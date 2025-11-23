@@ -41,5 +41,15 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
 
             return (StatType)pointer;
         }
+        public void WaitForEnter(IPlayerInput input)
+        {
+            while (true)
+            {
+                PlayerCommand cmd = input.ReadCommand();
+
+                if (cmd == PlayerCommand.Confirm)
+                    break;   // nur Enter beendet die MessageBox
+            }
+        }
     }
 }

@@ -100,7 +100,8 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Skills
         {
             if (Cooldown > 0)
             {
-                CurrentCooldown = Cooldown;
+                const int Offset = 1;
+                CurrentCooldown = Cooldown+Offset;
                 _diagnostics.AddCheck($"{nameof(SkillBase)}.{nameof(StartCooldown)}: {Name} cooldown → {CurrentCooldown}");
             }
         }
@@ -112,7 +113,7 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Skills
                 _diagnostics.AddCheck($"{nameof(SkillBase)}.{nameof(TickCooldown)}: {Name} cooldown → {CurrentCooldown}");
             }
         }
-       
+
         public virtual float ModifyVictoryReward(float reward)
         {
             return reward;

@@ -74,6 +74,13 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Controllers
             }
 
             SkillBase chosen = Monster.SkillPackage.ActiveSkills[_pointerIndex];
+            _pointerIndex = 0;
+            if (chosen.CurrentCooldown > 0)
+            {
+                
+                _diagnostics.AddCheck($"{nameof(PlayerController)}: Skill '{chosen.Name}' is on cooldown. Cannot select.");
+                return ChooseSkill(); // Nochmal öffnen
+            }
             _diagnostics.AddCheck($"{nameof(PlayerController)}.{nameof(ChooseSkill)}: Selected '{chosen.Name}' at index {_pointerIndex}.");
 
             return chosen;
@@ -85,21 +92,27 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Controllers
         /// <param name="direction"></param>
         private void MovePointer(int direction)
         {
-            int oldIndex = _pointerIndex;
-            _pointerIndex += direction;
+            SkillPackage pack = Monster.SkillPackage;
 
-            if (_pointerIndex < 0)
+            int next = _pointerIndex + direction;
+
+            // Suche nach dem nächsten skillbaren Skill
+            while (next >= 0 &&
+                   next < pack.ActiveSkills.Count &&
+                   pack.ActiveSkills[next].CurrentCooldown > 0)
             {
-                _pointerIndex = 0;
+                next += direction;
             }
 
-            if (_pointerIndex >= MaxSkillsShown)
+            // Wenn gültig → setzen
+            if (next >= 0 && next < pack.ActiveSkills.Count)
             {
-                _pointerIndex = MaxSkillsShown - 1;
+                _pointerIndex = next;
             }
 
+            
             RefreshSkillUI();
-            _diagnostics.AddCheck($"{nameof(PlayerController)}.{nameof(MovePointer)}: Pointer {oldIndex} → {_pointerIndex}.");
+            _diagnostics.AddCheck($"{nameof(PlayerController)}.{nameof(MovePointer)}: Pointer  → {_pointerIndex}.");
         }
 
         /// <summary>

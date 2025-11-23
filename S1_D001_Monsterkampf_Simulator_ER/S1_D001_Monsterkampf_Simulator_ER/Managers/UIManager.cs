@@ -21,19 +21,21 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
     {
         private readonly SymbolManager _symbol;
         private readonly DiagnosticsManager _diagnostics;
+      
 
         public int PlayerPositionX => 20;
         public int PlayerPositionY => 3;
         public int EnemyPositionX => 63;
         public int EnemyPositionY => 3;
 
-        const int EmptyOffset=1;
-        
+        const int EmptyOffset = 1;
+
 
         public UIManager(SymbolManager symbol, DiagnosticsManager diagnostics)
         {
             _symbol = symbol;
             _diagnostics = diagnostics;
+           
         }
         //TODO könnte veraltet sein muss geändert werden später viel.
         public void ShowStatDistributionMenu(int unassignedStatPoints)
@@ -121,6 +123,7 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
                     else if (top || bottom) Console.Write(_symbol.WallHorizontalSymbol);
                     else if (left || right) Console.Write(_symbol.WallVerticalSymbol);
                     else Console.Write(" ");
+                    
                 }
             }
         }
@@ -169,12 +172,28 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
 
             UpdateMonsterLabelStats(x, y, monster);
         }
+        public void ClearSkillBox()
+        {
+            {
+                int x = 0;
+                int y = 23;
+
+                const int FrameOffset = 1;
+                const int height = 6;
+                const int width = 21;
+
+                const int ClearWidth = width - FrameOffset * 2;
+                const int ClearHeight = height - FrameOffset * 2;
+
+                ClearArea(x + FrameOffset, y + FrameOffset, ClearWidth, ClearHeight);
+            }
+        }
         public void UpdateSkillBox(SkillPackage skills, int pointerIndex)
         {
             // Position Outline
             int x = 0;
             int y = 23;
-            
+
             const int FrameOffset = 1;
             const int height = 6;
             const int width = 21;
@@ -205,7 +224,9 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
                 }
                 else
                 {
-                    Console.Write("");
+                    Console.ForegroundColor= ConsoleColor.Red;
+                    Console.Write($"{skill.Name} CD:[{skill.CurrentCooldown}]");
+                    Console.ResetColor();
                     _diagnostics.AddCheck($"{nameof(UIManager)}.{nameof(UpdateSkillBox)}: Skill {skill.Name} is still on cooldown.");
                 }
                 skillCount++;
@@ -418,6 +439,7 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
             // Enter unten rechts
             Console.SetCursorPosition(contentX + InnerWidth - line4.Length, contentY + InnerHeight - 1);
             Console.Write(line4);
+           
         }
 
 
@@ -544,12 +566,13 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
         /// <summary>
         /// Shows the monster selection menu (simple console menu).
         /// </summary>
-        public void ShowMonsterSelectionMenu()
+        public void ShowMonsterSelectionMenu(RaceType[] races, int pointerIndex)
         {
             PrintOutlineLayout();
             PrintSkillBoxLayout();
             PrintMessageBoxLayout();
             //TODO alle monstersprites printen 
+            UpdateMonsterSelectionBox(races, pointerIndex);
 
         }
         public void UpdateMessageBoxForMonsterChoice(RaceType race, MonsterMeta meta, string description)
@@ -590,7 +613,7 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
             Console.Write(enterLine);
 
         }
-       
+
         public void UpdateStatChoiceBox(int pointerIndex)
         {
             // Position wie SkillBox
@@ -706,8 +729,12 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
             "  (________)"
         };
 
-        public void PrintSlimeE(int x, int y)
+        public void PrintSlimeE()
         {
+            const int OffsetY = 10;
+            const int OffsetX = 7;
+            int x = EnemyPositionX+ OffsetX;
+            int y = EnemyPositionY+ OffsetY;
             for (int i = 0; i < SlimeSpriteE.Length; i++)
             {
                 Console.SetCursorPosition(x, y + i);
@@ -715,8 +742,12 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
             }
         }
 
-        public void PrintSlimeP(int x, int y)
+        public void PrintSlimeP()
         {
+            const int OffsetY = 10;
+            const int OffsetX = 7;
+            int x = PlayerPositionX+ OffsetX;
+            int y = PlayerPositionY+ OffsetY;
             for (int i = 0; i < SlimeSpriteP.Length; i++)
             {
                 Console.SetCursorPosition(x, y + i);
