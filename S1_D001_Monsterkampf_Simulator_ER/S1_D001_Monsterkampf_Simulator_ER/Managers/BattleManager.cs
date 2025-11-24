@@ -16,6 +16,7 @@ using S1_D001_Monsterkampf_Simulator_ER.Dependencies;
 using S1_D001_Monsterkampf_Simulator_ER.Monsters;
 using S1_D001_Monsterkampf_Simulator_ER.Skills;
 using S1_D001_Monsterkampf_Simulator_ER.Systems.StatusEffects;
+using System.Threading;
 
 
 namespace S1_D001_Monsterkampf_Simulator_ER.Managers
@@ -129,8 +130,12 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
 
         private void HandleStartOfTurnEffects()
         {
+            
             Player.ProcessStartOfTurnEffects();
+            Player.UsePasiveSkill();
             Enemy.ProcessStartOfTurnEffects();
+            Enemy.UsePasiveSkill();
+
         }
 
         private void HandleEndOfTurnEffects()
