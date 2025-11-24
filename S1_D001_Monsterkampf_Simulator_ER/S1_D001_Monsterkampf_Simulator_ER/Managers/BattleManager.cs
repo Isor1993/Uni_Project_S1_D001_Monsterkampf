@@ -40,7 +40,7 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
 
         private MonsterBase Player => PlayerController.Monster;
         private MonsterBase Enemy => EnemyController.Monster;
-
+        public int TotalRounds { get;  set; }
         public BattleManager(BattleManagerDependencies deps, InputManager inputManager, IPlayerInput playerInput)
         {
             _deps = deps ?? throw new ArgumentNullException(nameof(deps));
@@ -68,6 +68,7 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
 
             while (battleRunning)
             {
+                TotalRounds++;
                 _deps.Diagnostics.AddCheck($"{nameof(BattleManager)}.{nameof(RunBattle)}: === ROUND {round} ===");
 
                 // UI vorbereiten
@@ -104,6 +105,7 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
 
                 round++;
             }
+            
             _deps.Diagnostics.AddCheck($"{nameof(BattleManager)}.{nameof(HandleEndOfTurnEffects)}: Battle ended!");
 
             BattleResult result = DetermineBattleResult();

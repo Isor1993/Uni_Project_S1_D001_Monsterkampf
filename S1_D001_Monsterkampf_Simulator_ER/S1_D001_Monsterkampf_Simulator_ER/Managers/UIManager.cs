@@ -15,6 +15,7 @@ using S1_D001_Monsterkampf_Simulator_ER.Monsters;
 using S1_D001_Monsterkampf_Simulator_ER.Skills;
 using S1_D001_Monsterkampf_Simulator_ER.Systems.StatusEffects;
 using System.ComponentModel;
+using System.Numerics;
 
 namespace S1_D001_Monsterkampf_Simulator_ER.Managers
 {
@@ -23,7 +24,7 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
         private readonly SymbolManager _symbol;
         private readonly DiagnosticsManager _diagnostics;
         private readonly MonsterBalancing _balancing;
-      
+
 
         public int PlayerPositionX => 20;
         public int PlayerPositionY => 3;
@@ -33,12 +34,12 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
         const int EmptyOffset = 1;
 
 
-        public UIManager(SymbolManager symbol, DiagnosticsManager diagnostics,MonsterBalancing balancing)
+        public UIManager(SymbolManager symbol, DiagnosticsManager diagnostics, MonsterBalancing balancing)
         {
             _symbol = symbol;
             _diagnostics = diagnostics;
             _balancing = balancing;
-           
+
         }
         //TODO könnte veraltet sein muss geändert werden später viel.
         public void ShowStatDistributionMenu(int unassignedStatPoints)
@@ -126,7 +127,7 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
                     else if (top || bottom) Console.Write(_symbol.WallHorizontalSymbol);
                     else if (left || right) Console.Write(_symbol.WallVerticalSymbol);
                     else Console.Write(" ");
-                    
+
                 }
             }
         }
@@ -227,7 +228,7 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
                 }
                 else
                 {
-                    Console.ForegroundColor= ConsoleColor.Red;
+                    Console.ForegroundColor = ConsoleColor.Red;
                     Console.Write($"{skill.Name} CD:{skill.CurrentCooldown}");
                     Console.ResetColor();
                     _diagnostics.AddCheck($"{nameof(UIManager)}.{nameof(UpdateSkillBox)}: Skill {skill.Name} is still on cooldown.");
@@ -258,10 +259,10 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
             Console.SetCursorPosition(x + LabelOffsetLeft, y + yOffset);
             if (monster.Meta.MaxHP < MaxValue)
             {
-                
+
                 Console.Write($"HP : {(int)monster.Meta.CurrentHP}/{(int)monster.Meta.MaxHP} ");
             }
-            else Console.Write("HP  : > 9999");
+            else Console.Write($"HP  : >999999");
             yOffset++;
 
             Console.SetCursorPosition(x + LabelOffsetLeft, y + yOffset);
@@ -274,7 +275,7 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
             Console.SetCursorPosition(x + LableOffsetRight, y + yOffset);
             if (monster.Meta.Speed < MaxValue)
             {
-                Console.Write($"Speed: {monster.Meta.Speed:0.0}");
+                Console.Write($"Speed: {(int)monster.Meta.Speed:0}");
             }
             else Console.Write("Speed: > 9999");
             yOffset++;
@@ -282,14 +283,14 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
             Console.SetCursorPosition(x + LabelOffsetLeft, y + yOffset);
             if (monster.Meta.AP < MaxValue)
             {
-                Console.Write($"AP : {monster.Meta.AP:0.0}");
+                Console.Write($"AP : {(int)monster.Meta.AP:0}");
             }
             else Console.Write("AP : > 9999");
 
             Console.SetCursorPosition(x + LableOffsetRight, y + yOffset);
             if (monster.Meta.DP < MaxValue)
             {
-                Console.Write($"DP   : {monster.Meta.DP:0.0}");
+                Console.Write($"DP   : {(int)monster.Meta.DP:0}");
             }
             else Console.Write("DP   : > 9999");
         }
@@ -443,7 +444,7 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
             // Enter unten rechts
             Console.SetCursorPosition(contentX + InnerWidth - line4.Length, contentY + InnerHeight - 1);
             Console.Write(line4);
-           
+
         }
 
 
@@ -690,10 +691,10 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
             };
             float newValue = stat switch
             {
-                StatType.MaxHP => player.Meta.MaxHP+_balancing.StatIncrease_HP,
-                StatType.AP => player.Meta.AP+_balancing.StatIncrease_AP,
-                StatType.DP => player.Meta.DP+_balancing.StatIncrease_DP,
-                StatType.Speed => player.Meta.Speed+_balancing.StatIncrease_Speed,
+                StatType.MaxHP => player.Meta.MaxHP + _balancing.StatIncrease_HP,
+                StatType.AP => player.Meta.AP + _balancing.StatIncrease_AP,
+                StatType.DP => player.Meta.DP + _balancing.StatIncrease_DP,
+                StatType.Speed => player.Meta.Speed + _balancing.StatIncrease_Speed,
                 _ => 0
             };
 
@@ -713,6 +714,52 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
             Console.SetCursorPosition(contentX, lineY++);
             Console.Write(line3);
 
+            Console.SetCursorPosition(contentX + InnerWidth - enterLine.Length,
+                                      contentY + InnerHeight - 1);
+            Console.Write(enterLine);
+        }
+
+        public void UpdateMessageBoxRoundInfo(bool playerWon, int fightNumber, int totalRounds)
+        {
+            // Position Outline (wie alle Message-Boxen)
+            int x = 20;
+            int y = 23;
+
+            const int FrameOffset = 1;
+            const int InnerWidth = 78;
+            const int InnerHeight = 4;
+
+            int contentX = x + FrameOffset;
+            int contentY = y + FrameOffset;
+            int lineY = contentY;
+
+            // Box leeren
+            ClearArea(contentX, contentY, InnerWidth, InnerHeight);
+
+            // Textzeilen
+            string line1 = playerWon
+                ? $" You won the fight."
+                : $" You lost the fight.";
+
+            string line2 = $" Fight Nr: {fightNumber}   |   Rounds: {totalRounds}";
+
+            string line3 = playerWon
+                ? " Next enemy is ready to fight."
+                : "";
+
+            string enterLine = $"{_symbol.PointerSymbol} [Enter]";
+
+            // Schreiben
+            Console.SetCursorPosition(contentX, lineY++);
+            Console.Write(line1);
+
+            Console.SetCursorPosition(contentX, lineY++);
+            Console.Write(line2);
+
+            Console.SetCursorPosition(contentX, lineY++);
+            Console.Write(line3);
+
+            // Enter rechts unten
             Console.SetCursorPosition(contentX + InnerWidth - enterLine.Length,
                                       contentY + InnerHeight - 1);
             Console.Write(enterLine);
@@ -745,8 +792,8 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
         {
             const int OffsetY = 10;
             const int OffsetX = 7;
-            int x = EnemyPositionX+ OffsetX;
-            int y = EnemyPositionY+ OffsetY;
+            int x = EnemyPositionX + OffsetX;
+            int y = EnemyPositionY + OffsetY;
             for (int i = 0; i < SlimeSpriteE.Length; i++)
             {
                 Console.SetCursorPosition(x, y + i);
@@ -758,8 +805,8 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
         {
             const int OffsetY = 10;
             const int OffsetX = 7;
-            int x = PlayerPositionX+ OffsetX;
-            int y = PlayerPositionY+ OffsetY;
+            int x = PlayerPositionX + OffsetX;
+            int y = PlayerPositionY + OffsetY;
             for (int i = 0; i < SlimeSpriteP.Length; i++)
             {
                 Console.SetCursorPosition(x, y + i);

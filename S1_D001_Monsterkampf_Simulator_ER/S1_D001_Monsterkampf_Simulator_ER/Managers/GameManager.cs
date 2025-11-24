@@ -11,6 +11,7 @@
 ******************************************************************************/
 
 
+using S1_D001_Monsterkampf_Simulator_ER.Balancing;
 using S1_D001_Monsterkampf_Simulator_ER.Dependencies;
 using S1_D001_Monsterkampf_Simulator_ER.Monsters;
 using S1_D001_Monsterkampf_Simulator_ER.Player;
@@ -37,6 +38,7 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
         private bool isRunning = true;
         public PlayerData PlayerData { get; } = new PlayerData();
 
+        public int totalFights {  get; private set; }
         /// <summary>
         /// 
         /// </summary>
@@ -126,10 +128,6 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
         }
 
 
-        private void GameLoop()
-        {
-
-        }
 
 
         private void ChooseMonster()
@@ -215,17 +213,22 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
 
             // Ergebnis bestimmen
             BattleResult result = battle.DetermineBattleResult();
-
+            totalFights++;
             if (result == BattleResult.PlayerWon)
             {
+                _deps.UI.UpdateMessageBoxRoundInfo(true,totalFights,battle.TotalRounds);
+                _deps.InputManager.WaitForEnter(_playerInput);
                 _deps.Diagnostics.AddCheck($"{nameof(GameManager)}.{nameof(StartBattle)}: Player won the battle.");
                 _currentState = GameState.HandleRewards;
             }
             else
             {
+                _deps.UI.UpdateMessageBoxRoundInfo(false,totalFights,battle.TotalRounds);
+                _deps.InputManager.WaitForEnter(_playerInput);
                 _deps.Diagnostics.AddCheck($"{nameof(GameManager)}.{nameof(StartBattle)}: Player lost the battle.");
                 _currentState = GameState.End;
             }
+            battle.TotalRounds = 0;
         }
 
 
@@ -289,11 +292,31 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
             _deps.Diagnostics.AddCheck($"{nameof(GameManager)}.{nameof(NextStage)}: Next enemy is {enemyRace}.");
 
             MonsterBase enemy = _deps.MonsterFactory.Create(enemyRace, enemyLevel);
-
+            ScaleEnemy(enemy,enemyLevel
+                
+                
+                ,_deps.Balancing);
             _deps.EnemyController.SetMonster(enemy);
             _deps.Diagnostics.AddCheck($"{nameof(GameManager)}.{nameof(NextStage)}: Enemy created & assigned.");
             _currentState = GameState.BattleStart;
         }
+       
+     
+            public void ScaleEnemy(MonsterBase enemy, int level, MonsterBalancing balancing)
+            {
+                enemy.Meta.MaxHP += (1+balancing.HPScaling) * level;
+                enemy.Meta.AP += (1+
+                
+                
+                
+                balancing.APScaling )* level;
+                enemy.Meta.DP += (1+balancing.DPScaling )* level;
+                enemy.Meta.Speed += (1+balancing.SpeedScaling) * level;
+
+                enemy.Meta.CurrentHP = enemy.Meta.MaxHP;
+            }
+        
+
 
 
         private void Endscreen()
