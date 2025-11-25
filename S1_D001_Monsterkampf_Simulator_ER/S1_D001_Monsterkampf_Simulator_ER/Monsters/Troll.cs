@@ -48,6 +48,44 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Monsters
             {
                 _diagnostics.AddError($"{nameof(Troll)}.{nameof(Spawn)}: No passive skill assigned.");
             }
-        }     
+        }
+
+        private readonly string[] TrollSpriteP =
+        {
+
+            @"   A__A",
+            @"  (   O)_",
+            @"  |    __)",
+            @"  |  ,_|",
+            @"   \_ _|        ____  ",
+            @"   _/ /___     /   /",
+            @"  |     \ \   /   /",
+            @"  |    \ \ \_/ __/ ",
+            @"  |    |\ \_/ / ",
+            @"  |    | \___/ ",
+            @"  |    |  ",
+            @" /______\  ",
+            @"|  |  |  | ",
+            @"|__|  |__|",
+            @"(___) (___)"
+        };
+        private readonly string[] TrollSpriteE =
+        {
+            @"              A__A",
+            @"            _(O   )",
+            @"           (__    |",
+            @"             |_,  |",
+            @" ____        |_ _/",
+            @" \   \     ___\ \_",
+            @"  \   \   / /     |  ",
+            @"   \__ \_/ / /    |",
+            @"      \ \_/ /|    |",
+            @"       \___/ |    |",
+            @"             |    |",
+            @"            /______\",
+            @"           |  |  |  |",
+            @"           |__|  |__|",
+            @"          (___) (___)",
+        };
     }
 }

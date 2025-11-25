@@ -47,22 +47,26 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Monsters
             }
         }
 
-        public string slime = @"                                                                                              
-             ____     
-            (    ) 
-           (   O O)
-          (    __ )
-          (    V V)
-          (________)
-    ";
-        public string slime2 = @"
-            ____
-           (    )
-          (O O   )
-          (__     )
-          (V V    )
-         (________) 
-        ";
+        private readonly string[] SlimeSpriteE =
+         {
+            "     ____",
+            "    (    )",
+            "   (O O   )",
+            "   (__     )",
+            "   (V V    )",
+            "  (________)"
+        };
+       
+        private readonly string[] SlimeSpriteP =
+        {
+            "     ____",
+            "    (    )",
+            "   (   O O)",
+            "  (    __ )",
+            "  (    V V)",
+            "  (________)"
+        };
+
     }
 }
 
