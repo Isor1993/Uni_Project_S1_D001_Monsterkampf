@@ -53,7 +53,7 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Balancing
             _baseStats = new Dictionary<RaceType, BaseStats>();
             _baseResistances = new Dictionary<RaceType, BaseResistances>();
 
-            _baseStats[RaceType.Goblin] = new BaseStats(HP: 47, AP: 17, DP: 2, Speed: 14);
+            _baseStats[RaceType.Goblin] = new BaseStats(HP: 48, AP: 17, DP: 2, Speed: 14);
             _baseStats[RaceType.Slime] = new BaseStats(HP: 80, AP: 8, DP: 4, Speed: 6);
             _baseStats[RaceType.Troll] = new BaseStats(HP: 60, AP: 15, DP: 3, Speed: 8);
             _baseStats[RaceType.Orc] = new BaseStats(HP: 55, AP: 12, DP: 4, Speed: 10);
