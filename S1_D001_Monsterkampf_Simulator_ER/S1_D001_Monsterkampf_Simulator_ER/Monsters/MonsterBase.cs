@@ -85,7 +85,7 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Monsters
 
         public abstract void Spawn();
 
-
+       
         public virtual float Attack(MonsterBase target, SkillBase skill, DamagePipeline pipeline)
         {
             if (target == null)

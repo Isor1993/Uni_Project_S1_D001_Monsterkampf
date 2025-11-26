@@ -31,7 +31,8 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Dependencies
         PlayerController PlayerController,
         MonsterBalancing Balancing,
         EnemyController EnemyController,
-        MonsterFactory MonsterFactory
+        MonsterFactory MonsterFactory,
+        ScreenManager Screen
    
     );
 }

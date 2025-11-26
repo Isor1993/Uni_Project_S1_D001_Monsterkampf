@@ -21,6 +21,43 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Monsters
         // === Dependencies ===
 
         // === Fields ===
+        public static readonly string[] OrcSpriteP =
+        {
+
+            @"   A___A",
+            @"  (    O)_",
+            @"  |     __)",
+            @"  |  A_A|",
+            @"   \_  _|        ____  ",
+            @" ___/ /____     /   /",
+            @"(        \ \   /   /",
+            @"|       \ \ \_/ __/ ",
+            @"|        \ \_/ / ",
+            @"|        )\___/ ",
+            @" \      _) ",
+            @" /______\  ",
+            @"|  |  |  | ",
+            @"|__|  |__|",
+            @"(___) (___)"
+        };
+        public static readonly string[] OrcSpriteE =
+        {
+            @"             A___A",
+            @"           _(O    )",
+            @"          (__     |",
+            @"            |A_A  |",
+            @"____        |_  _/",
+            @"\   \     ____\ \___ ",
+            @" \   \   / /        )  ",
+            @"  \__ \_/ / /       |",
+            @"     \ \_/ /        |",
+            @"      \___/(        |",
+            @"           (_      /",
+            @"            /______\",
+            @"           |  |  |  |",
+            @"           |__|  |__|",
+            @"          (___) (___)",
+        };
         public override string Description => "A brute with overwhelming physical strength. High AP, low speed.";
 
 
@@ -49,43 +86,7 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Monsters
                 _diagnostics.AddError($"{nameof(Orc)}.{nameof(Spawn)}: No passive skill assigned.");
             }
         }
-        private readonly string[] OrcSpriteP =
-        {
-
-            @"   A__A",
-            @"  (   O)_",
-            @"  |    __)",
-            @"  | A_A|",
-            @"   \_ _|        ____  ",
-            @" ___/ /____     /   /",
-            @"(        \ \   /   /",
-            @"|       \ \ \_/ __/ ",
-            @"|        \ \_/ / ",
-            @"|        )\___/ ",
-            @" \      _) ",
-            @" /______\  ",
-            @"|  |  |  | ",
-            @"|__|  |__|",
-            @"(___) (___)"
-        };
-        private readonly string[] OrcSpriteE =
-        {
-            @"              A__A",
-            @"            _(O   )",
-            @"           (__    |",
-            @"            |A_A  |",
-            @"____        |_ _/",
-            @"\   \     ____\ \___ ",
-            @" \   \   / /        )  ",
-            @"  \__ \_/ / /       |",
-            @"     \ \_/ /        |",
-            @"      \___/(        |",
-            @"           (_      /",
-            @"            /______\",
-            @"           |  |  |  |",
-            @"           |__|  |__|",
-            @"          (___) (___)",
-        };
+        
     }
 }
 

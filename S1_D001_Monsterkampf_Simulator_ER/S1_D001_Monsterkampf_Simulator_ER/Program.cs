@@ -40,9 +40,10 @@ namespace S1_D001_Monsterkampf_Simulator_ER
             // === CONTROLLER ===
             var playerController = new PlayerController(null!, diagnostics, ui, keyboardInput);
             var enemyController = new EnemyController(null!, diagnostics, random);
+            var screen = new ScreenManager(symbol,playerController);
 
             // === GAME DEPENDENCIES ===
-            var gameDeps = new GameDependencies(pipeline, ui, playerInput, inputManager, random, diagnostics, print, playerController, balancing, enemyController, monsterFactory);
+            var gameDeps = new GameDependencies(pipeline, ui, playerInput, inputManager, random, diagnostics, print, playerController, balancing, enemyController, monsterFactory,screen);
 
             // === BATTLEMANAGER DEPENDENCIES (initial leer) ===
             var emptyBattleDeps = new BattleManagerDependencies(

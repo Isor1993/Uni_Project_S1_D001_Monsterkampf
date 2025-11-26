@@ -22,6 +22,40 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Monsters
         // === Dependencies ===
 
         // === Fields ===
+        public static readonly string[] GoblinSpriteP =
+        {
+
+                @"    ____",
+                @"   (   O)_",
+                @"   |    __)",
+                @"   |  ,_|",
+                @"    \_ _|      _",
+                @"   _/ /__ _   / ) ",
+                @"  |    \ \ \_/ / ",
+                @"  |    |\ \_/ / ",
+                @"  |    | \___/ ",
+                @" /______\  ",
+                @"|  |  |  | ",
+                @"|__|  |__|",
+                @"(___) (___)"
+        };
+        public static readonly string[] GoblinSpriteE =
+        {
+                @"         ____",
+                @"       _(O   )",
+                @"      (__    |",
+                @"        |_,  |",
+                @" _      |_ _/",
+                @"( \   _ __\ \_ ",
+                @" \ \_/ / /    |",
+                @"  \ \_/ /|    |",
+                @"   \___/ |    |",
+                @"        /______\",
+                @"       |  |  |  |",
+                @"       |__|  |__|",
+                @"     (___)  (___)",
+        };
+
         public override string Description => "A fast and aggressive fighter. Loves quick strikes.";
 
 
@@ -52,39 +86,7 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Monsters
                 _diagnostics.AddError($"{nameof(Goblin)}.{nameof(Spawn)}: No passive skill assigned.");
             }
         }
-        private readonly string[] GoblinSpriteP =
-        {
-
-            @"   ____",
-            @"  (   O)_",
-            @"  |    __)",
-            @"  |  ,_|",
-            @"   \_ _|",
-            @"   _/ /__ _   / ) ",
-            @"  |    \ \ \_/ / ",
-            @"  |    |\ \_/ / ",
-            @"  |    | \___/ ",
-            @" /______\  ",
-            @"|  |  |  | ",
-            @"|__|  |__|",
-            @"(___) (___)"
-        };
-        private readonly string[] GoblinSpriteE =
-        {
-            @"         ____",
-            @"       _(O   )",
-            @"      (__    |",
-            @"        |_,  |",
-            @" _      |_ _/",
-            @"( \   _ __\ \_ ",
-            @" \ \_/ / /    |",
-            @"  \ \_/ /|    |",
-            @"   \___/ |    |",
-            @"        /______\",
-            @"       |  |  |  |",
-            @"       |__|  |__|",
-            @"     (___)  (___)",
-        };
+        
 
     }
 }

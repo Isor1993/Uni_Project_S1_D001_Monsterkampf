@@ -34,7 +34,7 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Balancing
         // --- Stat Point Scaling for Level up---
         public int StartLevel => 1;
         public int LevelUpScaling => 1;
-        public int BonusLevels => 5;
+        public int BonusLevels => 2;
         public int BaseVictoryReward => 1;
         public float HPScaling => 0.10f;
         public float APScaling => 0.04f;
@@ -54,8 +54,8 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Balancing
             _baseResistances = new Dictionary<RaceType, BaseResistances>();
 
             _baseStats[RaceType.Goblin] = new BaseStats(HP: 48, AP: 17, DP: 2, Speed: 14);
-            _baseStats[RaceType.Slime] = new BaseStats(HP: 80, AP: 8, DP: 4, Speed: 6);
-            _baseStats[RaceType.Troll] = new BaseStats(HP: 60, AP: 15, DP: 3, Speed: 8);
+            _baseStats[RaceType.Slime] = new BaseStats(HP: 80, AP: 10, DP: 4, Speed: 6);
+            _baseStats[RaceType.Troll] = new BaseStats(HP: 70, AP: 15, DP: 3, Speed: 8);
             _baseStats[RaceType.Orc] = new BaseStats(HP: 55, AP: 12, DP: 4, Speed: 10);
 
             _baseResistances[RaceType.Goblin] = new BaseResistances(Physical: 0.00f, Fire: 0.00f, Water: 0.00f, Poison: 0.20f);

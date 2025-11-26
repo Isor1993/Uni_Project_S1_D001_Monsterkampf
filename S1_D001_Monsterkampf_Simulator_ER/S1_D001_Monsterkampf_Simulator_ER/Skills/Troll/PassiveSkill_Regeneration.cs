@@ -20,7 +20,7 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Skills.Troll
     {
         // === Fields ===
         
-        private const float SkillMultiplier = 0.10f;       
+        private const float SkillMultiplier = 0.0005f;       
         private const int SkillCooldown = 0;
 
 

@@ -21,6 +21,43 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Monsters
         // === Dependencies ===
 
         // === Fields ===
+        public static readonly string[] TrollSpriteP =
+        {
+
+            @"   A___A",
+            @"  (    O)_",
+            @"  |     __)",
+            @"  |   ,_|",
+            @"   \_  _|       ____  ",
+            @"   _/ /___     /   /",
+            @"  |     \ \   /   /",
+            @"  |    \ \ \_/ __/ ",
+            @"  |    |\ \_/ / ",
+            @"  |    | \___/ ",
+            @"  |    |  ",
+            @" /______\  ",
+            @"|  |  |  | ",
+            @"|__|  |__|",
+            @"(___) (___)"
+        };
+        public static readonly string[] TrollSpriteE =
+        {
+            @"             A___A",
+            @"           _(O    )",
+            @"          (__     |",
+            @"            |_,   |",
+            @" ____       |_  _/",
+            @" \   \     ___\ \_",
+            @"  \   \   / /     |  ",
+            @"   \__ \_/ / /    |",
+            @"      \ \_/ /|    |",
+            @"       \___/ |    |",
+            @"             |    |",
+            @"            /______\",
+            @"           |  |  |  |",
+            @"           |__|  |__|",
+            @"          (___) (___)",
+        };
         public override string Description => "A slow but extremely durable monster. Regenerates health naturally.";
 
 
@@ -50,42 +87,6 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Monsters
             }
         }
 
-        private readonly string[] TrollSpriteP =
-        {
-
-            @"   A__A",
-            @"  (   O)_",
-            @"  |    __)",
-            @"  |  ,_|",
-            @"   \_ _|        ____  ",
-            @"   _/ /___     /   /",
-            @"  |     \ \   /   /",
-            @"  |    \ \ \_/ __/ ",
-            @"  |    |\ \_/ / ",
-            @"  |    | \___/ ",
-            @"  |    |  ",
-            @" /______\  ",
-            @"|  |  |  | ",
-            @"|__|  |__|",
-            @"(___) (___)"
-        };
-        private readonly string[] TrollSpriteE =
-        {
-            @"              A__A",
-            @"            _(O   )",
-            @"           (__    |",
-            @"             |_,  |",
-            @" ____        |_ _/",
-            @" \   \     ___\ \_",
-            @"  \   \   / /     |  ",
-            @"   \__ \_/ / /    |",
-            @"      \ \_/ /|    |",
-            @"       \___/ |    |",
-            @"             |    |",
-            @"            /______\",
-            @"           |  |  |  |",
-            @"           |__|  |__|",
-            @"          (___) (___)",
-        };
+        
     }
 }

@@ -38,12 +38,12 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
         private bool isRunning = true;
         public PlayerData PlayerData { get; } = new PlayerData();
 
-        public int totalFights {  get; private set; }
+        public static int totalFights { get; private set; }
         /// <summary>
         /// 
         /// </summary>
         /// <param name="gameDependencies"></param>
-        public GameManager(GameDependencies gameDependencies,InputManager inputManager,IPlayerInput playerInput)
+        public GameManager(GameDependencies gameDependencies, InputManager inputManager, IPlayerInput playerInput)
         {
             _deps = gameDependencies;
             _inputManager = inputManager;
@@ -110,9 +110,8 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
         private void StartScreen()
         {
             Console.Clear();
-            Console.WriteLine("Startscreen – wird später gemacht.");
+            _deps.Screen.PrintScreenStart();
             Console.ReadKey(true);
-
             _currentState = GameState.Tutorial;
         }
 
@@ -120,7 +119,7 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
         private void TutorialScreen()
         {
             Console.Clear();
-            Console.WriteLine("Tutorial – wird später gemacht.");
+            _deps.Screen.PrintScreenTutorial();
             Console.ReadKey(true);
 
             _currentState = GameState.ChooseMonster;
@@ -132,6 +131,7 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
 
         private void ChooseMonster()
         {
+            Console.Clear();
             _deps.Diagnostics.AddCheck($"{nameof(GameManager)}.{nameof(ChooseMonster)}: Monster selection started.");
 
             // 1. Monster-Liste (4 Stück)
@@ -141,7 +141,7 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
 
             int pointer = 0;
             bool confirmed = false;
-            _deps.UI.ShowMonsterSelectionMenu(monsterChoices,pointer);
+            _deps.UI.ShowMonsterSelectionMenu(monsterChoices, pointer);
             void RefreshMessageBox()
             {
                 RaceType race = monsterChoices[pointer];
@@ -178,7 +178,7 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
                         break;
                 }
 
-                
+
                 _deps.UI.UpdateMonsterSelectionBox(monsterChoices, pointer);
                 RefreshMessageBox();
             }
@@ -206,7 +206,7 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
             var battleDeps = new BattleManagerDependencies(_deps.PlayerController, _deps.EnemyController, _deps.Diagnostics, _deps.Random, _deps.DamagePipeline, PlayerData, _deps.Balancing, _deps.UI);
 
             // BattleManager erzeugen
-            BattleManager battle = new BattleManager(battleDeps,_inputManager,_playerInput);
+            BattleManager battle = new BattleManager(battleDeps, _inputManager, _playerInput);
 
             // Kampf ausführen
             battle.RunBattle();
@@ -216,14 +216,14 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
             totalFights++;
             if (result == BattleResult.PlayerWon)
             {
-                _deps.UI.UpdateMessageBoxRoundInfo(true,totalFights,battle.TotalRounds);
+                _deps.UI.UpdateMessageBoxRoundInfo(true, totalFights, battle.TotalRounds);
                 _deps.InputManager.WaitForEnter(_playerInput);
                 _deps.Diagnostics.AddCheck($"{nameof(GameManager)}.{nameof(StartBattle)}: Player won the battle.");
                 _currentState = GameState.HandleRewards;
             }
             else
             {
-                _deps.UI.UpdateMessageBoxRoundInfo(false,totalFights,battle.TotalRounds);
+                _deps.UI.UpdateMessageBoxRoundInfo(false, totalFights, battle.TotalRounds);
                 _deps.InputManager.WaitForEnter(_playerInput);
                 _deps.Diagnostics.AddCheck($"{nameof(GameManager)}.{nameof(StartBattle)}: Player lost the battle.");
                 _currentState = GameState.End;
@@ -263,9 +263,9 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
             // --- 2. LevelUp berechnen ---
             int newLevel = player.Level + _deps.Balancing.LevelUpScaling;
 
-            
-            player.ApplyLevelUp(player.Meta,_deps.Balancing);
-            player.SkillPackage.ResetCooldowns();           
+
+            player.ApplyLevelUp(player.Meta, _deps.Balancing);
+            player.SkillPackage.ResetCooldowns();
             _deps.Diagnostics.AddCheck(
                 $"{nameof(GameManager)}.{nameof(HandleRewards)}: Player leveled up to {player.Level}. Stats updated!");
 
@@ -292,37 +292,37 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
             _deps.Diagnostics.AddCheck($"{nameof(GameManager)}.{nameof(NextStage)}: Next enemy is {enemyRace}.");
 
             MonsterBase enemy = _deps.MonsterFactory.Create(enemyRace, enemyLevel);
-            ScaleEnemy(enemy,enemyLevel
-                
-                
-                ,_deps.Balancing);
+            ScaleEnemy(enemy, enemyLevel
+
+
+                , _deps.Balancing);
             _deps.EnemyController.SetMonster(enemy);
             _deps.Diagnostics.AddCheck($"{nameof(GameManager)}.{nameof(NextStage)}: Enemy created & assigned.");
             _currentState = GameState.BattleStart;
         }
-       
-     
-            public void ScaleEnemy(MonsterBase enemy, int level, MonsterBalancing balancing)
-            {
-                enemy.Meta.MaxHP += (1+balancing.HPScaling) * level;
-                enemy.Meta.AP += (1+
-                
-                
-                
-                balancing.APScaling )* level;
-                enemy.Meta.DP += (1+balancing.DPScaling )* level;
-                enemy.Meta.Speed += (1+balancing.SpeedScaling) * level;
 
-                enemy.Meta.CurrentHP = enemy.Meta.MaxHP;
-            }
-        
+
+        public void ScaleEnemy(MonsterBase enemy, int level, MonsterBalancing balancing)
+        {
+            enemy.Meta.MaxHP += (1 + balancing.HPScaling) * level;
+            enemy.Meta.AP += (1 +
+
+
+
+            balancing.APScaling) * level;
+            enemy.Meta.DP += (1 + balancing.DPScaling) * level;
+            enemy.Meta.Speed += (1 + balancing.SpeedScaling) * level;
+
+            enemy.Meta.CurrentHP = enemy.Meta.MaxHP;
+        }
+
 
 
 
         private void Endscreen()
         {
             Console.Clear();
-            Console.WriteLine("Spiel vorbei – wird später gemacht.");
+            _deps.Screen.PrintScreenEnd();
             Console.ReadKey(true);
 
             _currentState = GameState.Quit;

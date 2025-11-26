@@ -20,7 +20,25 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Monsters
         // === Dependencies ===
 
         // === Fields ===    }
+        public static readonly string[] SlimeSpriteE =
+         {
+            "     ____",
+            "    (    )",
+            "   (O O   )",
+            "   (__     )",
+            "   (V V    )",
+            "  (________)"
+        };
 
+        public static readonly string[] SlimeSpriteP =
+        {
+            "     ____",
+            "    (    )",
+            "   (   O O)",
+            "  (    __ )",
+            "  (    V V)",
+            "  (________)"
+        };
         public override string Description => "A weak but resilient creature made of gelatin with low damage.";
 
         public Slime(MonsterMeta meta, MonsterResistance resistance, int level, SkillPackage skill, DiagnosticsManager diagnostics)
@@ -47,25 +65,7 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Monsters
             }
         }
 
-        private readonly string[] SlimeSpriteE =
-         {
-            "     ____",
-            "    (    )",
-            "   (O O   )",
-            "   (__     )",
-            "   (V V    )",
-            "  (________)"
-        };
-       
-        private readonly string[] SlimeSpriteP =
-        {
-            "     ____",
-            "    (    )",
-            "   (   O O)",
-            "  (    __ )",
-            "  (    V V)",
-            "  (________)"
-        };
+
 
     }
 }
