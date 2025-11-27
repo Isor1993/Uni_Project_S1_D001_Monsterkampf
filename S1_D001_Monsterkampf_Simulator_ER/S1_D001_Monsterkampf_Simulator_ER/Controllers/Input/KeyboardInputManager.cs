@@ -30,7 +30,7 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
                 ConsoleKey.UpArrow => PlayerCommand.MoveUp,
                 ConsoleKey.W => PlayerCommand.MoveUp,
                 ConsoleKey.DownArrow => PlayerCommand.MoveDown,
-                ConsoleKey.S => PlayerCommand.MoveUp,
+                ConsoleKey.S => PlayerCommand.MoveDown,
                 ConsoleKey.Enter => PlayerCommand.Confirm,
 
                 // Everything else returns "None"

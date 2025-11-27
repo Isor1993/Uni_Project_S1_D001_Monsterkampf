@@ -48,7 +48,7 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Systems.StatusEffects
             float finalDamage = Math.Max(1, incomingDamage * (1f - _multiplier));
             float reducedAmount = incomingDamage - finalDamage;
 
-            _diagnostics.AddCheck($"{nameof(AbsorbEffect)}.{nameof(AbsorbDamage)}: Incoming = {incomingDamage}, Reduced = {reducedAmount} ({_multiplier * 100:F0}%), Final = {finalDamage}."
+            _diagnostics.AddCheck($"{nameof(AbsorbEffect)}.{nameof(AbsorbDamage)}: Incoming = {incomingDamage}, Reduced = {reducedAmount} ({_multiplier * 100:F0}%), Final = {finalDamage}.");
             return finalDamage;
         }
     }
