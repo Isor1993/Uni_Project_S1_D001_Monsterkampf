@@ -1,6 +1,6 @@
 ﻿/*****************************************************************************
 * Project : Monsterkampf-Simulator (K1, S1, S4)
-* File    : 
+* File    :
 * Date    : xx.xx.2025
 * Author  : Eric Rosenberg
 *
@@ -12,24 +12,21 @@
 
 using S1_D001_Monsterkampf_Simulator_ER.Managers;
 using S1_D001_Monsterkampf_Simulator_ER.Monsters;
-using S1_D001_Monsterkampf_Simulator_ER.Skills.Goblin;
 using S1_D001_Monsterkampf_Simulator_ER.Systems.StatusEffects;
 
 namespace S1_D001_Monsterkampf_Simulator_ER.Skills.Orc
 {
-    
-    internal class TribeScream:SkillBase
+    internal class TribeScream : SkillBase
     {
-
         // === Fields ===
         private const float SkillMultiplier = 1.5f;
+
         private const int SkillDuration = 5;
         private const int SkillCooldown = 5;
         private const float BasicDamage = 0.5f;
 
-
         public TribeScream(DiagnosticsManager diagnostics)
-            :base(
+            : base(
                  "Tribe Scream",
                  "A buff which grants 50% more damage for 5 rounds.",
                  SkillType.Aktive,
@@ -39,6 +36,7 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Skills.Orc
         {
             Cooldown = SkillCooldown;
         }
+
         public override void OnCast(MonsterBase caster)
         {
             caster.AddStatusEffect(new TribeScreamEffect(

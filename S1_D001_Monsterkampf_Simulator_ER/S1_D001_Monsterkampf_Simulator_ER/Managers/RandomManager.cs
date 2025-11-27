@@ -1,6 +1,6 @@
 ﻿/*****************************************************************************
 * Project : Monsterkampf-Simulator (K1, S1, S4)
-* File    : 
+* File    :
 * Date    : xx.xx.2025
 * Author  : Eric Rosenberg
 *
@@ -10,14 +10,12 @@
 * xx.xx.2025 ER Created
 ******************************************************************************/
 
-
 using S1_D001_Monsterkampf_Simulator_ER.Monsters;
 
 namespace S1_D001_Monsterkampf_Simulator_ER.Managers
 {
     internal class RandomManager
     {
-
         private readonly Random _random;
 
         public RandomManager()
@@ -28,7 +26,6 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
         // Zufallszahl von 0 (inklusive) bis maxExclusive (exklusiv)
         public int Next(int maxExclusive)
         {
-
             return _random.Next(maxExclusive);
         }
 
@@ -37,6 +34,7 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
         {
             return _random.Next(minInclusive, maxExclusive);
         }
+
         public RaceType PickRandomRace(RaceType racePlayer)
         {
             RaceType enemy;
@@ -51,7 +49,6 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
                     2 => RaceType.Orc,
                     3 => RaceType.Slime,
                     _ => RaceType.None,
-
                 };
             } while (enemy == racePlayer);
 

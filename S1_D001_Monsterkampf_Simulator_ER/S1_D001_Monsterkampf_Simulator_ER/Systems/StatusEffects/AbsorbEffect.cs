@@ -13,19 +13,14 @@
 ******************************************************************************/
 
 using S1_D001_Monsterkampf_Simulator_ER.Managers;
-using S1_D001_Monsterkampf_Simulator_ER.Monsters;
-using System.Diagnostics.Tracing;
 
 namespace S1_D001_Monsterkampf_Simulator_ER.Systems.StatusEffects
 {
     internal class AbsorbEffect : PermanentStatusEffect
     {
-
         // === Fields ===
         private readonly float _multiplier;
 
-
-        
         public AbsorbEffect(float multiplier, DiagnosticsManager diagnostics)
             : base(
                  "Absorb",
@@ -34,16 +29,14 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Systems.StatusEffects
             _multiplier = multiplier;
         }
 
-        /// <summary> 
+        /// <summary>
         /// Calculates the final damage after applying the absorb reduction.
         /// Example: 30% absorb → finalDamage = incomingDamage * 0.7
         /// </summary>
         public float AbsorbDamage(float incomingDamage)
         {
-            float finalDamage = Math.Max(1,incomingDamage*(1f-_multiplier));
-            float reducedAmount = incomingDamage-finalDamage;
-            
-            
+            float finalDamage = Math.Max(1, incomingDamage * (1f - _multiplier));
+            float reducedAmount = incomingDamage - finalDamage;
 
             _diagnostics.AddCheck($"{nameof(AbsorbEffect)}.{nameof(AbsorbDamage)}: Incoming = {incomingDamage}, Reduced = {reducedAmount} ({_multiplier * 100:F0}%), Final = {finalDamage}.");
 

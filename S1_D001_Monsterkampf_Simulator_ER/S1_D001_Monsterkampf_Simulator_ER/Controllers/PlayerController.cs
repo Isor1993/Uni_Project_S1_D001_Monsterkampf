@@ -24,10 +24,12 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Controllers
     {
         // === Dependencies ===
         private readonly UIManager _ui;
+
         private readonly IPlayerInput _input;
 
         // === Fields ===
         private int _pointerIndex = 0;
+
         private const int MaxSkillsShown = 4;
 
         private bool _skillConfirmed = false;
@@ -77,7 +79,6 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Controllers
             _pointerIndex = 0;
             if (chosen.CurrentCooldown > 0)
             {
-                
                 _diagnostics.AddCheck($"{nameof(PlayerController)}: Skill '{chosen.Name}' is on cooldown. Cannot select.");
                 return ChooseSkill(); // Nochmal öffnen
             }
@@ -110,7 +111,6 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Controllers
                 _pointerIndex = next;
             }
 
-            
             RefreshSkillUI();
             _diagnostics.AddCheck($"{nameof(PlayerController)}.{nameof(MovePointer)}: Pointer  → {_pointerIndex}.");
         }

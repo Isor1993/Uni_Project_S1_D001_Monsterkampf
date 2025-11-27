@@ -1,6 +1,6 @@
 ﻿/*****************************************************************************
 * Project : Monsterkampf-Simulator (K1, S1, S4)
-* File    : 
+* File    :
 * Date    : xx.xx.2025
 * Author  : Eric Rosenberg
 *
@@ -16,15 +16,14 @@ using S1_D001_Monsterkampf_Simulator_ER.Systems.StatusEffects;
 
 namespace S1_D001_Monsterkampf_Simulator_ER.Skills.Slime
 {
-    internal class PassiveSkill_Absorb:SkillBase,IPassiveSkill
+    internal class PassiveSkill_Absorb : SkillBase, IPassiveSkill
     {
         // === Dependencies ===
 
         // === Fields ===
-        private const float SkillMultiplier = 0.3f;        
-        private const int SkillCooldown = 0;
-      
+        private const float SkillMultiplier = 0.3f;
 
+        private const int SkillCooldown = 0;
 
         public PassiveSkill_Absorb(DiagnosticsManager diagnostics)
             : base(
@@ -38,14 +37,11 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Skills.Slime
             Cooldown = SkillCooldown;
         }
 
-        public  void ApplyPassive(MonsterBase user)
+        public void ApplyPassive(MonsterBase user)
         {
-            user.AddStatusEffect(new AbsorbEffect(SkillMultiplier,_diagnostics));
+            user.AddStatusEffect(new AbsorbEffect(SkillMultiplier, _diagnostics));
 
             _diagnostics.AddCheck($"{nameof(PassiveSkill_Absorb)}.{nameof(ApplyPassive)}: Applied absorb effect on {user.Race}.");
-
         }
     }
-
-    
 }

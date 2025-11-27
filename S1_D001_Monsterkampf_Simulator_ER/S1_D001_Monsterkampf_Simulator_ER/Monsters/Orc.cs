@@ -1,6 +1,6 @@
 ﻿/*****************************************************************************
 * Project : Monsterkampf-Simulator (K1, S1, S4)
-* File    : 
+* File    :
 * Date    : xx.xx.2025
 * Author  : Eric Rosenberg
 *
@@ -12,7 +12,6 @@
 
 using S1_D001_Monsterkampf_Simulator_ER.Managers;
 using S1_D001_Monsterkampf_Simulator_ER.Skills;
-using System.Runtime.Intrinsics.X86;
 
 namespace S1_D001_Monsterkampf_Simulator_ER.Monsters
 {
@@ -23,7 +22,6 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Monsters
         // === Fields ===
         public static readonly string[] OrcSpriteP =
         {
-
             @"   A___A",
             @"  (    O)_",
             @"  |     __)",
@@ -40,6 +38,7 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Monsters
             @"|__|  |__|",
             @"(___) (___)"
         };
+
         public static readonly string[] OrcSpriteE =
         {
             @"             A___A",
@@ -58,8 +57,8 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Monsters
             @"           |__|  |__|",
             @"          (___) (___)",
         };
-        public override string Description => "A brute with overwhelming physical strength. High AP, low speed.";
 
+        public override string Description => "A brute with overwhelming physical strength. High AP, low speed.";
 
         public Orc(MonsterMeta meta, MonsterResistance resistance, int level, SkillPackage skill, DiagnosticsManager diagnostics)
             : base(
@@ -70,7 +69,6 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Monsters
                  skill,
                  diagnostics)
         {
-
         }
 
         public override void Spawn()
@@ -86,7 +84,5 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Monsters
                 _diagnostics.AddError($"{nameof(Orc)}.{nameof(Spawn)}: No passive skill assigned.");
             }
         }
-        
     }
 }
-

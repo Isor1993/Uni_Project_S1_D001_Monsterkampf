@@ -16,8 +16,6 @@ using S1_D001_Monsterkampf_Simulator_ER.Dependencies;
 using S1_D001_Monsterkampf_Simulator_ER.Monsters;
 using S1_D001_Monsterkampf_Simulator_ER.Skills;
 using S1_D001_Monsterkampf_Simulator_ER.Systems.StatusEffects;
-using System.Threading;
-
 
 namespace S1_D001_Monsterkampf_Simulator_ER.Managers
 {
@@ -27,21 +25,25 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
         PlayerWon,
         EnemyWon
     }
+
     internal class BattleManager
     {
-
         // === Dependencies ===
         private readonly BattleManagerDependencies _deps;
+
         private readonly InputManager _inputManager;
         private readonly IPlayerInput _playerInput;
+
         // === Fields ===
         private bool _playerStarts;
+
         private ControllerBase PlayerController => _deps.PlayerController;
         private ControllerBase EnemyController => _deps.EnemyController;
 
         private MonsterBase Player => PlayerController.Monster;
         private MonsterBase Enemy => EnemyController.Monster;
-        public int TotalRounds { get;  set; }
+        public int TotalRounds { get; set; }
+
         public BattleManager(BattleManagerDependencies deps, InputManager inputManager, IPlayerInput playerInput)
         {
             _deps = deps ?? throw new ArgumentNullException(nameof(deps));
@@ -51,7 +53,6 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
 
         public void RunBattle()
         {
-
             _deps.Diagnostics.AddCheck($"{nameof(BattleManager)}.{nameof(RunBattle)}: Battle started!");
 
             int round = 1;
@@ -106,7 +107,7 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
 
                 round++;
             }
-            
+
             _deps.Diagnostics.AddCheck($"{nameof(BattleManager)}.{nameof(HandleEndOfTurnEffects)}: Battle ended!");
 
             BattleResult result = DetermineBattleResult();
@@ -127,29 +128,23 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
             ShowBattleOutcome(result);
         }
 
-
         private void HandleStartOfTurnEffects()
         {
-            
             Player.ProcessStartOfTurnEffects();
             Player.UsePasiveSkill();
             Enemy.ProcessStartOfTurnEffects();
             Enemy.UsePasiveSkill();
-
         }
 
         private void HandleEndOfTurnEffects()
         {
             _deps.Diagnostics.AddCheck($"{nameof(BattleManager)}.{nameof(HandleEndOfTurnEffects)}: End-of-turn Effects begin.");
 
-
             Player.ProcessEndOfTurnEffects();
             Enemy.ProcessEndOfTurnEffects();
 
-
             Player.ProcessStatusEffectDurations();
             Enemy.ProcessStatusEffectDurations();
-
 
             TickCooldowns();
 
@@ -178,6 +173,7 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
             Player.ProcessSkillCooldowns();
             Enemy.ProcessSkillCooldowns();
         }
+
         public BattleResult DetermineBattleResult()
         {
             if (Player.IsAlive && !Enemy.IsAlive)
@@ -188,6 +184,7 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
 
             return BattleResult.None;
         }
+
         //TODO vernetzen später an richtige stelle
         private void ShowBattleOutcome(BattleResult result)
         {
@@ -206,6 +203,7 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
                     break;
             }
         }
+
         private void HandleVictory(ControllerBase winner)
         {
             MonsterBase winnerMonster = winner.Monster;
@@ -298,6 +296,7 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
 
             return false;
         }
+
         private bool EnemyTurn()
         {
             _deps.Diagnostics.AddCheck($"{nameof(BattleManager)}.{nameof(EnemyTurn)}: Enemy turn started.");
@@ -317,7 +316,6 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
                 _deps.Diagnostics.AddCheck(
                     $"{nameof(BattleManager)}.{nameof(EnemyTurn)}: New effect triggered → {newEffect.Name}");
             }
-
 
             // 3. TakeDamage MessageBox anzeigen
             RefreshUI();

@@ -12,8 +12,6 @@
 * xx.xx.2025 ER Created
 ******************************************************************************/
 
-using System;
-
 namespace S1_D001_Monsterkampf_Simulator_ER.Managers
 {
     internal class KeyboardInputManager : IPlayerInput

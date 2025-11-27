@@ -13,8 +13,6 @@
 
 using S1_D001_Monsterkampf_Simulator_ER.Managers;
 using S1_D001_Monsterkampf_Simulator_ER.Monsters;
-using S1_D001_Monsterkampf_Simulator_ER.Skills;
-using S1_D001_Monsterkampf_Simulator_ER.Skills.Goblin;
 
 namespace S1_D001_Monsterkampf_Simulator_ER.Skills
 {
@@ -23,19 +21,21 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Skills
         private const float SkillMultiplier = 1.0f;
         private const int SkillDuration = 0;
         private const int SkillCooldown = 0;
+
         public BasicAttack(DiagnosticsManager diagnostics)
             : base(
                   "Basic Attack",
                   "A standard physical attack based on AP.",
                   SkillType.Aktive,
                   DamageType.Physical,
-                  SkillMultiplier, 
+                  SkillMultiplier,
                   diagnostics
                   )
         {
             Cooldown = SkillCooldown;
             CurrentCooldown = SkillDuration;
         }
+
         public override float CalculateRawDamage(MonsterBase attacker)
         {
             float raw = attacker.Meta.AP * Power;

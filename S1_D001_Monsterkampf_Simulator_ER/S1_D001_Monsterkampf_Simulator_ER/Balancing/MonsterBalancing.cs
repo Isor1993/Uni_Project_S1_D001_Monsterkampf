@@ -13,13 +13,11 @@
 
 using S1_D001_Monsterkampf_Simulator_ER.Managers;
 using S1_D001_Monsterkampf_Simulator_ER.Monsters;
-using S1_D001_Monsterkampf_Simulator_ER.Skills.Slime;
 
 namespace S1_D001_Monsterkampf_Simulator_ER.Balancing
 {
     internal class MonsterBalancing
     {
-
         // === Dependencies ===
         private readonly DiagnosticsManager _diagnostics;
 
@@ -27,12 +25,13 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Balancing
 
         // Dictionaries für Basiswerte
         private readonly Dictionary<RaceType, BaseStats> _baseStats;
-        private readonly Dictionary<RaceType, BaseResistances> _baseResistances;
 
+        private readonly Dictionary<RaceType, BaseResistances> _baseResistances;
 
         // Skalierungsfaktoren
         // --- Stat Point Scaling for Level up---
         public int StartLevel => 1;
+
         public int LevelUpScaling => 1;
         public int BonusLevels => 2;
         public int BaseVictoryReward => 1;
@@ -43,6 +42,7 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Balancing
 
         // --- Stat Point deffinition Scaling  ---
         public int StatIncrease_HP => 10;
+
         public int StatIncrease_AP => 1;
         public int StatIncrease_DP => 1;
         public float StatIncrease_Speed => 0.5f;
@@ -62,8 +62,6 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Balancing
             _baseResistances[RaceType.Slime] = new BaseResistances(Physical: 0.10f, Fire: -0.10f, Water: 0.30f, Poison: 0.10f);
             _baseResistances[RaceType.Troll] = new BaseResistances(Physical: 0.05f, Fire: 0.00f, Water: 0.00f, Poison: -0.20f);
             _baseResistances[RaceType.Orc] = new BaseResistances(Physical: 0.15f, Fire: -0.10f, Water: 0.00f, Poison: 0.00f);
-
-
         }
 
         public MonsterMeta GetMeta(RaceType race, int level)
@@ -87,7 +85,6 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Balancing
             _diagnostics.AddCheck($"{nameof(MonsterBalancing)}.{nameof(GetMeta)}: Successfully got balanced meta data.");
 
             return new MonsterMeta(scaledHp, scaledHp, scaledAp, scaledDp, scaledSpeed);
-
         }
 
         public MonsterResistance GetResistance(RaceType race)
@@ -100,7 +97,6 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Balancing
 
             return new MonsterResistance(physical: resistances.Physical, fire: resistances.Fire, water: resistances.Water, poison: resistances.Poison);
         }
-        
 
         private record struct BaseStats(int HP, int AP, int DP, int Speed);
         private record struct BaseResistances(float Physical, float Fire, float Water, float Poison);

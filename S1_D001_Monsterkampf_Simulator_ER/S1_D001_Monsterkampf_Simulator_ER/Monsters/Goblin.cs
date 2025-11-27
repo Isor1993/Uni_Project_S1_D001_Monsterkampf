@@ -1,6 +1,6 @@
 ﻿/*****************************************************************************
 * Project : Monsterkampf-Simulator (K1, S1, S4)
-* File    : 
+* File    :
 * Date    : xx.xx.2025
 * Author  : Eric Rosenberg
 *
@@ -12,8 +12,6 @@
 
 using S1_D001_Monsterkampf_Simulator_ER.Managers;
 using S1_D001_Monsterkampf_Simulator_ER.Skills;
-using S1_D001_Monsterkampf_Simulator_ER.Skills.Goblin;
-using System.Security.Cryptography.X509Certificates;
 
 namespace S1_D001_Monsterkampf_Simulator_ER.Monsters
 {
@@ -24,7 +22,6 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Monsters
         // === Fields ===
         public static readonly string[] GoblinSpriteP =
         {
-
                 @"    ____",
                 @"   (   O)_",
                 @"   |    __)",
@@ -39,6 +36,7 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Monsters
                 @"|__|  |__|",
                 @"(___) (___)"
         };
+
         public static readonly string[] GoblinSpriteE =
         {
                 @"         ____",
@@ -58,8 +56,6 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Monsters
 
         public override string Description => "A fast and aggressive fighter. Loves quick strikes.";
 
-
-
         public Goblin(MonsterMeta meta, MonsterResistance resistance, int level, SkillPackage skill, DiagnosticsManager diagnostics)
             : base(
                  meta,
@@ -69,12 +65,10 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Monsters
                  skill,
                  diagnostics)
         {
-
         }
 
         public override void Spawn()
         {
-
             if (SkillPackage.PassiveSkill != null)
             {
                 UsePasiveSkill();
@@ -86,7 +80,5 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Monsters
                 _diagnostics.AddError($"{nameof(Goblin)}.{nameof(Spawn)}: No passive skill assigned.");
             }
         }
-        
-
     }
 }

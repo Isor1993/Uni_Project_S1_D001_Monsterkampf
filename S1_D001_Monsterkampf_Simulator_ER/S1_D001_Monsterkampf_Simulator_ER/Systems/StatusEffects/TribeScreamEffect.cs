@@ -1,6 +1,6 @@
 ﻿/*****************************************************************************
 * Project : Monsterkampf-Simulator (K1, S1, S4)
-* File    : 
+* File    :
 * Date    : xx.xx.2025
 * Author  : Eric Rosenberg
 *
@@ -12,7 +12,6 @@
 
 using S1_D001_Monsterkampf_Simulator_ER.Managers;
 using S1_D001_Monsterkampf_Simulator_ER.Monsters;
-using System.Diagnostics.Tracing;
 
 namespace S1_D001_Monsterkampf_Simulator_ER.Systems.StatusEffects
 {
@@ -23,10 +22,9 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Systems.StatusEffects
         private bool _applied = false;
 
         public TribeScreamEffect(float multiplier, int duration, DiagnosticsManager diagnostics)
-            : base("Tribe Scream",duration,diagnostics)
+            : base("Tribe Scream", duration, diagnostics)
         {
             _multiplier = multiplier;
-            
         }
 
         public override void ApplyStartOfTurn(MonsterBase target)
@@ -46,8 +44,5 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Systems.StatusEffects
             target.Meta.AP = _baseAp;
             _diagnostics.AddCheck($"{nameof(TribeScreamEffect)}.{nameof(OnExpire)}: Restored AP back to {_baseAp}.");
         }
-
-
-
     }
 }

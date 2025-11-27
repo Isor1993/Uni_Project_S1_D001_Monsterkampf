@@ -11,6 +11,7 @@
 * History :
 * xx.xx.2025 ER Created
 ******************************************************************************/
+
 using S1_D001_Monsterkampf_Simulator_ER.Balancing;
 using S1_D001_Monsterkampf_Simulator_ER.Managers;
 using S1_D001_Monsterkampf_Simulator_ER.Monsters;
@@ -19,26 +20,22 @@ using S1_D001_Monsterkampf_Simulator_ER.Skills.Goblin;
 using S1_D001_Monsterkampf_Simulator_ER.Skills.Orc;
 using S1_D001_Monsterkampf_Simulator_ER.Skills.Slime;
 using S1_D001_Monsterkampf_Simulator_ER.Skills.Troll;
-using S1_D001_Monsterkampf_Simulator_ER.Systems.StatusEffects;
-using System.Threading;
 
 namespace S1_D001_Monsterkampf_Simulator_ER.Factories
 {
     internal class MonsterFactory
     {
-
         // === Dependencies ===
         private readonly DiagnosticsManager _diagnostics;
+
         private readonly MonsterBalancing _balancing;
 
         // === Fields ===
-
 
         public MonsterFactory(DiagnosticsManager diagnostics, MonsterBalancing balancing)
         {
             _diagnostics = diagnostics;
             _balancing = balancing;
-
         }
 
         public MonsterBase Create(RaceType race, int level)
@@ -72,13 +69,9 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Factories
 
                 default:
                     throw new Exception($"No monster class found for race: {race}.");
-
             }
-            
-           
         }
 
-        
         private void AssignGoblinSkills(SkillPackage package)
         {
             package.SetPassiveSkill(new PassiveSkill_Greed(_diagnostics));
@@ -86,11 +79,10 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Factories
             package.AddActiveSkill(new BasicAttack(_diagnostics));
             package.AddActiveSkill(new PoisonDagger(_diagnostics));
             package.AddActiveSkill(new ThrowStone(_diagnostics));
-           
 
             _diagnostics.AddCheck($"{nameof(MonsterFactory)}.{nameof(AssignGoblinSkills)}: Goblin skills assigned.");
-
         }
+
         private void AssignSlimeSkills(SkillPackage package)
         {
             package.SetPassiveSkill(new PassiveSkill_Absorb(_diagnostics));
@@ -99,9 +91,9 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Factories
             package.AddActiveSkill(new Fireball(_diagnostics));
             package.AddActiveSkill(new Waterball(_diagnostics));
 
-
             _diagnostics.AddCheck($"{nameof(MonsterFactory)}.{nameof(AssignSlimeSkills)}: Slime skills assigned.");
         }
+
         private void AssignTrollSkills(SkillPackage package)
         {
             package.SetPassiveSkill(new PassiveSkill_Regeneration(_diagnostics));
@@ -111,6 +103,7 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Factories
 
             _diagnostics.AddCheck($"{nameof(MonsterFactory)}.{nameof(AssignTrollSkills)}: Troll skills assigned.");
         }
+
         private void AssignOrcSkills(SkillPackage package)
         {
             package.SetPassiveSkill(new PassiveSkill_Fear(_diagnostics));

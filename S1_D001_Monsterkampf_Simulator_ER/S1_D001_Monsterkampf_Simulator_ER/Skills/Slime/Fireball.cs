@@ -1,6 +1,6 @@
 ﻿/*****************************************************************************
 * Project : Monsterkampf-Simulator (K1, S1, S4)
-* File    : 
+* File    :
 * Date    : xx.xx.2025
 * Author  : Eric Rosenberg
 *
@@ -12,8 +12,6 @@
 
 using S1_D001_Monsterkampf_Simulator_ER.Managers;
 using S1_D001_Monsterkampf_Simulator_ER.Monsters;
-using S1_D001_Monsterkampf_Simulator_ER.Skills.Goblin;
-using System.Diagnostics.Tracing;
 
 namespace S1_D001_Monsterkampf_Simulator_ER.Skills.Slime
 {
@@ -22,9 +20,9 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Skills.Slime
         // === Dependencies ===
 
         // === Fields ===
-        private const float SkillMultiplier = 1.5f;        
-        private const int SkillCooldown = 2;
+        private const float SkillMultiplier = 1.5f;
 
+        private const int SkillCooldown = 2;
 
         public Fireball(DiagnosticsManager diagnostics)
             : base(
@@ -37,12 +35,12 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Skills.Slime
         {
             Cooldown = SkillCooldown;
         }
+
         public override float CalculateRawDamage(MonsterBase attacker)
         {
             float raw = attacker.Meta.AP * Power;
             _diagnostics.AddCheck($"{nameof(Fireball)}.{nameof(CalculateRawDamage)}: RawDamage = {raw}.");
             return raw;
         }
-       
     }
 }

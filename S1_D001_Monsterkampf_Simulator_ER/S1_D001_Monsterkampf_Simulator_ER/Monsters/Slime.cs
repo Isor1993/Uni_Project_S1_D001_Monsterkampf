@@ -1,6 +1,6 @@
 ﻿/*****************************************************************************
 * Project : Monsterkampf-Simulator (K1, S1, S4)
-* File    : 
+* File    :
 * Date    : xx.xx.2025
 * Author  : Eric Rosenberg
 *
@@ -39,6 +39,7 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Monsters
             "  (    V V)",
             "  (________)"
         };
+
         public override string Description => "A weak but resilient creature made of gelatin with low damage.";
 
         public Slime(MonsterMeta meta, MonsterResistance resistance, int level, SkillPackage skill, DiagnosticsManager diagnostics)
@@ -64,11 +65,5 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Monsters
                 _diagnostics.AddError($"{nameof(Slime)}.{nameof(Spawn)}: No passive skill assigned.");
             }
         }
-
-
-
     }
 }
-
-
-

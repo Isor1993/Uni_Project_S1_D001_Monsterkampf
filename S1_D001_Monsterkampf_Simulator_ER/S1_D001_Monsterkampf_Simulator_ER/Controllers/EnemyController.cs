@@ -15,21 +15,19 @@
 using S1_D001_Monsterkampf_Simulator_ER.Managers;
 using S1_D001_Monsterkampf_Simulator_ER.Monsters;
 using S1_D001_Monsterkampf_Simulator_ER.Skills;
-using System;
-using System.Threading;
 
 namespace S1_D001_Monsterkampf_Simulator_ER.Controllers
 {
-    internal class EnemyController:ControllerBase
+    internal class EnemyController : ControllerBase
     {
-        // === Dependencies ===       
+        // === Dependencies ===
         private readonly RandomManager _random;
-       
+
         // === Fields ===
 
-        public EnemyController(MonsterBase monster,DiagnosticsManager diagnostics,RandomManager random):base(monster, diagnostics)
+        public EnemyController(MonsterBase monster, DiagnosticsManager diagnostics, RandomManager random) : base(monster, diagnostics)
         {
-            _random = random?? throw new ArgumentNullException(nameof(random));
+            _random = random ?? throw new ArgumentNullException(nameof(random));
         }
 
         public override SkillBase ChooseSkill()
@@ -40,7 +38,7 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Controllers
 
             return chosen;
         }
-        
+
         public void SetMonster(MonsterBase monster)
         {
             base.SetMonster(monster);

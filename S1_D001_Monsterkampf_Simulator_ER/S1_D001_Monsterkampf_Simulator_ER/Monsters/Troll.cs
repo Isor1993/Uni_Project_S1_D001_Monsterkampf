@@ -1,6 +1,6 @@
 ﻿/*****************************************************************************
 * Project : Monsterkampf-Simulator (K1, S1, S4)
-* File    : 
+* File    :
 * Date    : xx.xx.2025
 * Author  : Eric Rosenberg
 *
@@ -13,7 +13,6 @@
 using S1_D001_Monsterkampf_Simulator_ER.Managers;
 using S1_D001_Monsterkampf_Simulator_ER.Skills;
 
-
 namespace S1_D001_Monsterkampf_Simulator_ER.Monsters
 {
     internal class Troll : MonsterBase
@@ -23,7 +22,6 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Monsters
         // === Fields ===
         public static readonly string[] TrollSpriteP =
         {
-
             @"   A___A",
             @"  (    O)_",
             @"  |     __)",
@@ -40,6 +38,7 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Monsters
             @"|__|  |__|",
             @"(___) (___)"
         };
+
         public static readonly string[] TrollSpriteE =
         {
             @"             A___A",
@@ -58,11 +57,11 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Monsters
             @"           |__|  |__|",
             @"          (___) (___)",
         };
+
         public override string Description => "A slow but extremely durable monster. Regenerates health naturally.";
 
-
         public Troll(MonsterMeta meta, MonsterResistance resistance, int level, SkillPackage skill, DiagnosticsManager diagnostics)
-            :base(
+            : base(
                  meta,
                  resistance,
                  RaceType.Troll,
@@ -70,12 +69,10 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Monsters
                  skill,
                  diagnostics)
         {
-
         }
 
         public override void Spawn()
         {
-
             if (SkillPackage.PassiveSkill != null)
             {
                 UsePasiveSkill();
@@ -86,7 +83,5 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Monsters
                 _diagnostics.AddError($"{nameof(Troll)}.{nameof(Spawn)}: No passive skill assigned.");
             }
         }
-
-        
     }
 }

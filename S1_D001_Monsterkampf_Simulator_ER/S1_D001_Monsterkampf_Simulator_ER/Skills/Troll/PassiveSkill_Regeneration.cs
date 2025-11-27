@@ -1,6 +1,6 @@
 ﻿/*****************************************************************************
 * Project : Monsterkampf-Simulator (K1, S1, S4)
-* File    : 
+* File    :
 * Date    : xx.xx.2025
 * Author  : Eric Rosenberg
 *
@@ -16,13 +16,12 @@ using S1_D001_Monsterkampf_Simulator_ER.Systems.StatusEffects;
 
 namespace S1_D001_Monsterkampf_Simulator_ER.Skills.Troll
 {
-    internal class PassiveSkill_Regeneration : SkillBase,IPassiveSkill
+    internal class PassiveSkill_Regeneration : SkillBase, IPassiveSkill
     {
         // === Fields ===
-        
-        private const float SkillMultiplier = 0.0005f;       
-        private const int SkillCooldown = 0;
 
+        private const float SkillMultiplier = 0.0005f;
+        private const int SkillCooldown = 0;
 
         public PassiveSkill_Regeneration(DiagnosticsManager diagnostics)
             : base(
@@ -36,7 +35,7 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Skills.Troll
             Cooldown = SkillCooldown;
         }
 
-        public  void ApplyPassive(MonsterBase user)
+        public void ApplyPassive(MonsterBase user)
         {
             user.AddStatusEffect(new RegenerationEffect(SkillMultiplier, _diagnostics));
             _diagnostics.AddCheck($"{nameof(PassiveSkill_Regeneration)}.{nameof(ApplyPassive)}: Applied regeneration effect (+10% Health) on {user.Race}.");

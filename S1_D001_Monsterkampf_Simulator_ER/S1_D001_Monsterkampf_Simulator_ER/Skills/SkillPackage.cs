@@ -1,6 +1,6 @@
 ﻿/*****************************************************************************
 * Project : Monsterkampf-Simulator (K1, S1, S4)
-* File    : 
+* File    :
 * Date    : xx.xx.2025
 * Author  : Eric Rosenberg
 *
@@ -20,7 +20,6 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Skills
         private readonly DiagnosticsManager _diagnostics;
         public SkillBase PassiveSkill { get; private set; }
 
-
         public List<SkillBase> ActiveSkills { get; private set; }
 
         public List<PassiveSkill_Greed> EventPassives { get; } = new();
@@ -31,19 +30,18 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Skills
             ActiveSkills = new List<SkillBase>();
         }
 
-
         public void SetPassiveSkill(SkillBase passive)
         {
             PassiveSkill = passive;
             _diagnostics.AddCheck($"{nameof(SkillPackage)}.{nameof(SetPassiveSkill)}: Set skill as passive {passive}");
         }
 
-
         public void AddActiveSkill(SkillBase active)
         {
             ActiveSkills.Add(active);
             _diagnostics.AddCheck($"{nameof(SkillPackage)}.{nameof(AddActiveSkill)}: Added skill {active.Name} in 'ActiveSkills'");
         }
+
         public IEnumerable<SkillBase> AllSkills
         {
             get
@@ -59,6 +57,7 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Skills
                 }
             }
         }
+
         public void AddEventPassive(SkillBase passive)
         {
             if (passive is PassiveSkill_Greed greed)
@@ -71,6 +70,7 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Skills
                 _diagnostics.AddError($"{nameof(SkillPackage)}.{nameof(AddEventPassive)}: Tried to add non-event passive skill {passive.Name}");
             }
         }
+
         public void ResetCooldowns()
         {
             foreach (SkillBase skill in AllSkills)

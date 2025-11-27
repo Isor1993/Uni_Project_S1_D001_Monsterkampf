@@ -1,6 +1,6 @@
 ﻿/*****************************************************************************
 * Project : Monsterkampf-Simulator (K1, S1, S4)
-* File    : 
+* File    :
 * Date    : xx.xx.2025
 * Author  : Eric Rosenberg
 *
@@ -10,20 +10,14 @@
 * xx.xx.2025 ER Created
 ******************************************************************************/
 
-
 using S1_D001_Monsterkampf_Simulator_ER.Balancing;
 using S1_D001_Monsterkampf_Simulator_ER.Managers;
-using S1_D001_Monsterkampf_Simulator_ER.Player;
 using S1_D001_Monsterkampf_Simulator_ER.Skills;
-using S1_D001_Monsterkampf_Simulator_ER.Skills.Goblin;
 using S1_D001_Monsterkampf_Simulator_ER.Systems.Damage;
 using S1_D001_Monsterkampf_Simulator_ER.Systems.StatusEffects;
-using System.Net.WebSockets;
 
 namespace S1_D001_Monsterkampf_Simulator_ER.Monsters
 {
-
-
     public enum RaceType
     {
         None = 0,
@@ -31,8 +25,8 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Monsters
         Troll = 2,
         Goblin = 3,
         Slime = 4,
-
     }
+
     //TODO alle enums viel in eine cs datei ??
     public enum StatType
     {
@@ -40,20 +34,19 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Monsters
         AP,
         DP,
         Speed
-
     }
-
 
     internal abstract class MonsterBase
     {
         // === Dependencies ===
         protected readonly DiagnosticsManager _diagnostics;
+
         // === Fields ===
         protected MonsterMeta _meta;
+
         protected MonsterResistance _resistance;
         protected SkillPackage _skills;
         private List<StatusEffectBase> _statusEffects = new List<StatusEffectBase>();
-
 
         public abstract string Description { get; }
 
@@ -61,9 +54,7 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Monsters
 
         public RaceType Race { get; }
 
-
         public int Level { get; set; }
-
 
         protected MonsterBase(MonsterMeta meta, MonsterResistance resistance, RaceType race, int level, SkillPackage skill, DiagnosticsManager diagnosticsManager)
         {
@@ -75,17 +66,12 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Monsters
             _skills = skill;
         }
 
-
-
         public MonsterMeta Meta => _meta;
-
 
         public MonsterResistance Resistance => _resistance;
 
-
         public abstract void Spawn();
 
-       
         public virtual float Attack(MonsterBase target, SkillBase skill, DamagePipeline pipeline)
         {
             if (target == null)
@@ -102,10 +88,12 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Monsters
 
             return finalDamage;
         }
+
         private SkillBase CreateBasicAttack()
         {
             return new BasicAttack(_diagnostics);
         }
+
         public SkillBase ChooseSkillForAI(RandomManager random)
         {
             // 1. Skills sammeln, die bereit sind (IsReady == true)
@@ -153,7 +141,6 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Monsters
             return basicAttack;
         }
 
-
         public virtual void UsePasiveSkill()
         {
             if (_skills.PassiveSkill is IPassiveSkill passive)
@@ -166,9 +153,8 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Monsters
             }
         }
 
-
-        public virtual void UseAktiveSkill() { }
-
+        public virtual void UseAktiveSkill()
+        { }
 
         public virtual void Heal(float heal)
         {
@@ -219,6 +205,7 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Monsters
 
             _diagnostics.AddCheck($"{nameof(MonsterBase)}.{nameof(ProcessStartOfTurnEffects)}: Start-of-turn effects processed for {Race}.");
         }
+
         public void ProcessEndOfTurnEffects()
         {
             foreach (StatusEffectBase effect in _statusEffects)
@@ -260,6 +247,7 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Monsters
             modified = Math.Max(1, modified);
             return modified;
         }
+
         public void ProcessSkillCooldowns()
         {
             foreach (SkillBase skill in _skills.AllSkills)
@@ -271,7 +259,6 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Monsters
 
         public void ApplyStatPointIncrease(StatType stat, MonsterBalancing balancing)
         {
-
             switch (stat)
             {
                 case StatType.MaxHP:
@@ -280,36 +267,40 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Monsters
                     Meta.CurrentHP = Meta.MaxHP;
                     _diagnostics.AddCheck($"{nameof(MonsterBase)}.{nameof(ApplyStatPointIncrease)}: Increased max HP {oldMaxHP} to {Meta.MaxHP}.");
                     break;
+
                 case StatType.AP:
                     float oldAP = Meta.AP;
                     Meta.AP += balancing.StatIncrease_AP;
                     _diagnostics.AddCheck($"{nameof(MonsterBase)}.{nameof(ApplyStatPointIncrease)}: Increased max AP {oldAP} to {Meta.AP}.");
                     break;
+
                 case StatType.DP:
                     float oldDP = Meta.DP;
                     Meta.DP += balancing.StatIncrease_DP;
                     _diagnostics.AddCheck($"{nameof(MonsterBase)}.{nameof(ApplyStatPointIncrease)}: Increased max DP {oldDP} to {Meta.DP}.");
                     break;
+
                 case StatType.Speed:
                     float oldMaxSpeed = Meta.Speed;
                     Meta.Speed += balancing.StatIncrease_Speed;
                     _diagnostics.AddCheck($"{nameof(MonsterBase)}.{nameof(ApplyStatPointIncrease)}: Increased max Speed {oldMaxSpeed} to {Meta.Speed}.");
                     break;
+
                 default:
                     _diagnostics.AddError($"{nameof(MonsterBase)}.{nameof(ApplyStatPointIncrease)}: No StatType found.");
                     break;
             }
-
         }
-        public void ApplyLevelUp(MonsterMeta newMeta,MonsterBalancing balancing)
+
+        public void ApplyLevelUp(MonsterMeta newMeta, MonsterBalancing balancing)
         {
             Level++;
             const int MultiplierBase = 1;
-            Meta.MaxHP *= (balancing.HPScaling+ MultiplierBase);
-            Meta.CurrentHP =Meta.MaxHP;
-            Meta.AP *= (balancing.APScaling+ MultiplierBase);
-            Meta.DP *= (balancing.DPScaling+ MultiplierBase);
-            Meta.Speed *= (balancing.SpeedScaling+ MultiplierBase);
+            Meta.MaxHP *= (balancing.HPScaling + MultiplierBase);
+            Meta.CurrentHP = Meta.MaxHP;
+            Meta.AP *= (balancing.APScaling + MultiplierBase);
+            Meta.DP *= (balancing.DPScaling + MultiplierBase);
+            Meta.Speed *= (balancing.SpeedScaling + MultiplierBase);
             _diagnostics.AddCheck($"{nameof(MonsterBase)}.{nameof(ApplyLevelUp)}: LevelUp to {Level} and updated stats.");
         }
 

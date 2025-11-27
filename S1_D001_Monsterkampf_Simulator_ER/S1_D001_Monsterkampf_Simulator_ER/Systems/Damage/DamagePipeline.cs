@@ -1,6 +1,6 @@
 ﻿/*****************************************************************************
 * Project : Monsterkampf-Simulator (K1, S1, S4)
-* File    : 
+* File    :
 * Date    : xx.xx.2025
 * Author  : Eric Rosenberg
 *
@@ -42,16 +42,16 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Systems.Damage
         public float Execute(MonsterBase attacker, MonsterBase target, SkillBase skill)
         {
             _diagnostics.AddCheck($"{nameof(DamagePipeline)}: Starting DamagePipeline for skill '{skill.Name}'.");
-            
+
             skill.OnCast(attacker);
             _diagnostics.AddCheck($"{nameof(DamagePipeline)}: OnCast executed for '{skill.Name}'.");
             float rawDamage = skill.CalculateRawDamage(attacker);
             _diagnostics.AddCheck($"{nameof(DamagePipeline)}: RawDamage = {rawDamage}.");
-            float afterDefense =rawDamage - target.Meta.DP;
-            afterDefense=Math.Max(1, afterDefense);
+            float afterDefense = rawDamage - target.Meta.DP;
+            afterDefense = Math.Max(1, afterDefense);
 
-           _diagnostics.AddCheck($"{nameof(DamagePipeline)}: AfterDefense = {afterDefense} (DP={target.Meta.DP}).");
-            float afterResistance=GetAfterResistance(target,skill,afterDefense);
+            _diagnostics.AddCheck($"{nameof(DamagePipeline)}: AfterDefense = {afterDefense} (DP={target.Meta.DP}).");
+            float afterResistance = GetAfterResistance(target, skill, afterDefense);
             float afterAbsorb = ApplyAbsorb(target, afterResistance);
             float afterModify = target.ModifyFinalDamage(afterAbsorb);
             float finalDamage = afterModify;
@@ -62,7 +62,6 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Systems.Damage
             _diagnostics.AddCheck($"{nameof(DamagePipeline)}: OnHit executed for '{skill.Name}'.");
 
             return finalDamage;
-
         }
 
         private float GetAfterResistance(MonsterBase target, SkillBase skill, float afterDefense)
@@ -84,20 +83,18 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Systems.Damage
             return afterResistance;
         }
 
-        private float ApplyAbsorb(MonsterBase target,float damage)
+        private float ApplyAbsorb(MonsterBase target, float damage)
         {
-            var absorb=target.GetStatusEffects<AbsorbEffect>().FirstOrDefault();
-            if (absorb==null)
-            {                
+            var absorb = target.GetStatusEffects<AbsorbEffect>().FirstOrDefault();
+            if (absorb == null)
+            {
                 return damage;
             }
             float reduced = absorb.AbsorbDamage(damage);
-            reduced=Math.Max(1, reduced);
+            reduced = Math.Max(1, reduced);
 
             _diagnostics.AddCheck($"{nameof(DamagePipeline)}.{nameof(ApplyAbsorb)}: Absorb applied → {damage} → {reduced}");
             return reduced;
-
         }
     }
 }
-

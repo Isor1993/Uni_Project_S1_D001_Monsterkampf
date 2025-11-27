@@ -1,6 +1,6 @@
 ﻿/*****************************************************************************
 * Project : Monsterkampf-Simulator (K1, S1, S4)
-* File    : 
+* File    :
 * Date    : xx.xx.2025
 * Author  : Eric Rosenberg
 *
@@ -10,37 +10,34 @@
 * xx.xx.2025 ER Created
 ******************************************************************************/
 
-
 using S1_D001_Monsterkampf_Simulator_ER.Balancing;
 using S1_D001_Monsterkampf_Simulator_ER.Dependencies;
 using S1_D001_Monsterkampf_Simulator_ER.Monsters;
 using S1_D001_Monsterkampf_Simulator_ER.Player;
-using System;
-using System.Diagnostics;
-using System.Reflection;
-using System.Reflection.Emit;
-using System.Security.AccessControl;
 
 namespace S1_D001_Monsterkampf_Simulator_ER.Managers
 {
-
     internal class GameManager
     {
-        private enum GameState { Start, Tutorial, ChooseMonster, BattleStart, HandleRewards, NextStage, End, Quit }
+        private enum GameState
+        { Start, Tutorial, ChooseMonster, BattleStart, HandleRewards, NextStage, End, Quit }
 
         // === Dependencies ===
         private readonly GameDependencies _deps;
+
         private readonly InputManager _inputManager;
         private readonly IPlayerInput _playerInput;
 
         // === Fields ===
         private GameState _currentState = GameState.Start;
+
         private bool isRunning = true;
         public PlayerData PlayerData { get; } = new PlayerData();
 
         public static int totalFights { get; private set; }
+
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <param name="gameDependencies"></param>
         public GameManager(GameDependencies gameDependencies, InputManager inputManager, IPlayerInput playerInput)
@@ -50,13 +47,10 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
             _playerInput = playerInput;
         }
 
-
-
         public void RunGame()
         {
             while (isRunning)
             {
-
                 switch (_currentState)
                 {
                     case GameState.Start:
@@ -106,7 +100,6 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
             }
         }
 
-
         private void StartScreen()
         {
             Console.Clear();
@@ -115,7 +108,6 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
             _currentState = GameState.Tutorial;
         }
 
-
         private void TutorialScreen()
         {
             Console.Clear();
@@ -123,11 +115,7 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
             Console.ReadKey(true);
 
             _currentState = GameState.ChooseMonster;
-
         }
-
-
-
 
         private void ChooseMonster()
         {
@@ -157,7 +145,6 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
             _deps.UI.UpdateMonsterSelectionBox(monsterChoices, pointer);
             RefreshMessageBox();
 
-
             // 4. Pointer bewegen
             while (!confirmed)
             {
@@ -178,7 +165,6 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
                         break;
                 }
 
-
                 _deps.UI.UpdateMonsterSelectionBox(monsterChoices, pointer);
                 RefreshMessageBox();
             }
@@ -195,8 +181,6 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
             // 6. Weiter
             _currentState = GameState.NextStage;
         }
-
-
 
         private void StartBattle()
         {
@@ -231,8 +215,6 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
             battle.TotalRounds = 0;
         }
 
-
-
         private void HandleRewards()
         {
             _deps.Diagnostics.AddCheck($"{nameof(GameManager)}.{nameof(HandleRewards)}: Handling rewards...");
@@ -263,7 +245,6 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
             // --- 2. LevelUp berechnen ---
             int newLevel = player.Level + _deps.Balancing.LevelUpScaling;
 
-
             player.ApplyLevelUp(player.Meta, _deps.Balancing);
             player.SkillPackage.ResetCooldowns();
             _deps.Diagnostics.AddCheck(
@@ -272,7 +253,6 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
             // --- 3. Weiter zu NextStage ---
             _currentState = GameState.NextStage;
         }
-
 
         private void NextStage()
         {
@@ -294,20 +274,16 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
             MonsterBase enemy = _deps.MonsterFactory.Create(enemyRace, enemyLevel);
             ScaleEnemy(enemy, enemyLevel
 
-
                 , _deps.Balancing);
             _deps.EnemyController.SetMonster(enemy);
             _deps.Diagnostics.AddCheck($"{nameof(GameManager)}.{nameof(NextStage)}: Enemy created & assigned.");
             _currentState = GameState.BattleStart;
         }
 
-
         public void ScaleEnemy(MonsterBase enemy, int level, MonsterBalancing balancing)
         {
             enemy.Meta.MaxHP += (1 + balancing.HPScaling) * level;
             enemy.Meta.AP += (1 +
-
-
 
             balancing.APScaling) * level;
             enemy.Meta.DP += (1 + balancing.DPScaling) * level;
@@ -316,9 +292,6 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
             enemy.Meta.CurrentHP = enemy.Meta.MaxHP;
         }
 
-
-
-
         private void Endscreen()
         {
             Console.Clear();
@@ -326,9 +299,7 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
             Console.ReadKey(true);
 
             _currentState = GameState.Quit;
-
         }
-
 
         private void QuitGame()
         {

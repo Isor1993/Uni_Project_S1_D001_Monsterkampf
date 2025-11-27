@@ -1,6 +1,6 @@
 ﻿/*****************************************************************************
 * Project : Monsterkampf-Simulator (K1, S1, S4)
-* File    : 
+* File    :
 * Date    : xx.xx.2025
 * Author  : Eric Rosenberg
 *
@@ -17,7 +17,6 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
     /// </summary>
     internal class SymbolManager
     {
-
         // Private fields for symbols
         // Some Symbols are needed for later updates
         private char _pointerSymbol = '\u25BA';//                      ' ► '
@@ -70,7 +69,7 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
 
         private char _keyFragmentSymbol = '\u26BF';  //              ' ⚿ '
 
-        private char _questSymbol = '\u003f';//                      ' ? ' 
+        private char _questSymbol = '\u003f';//                      ' ? '
 
         private char _emptySymbol = ' ';//                           '   '
 
@@ -101,12 +100,12 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
         /// <summary>
         /// Hp Bar for HP range to max HP: ░
         /// </summary>
-        public char unfilledBar {  get => _unfilledHpBar; }
+        public char unfilledBar { get => _unfilledHpBar; }
 
         /// <summary>
         /// Infobox Top-left corner: ┌
         /// </summary>
-        public char InfoBoxCornerTopLeftSymbol { get => _infoboxCornerTopLeftSymbol;}
+        public char InfoBoxCornerTopLeftSymbol { get => _infoboxCornerTopLeftSymbol; }
 
         /// <summary>
         /// Infobox Top-right corner: ┐

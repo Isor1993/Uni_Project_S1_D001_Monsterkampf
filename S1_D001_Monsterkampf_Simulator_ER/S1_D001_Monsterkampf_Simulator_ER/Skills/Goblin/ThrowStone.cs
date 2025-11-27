@@ -1,6 +1,6 @@
 ﻿/*****************************************************************************
 * Project : Monsterkampf-Simulator (K1, S1, S4)
-* File    : 
+* File    :
 * Date    : xx.xx.2025
 * Author  : Eric Rosenberg
 *
@@ -10,7 +10,6 @@
 * xx.xx.2025 ER Created
 ******************************************************************************/
 
-
 using S1_D001_Monsterkampf_Simulator_ER.Managers;
 using S1_D001_Monsterkampf_Simulator_ER.Monsters;
 
@@ -18,7 +17,7 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Skills.Goblin
 {
     internal class ThrowStone : SkillBase
     {
-        private const float SkillMultiplier = 1.3f;        
+        private const float SkillMultiplier = 1.3f;
         private const int SkillCooldown = 1;
 
         public ThrowStone(DiagnosticsManager diagnostics)
@@ -32,11 +31,12 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Skills.Goblin
         {
             Cooldown = SkillCooldown;
         }
+
         public override float CalculateRawDamage(MonsterBase attacker)
         {
             float raw = attacker.Meta.AP * Power;
             _diagnostics.AddCheck($"{nameof(ThrowStone)}.{nameof(CalculateRawDamage)}: RawDamage = {raw}.");
             return raw;
-        }             
+        }
     }
 }

@@ -1,6 +1,6 @@
 ﻿/*****************************************************************************
 * Project : Monsterkampf-Simulator (K1, S1, S4)
-* File    : 
+* File    :
 * Date    : xx.xx.2025
 * Author  : Eric Rosenberg
 *
@@ -14,8 +14,6 @@ using S1_D001_Monsterkampf_Simulator_ER.Balancing;
 using S1_D001_Monsterkampf_Simulator_ER.Monsters;
 using S1_D001_Monsterkampf_Simulator_ER.Skills;
 using S1_D001_Monsterkampf_Simulator_ER.Systems.StatusEffects;
-using System.ComponentModel;
-using System.Numerics;
 
 namespace S1_D001_Monsterkampf_Simulator_ER.Managers
 {
@@ -25,27 +23,26 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
         private readonly DiagnosticsManager _diagnostics;
         private readonly MonsterBalancing _balancing;
 
-
         public int PlayerPositionX => 20;
         public int PlayerPositionY => 3;
         public int EnemyPositionX => 63;
         public int EnemyPositionY => 3;
 
-        const int EmptyOffset = 1;
-
+        private const int EmptyOffset = 1;
 
         public UIManager(SymbolManager symbol, DiagnosticsManager diagnostics, MonsterBalancing balancing)
         {
             _symbol = symbol;
             _diagnostics = diagnostics;
             _balancing = balancing;
-
         }
+
         //TODO könnte veraltet sein muss geändert werden später viel.
         public void ShowStatDistributionMenu(int unassignedStatPoints)
         {
             new NotImplementedException();
         }
+
         //TODO könnte veraltet sein muss geändert werden später viel.
         public void PrintOptions()
         {
@@ -82,7 +79,6 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
             }
         }
 
-
         public void PrintMonsterInfoBoxPlayer()
         {
             const int BoxHeight = 6;
@@ -92,6 +88,7 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
             DrawMonsterBoxFrame(BoxPositionX, BoxPositionY, BoxHeight, BoxWidth);
             DrawMonsterLabelStats(BoxPositionX, BoxPositionY);
         }
+
         public void PrintMonsterInfoBoxEnemy()
         {
             const int BoxHeight = 6;
@@ -101,6 +98,7 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
             DrawMonsterBoxFrame(BoxPositionX, BoxPositionY, BoxHeight, BoxWidth);
             DrawMonsterLabelStats(BoxPositionX, BoxPositionY);
         }
+
         public void PrintMessageBoxLayout()
         {
             // Position Outline
@@ -127,10 +125,10 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
                     else if (top || bottom) Console.Write(_symbol.WallHorizontalSymbol);
                     else if (left || right) Console.Write(_symbol.WallVerticalSymbol);
                     else Console.Write(" ");
-
                 }
             }
         }
+
         public void PrintSkillBoxLayout()
         {
             // Position Outline
@@ -160,6 +158,7 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
                 }
             }
         }
+
         public void UpdateMonsterBoxPlayer(MonsterBase monster)
         {
             // Position Outline
@@ -168,6 +167,7 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
 
             UpdateMonsterLabelStats(x, y, monster);
         }
+
         public void UpdateMonsterBoxEnemy(MonsterBase monster)
         {
             // Position Outline
@@ -176,6 +176,7 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
 
             UpdateMonsterLabelStats(x, y, monster);
         }
+
         public void ClearSkillBox()
         {
             {
@@ -192,6 +193,7 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
                 ClearArea(x + FrameOffset, y + FrameOffset, ClearWidth, ClearHeight);
             }
         }
+
         public void UpdateSkillBox(SkillPackage skills, int pointerIndex)
         {
             // Position Outline
@@ -239,6 +241,7 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
             Console.SetCursorPosition(pointerX, pointerY);
             Console.Write(_symbol.PointerSymbol);
         }
+
         private void UpdateMonsterLabelStats(int x, int y, MonsterBase monster)
         {
             const int MaxValue = 999999;
@@ -259,7 +262,6 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
             Console.SetCursorPosition(x + LabelOffsetLeft, y + yOffset);
             if (monster.Meta.MaxHP < MaxValue)
             {
-
                 Console.Write($"HP : {(int)monster.Meta.CurrentHP}/{(int)monster.Meta.MaxHP} ");
             }
             else Console.Write($"HP  : >999999");
@@ -294,6 +296,7 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
             }
             else Console.Write("DP   : > 9999");
         }
+
         private void DrawHPBar(float currentHP, float maxHP, int maxBar)
         {
             float singleBarValue = maxHP / maxBar;
@@ -305,6 +308,7 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
             Console.Write(new string(_symbol.unfilledBar, unfilledBars));
             Console.ResetColor();
         }
+
         private void ClearMonsterLabelStats(int x, int y)
         {
             const int DrawLabelOffsetLeft = 2; ;
@@ -340,6 +344,7 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
             Console.SetCursorPosition(x + DrawLableOffsetRight + StatStringOffset_2, y + yOffset);
             Console.Write(new string(' ', maxValueCharSpace));
         }
+
         private void ClearArea(int x, int y, int width, int height)
         {
             string blank = new string(' ', width);
@@ -350,6 +355,7 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
                 Console.Write(blank);
             }
         }
+
         private void DrawMonsterBoxFrame(int x, int y, int height, int width)
         {
             for (int row = 0; row < height; row++)
@@ -373,13 +379,13 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
                 }
             }
         }
+
         private void DrawMonsterLabelStats(int x, int y)
         {
             const int LabelOffsetLeft = 2; ;
             const int LableOffsetRight = 20;
             int LableStartY = 1;
             int yOffset = LableStartY;
-
 
             Console.SetCursorPosition(x + LabelOffsetLeft, y + yOffset);
             Console.Write("HP :");
@@ -444,10 +450,7 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
             // Enter unten rechts
             Console.SetCursorPosition(contentX + InnerWidth - line4.Length, contentY + InnerHeight - 1);
             Console.Write(line4);
-
         }
-
-
 
         public void UpdateMessageBoxForTakeDamage(MonsterBase attacker, MonsterBase defender, SkillBase skill, float damage, StatusEffectBase? triggeredEffect)
         {
@@ -530,6 +533,7 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
             Console.SetCursorPosition(contentX + InnerWidth - line4.Length, contentY + InnerHeight - 1);
             Console.Write(line4);
         }
+
         /// <summary>
         /// Shows 4 selectable monsters in the skill-box area using the same UI layout.
         /// Pointer moves vertically exactly like skill selection.
@@ -576,10 +580,10 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
             PrintOutlineLayout();
             PrintSkillBoxLayout();
             PrintMessageBoxLayout();
-            //TODO alle monstersprites printen 
+            //TODO alle monstersprites printen
             UpdateMonsterSelectionBox(races, pointerIndex);
-
         }
+
         public void UpdateMessageBoxForMonsterChoice(RaceType race, MonsterMeta meta, string description)
         {
             // Position der MessageBox
@@ -616,7 +620,6 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
             // Enter unten rechts
             Console.SetCursorPosition(contentX + InnerWidth - enterLine.Length, contentY + InnerHeight - 1);
             Console.Write(enterLine);
-
         }
 
         public void UpdateStatChoiceBox(int pointerIndex)
@@ -776,7 +779,6 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
             "  (________)"
         };
 
-
         //TODO kommt später in die richtige monsterklasse
         private readonly string[] SlimeSpriteP =
         {
@@ -812,10 +814,6 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
                 Console.SetCursorPosition(x, y + i);
                 Console.Write(SlimeSpriteP[i]);
             }
-
         }
-
-
     }
-
 }

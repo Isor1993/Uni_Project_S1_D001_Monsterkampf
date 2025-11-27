@@ -1,6 +1,6 @@
 ﻿/*****************************************************************************
 * Project : Monsterkampf-Simulator (K1, S1, S4)
-* File    : 
+* File    :
 * Date    : xx.xx.2025
 * Author  : Eric Rosenberg
 *
@@ -17,7 +17,6 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Systems.StatusEffects
 {
     internal abstract class StatusEffectBase
     {
-
         protected readonly DiagnosticsManager _diagnostics;
         public string Name { get; }
         public int Duration { get; protected set; }
@@ -28,14 +27,16 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Systems.StatusEffects
             Duration = duration;
             _diagnostics = diagnosticsManager;
         }
+
         public virtual void ApplyStartOfTurn(MonsterBase target)
         {
             // standardmäßig nichts
         }
+
         public virtual void ApplyEndOfTurn(MonsterBase target)
         {
             // standardmäßig nichts
-        }         
+        }
 
         // Wird am Rundenende aufgerufen
         public virtual void Tick()
@@ -54,9 +55,9 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Systems.StatusEffects
         {
             // Standardmäßig passiert nichts
         }
+
         public bool IsExpired => Duration <= 0;
 
-       
         public virtual float ModifyFinalDamage(MonsterBase target, float damage)
         {
             //Later for something like debuff wich also inflict true damage

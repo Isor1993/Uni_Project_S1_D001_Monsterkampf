@@ -1,6 +1,6 @@
 ﻿/*****************************************************************************
 * Project : Monsterkampf-Simulator (K1, S1, S4)
-* File    : 
+* File    :
 * Date    : xx.xx.2025
 * Author  : Eric Rosenberg
 *
@@ -10,14 +10,11 @@
 * xx.xx.2025 ER Created
 ******************************************************************************/
 
-
 using S1_D001_Monsterkampf_Simulator_ER.Managers;
 using S1_D001_Monsterkampf_Simulator_ER.Monsters;
-using S1_D001_Monsterkampf_Simulator_ER.Player;
 
 namespace S1_D001_Monsterkampf_Simulator_ER.Skills
 {
-
     public enum SkillType
     {
         None = 0,
@@ -25,7 +22,6 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Skills
         Passive = 2,
         Meta = 3,
     }
-
 
     public enum DamageType
     {
@@ -36,7 +32,6 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Skills
         Poison = 4,
     }
 
-
     internal class SkillBase
     {
         // === Dependencies ===
@@ -46,20 +41,17 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Skills
 
         public string Name { get; }
 
-
         public string Description { get; }
-
 
         public SkillType Type { get; }
 
-
         public DamageType DamageType { get; }
-
 
         public float Power { get; }
 
         // === Cooldown-System ===
         public int Cooldown { get; protected set; } = 0;       // how many rounds before reuse
+
         public int CurrentCooldown { get; set; } = 0;          // rounds left until ready
         public bool IsReady => CurrentCooldown == 0;
 
@@ -72,7 +64,6 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Skills
             Power = power;
             _diagnostics = diagnosticsManager;
         }
-
 
         public virtual float CalculateRawDamage(MonsterBase attacker)
         {
@@ -96,15 +87,17 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Skills
         {
             // Default: keine Effekte
         }
+
         public void StartCooldown()
         {
             if (Cooldown > 0)
             {
                 const int Offset = 1;
-                CurrentCooldown = Cooldown+Offset;
+                CurrentCooldown = Cooldown + Offset;
                 _diagnostics.AddCheck($"{nameof(SkillBase)}.{nameof(StartCooldown)}: {Name} cooldown → {CurrentCooldown}");
             }
         }
+
         public void TickCooldown()
         {
             if (CurrentCooldown > 0)

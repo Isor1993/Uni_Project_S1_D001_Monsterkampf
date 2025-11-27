@@ -1,6 +1,6 @@
 ﻿/*****************************************************************************
 * Project : Monsterkampf-Simulator (K1, S1, S4)
-* File    : 
+* File    :
 * Date    : xx.xx.2025
 * Author  : Eric Rosenberg
 *
@@ -12,14 +12,14 @@
 
 using S1_D001_Monsterkampf_Simulator_ER.Managers;
 using S1_D001_Monsterkampf_Simulator_ER.Monsters;
-using S1_D001_Monsterkampf_Simulator_ER.Skills.Goblin;
 
 namespace S1_D001_Monsterkampf_Simulator_ER.Skills.Troll
 {
-    internal class PowerSmash:SkillBase
+    internal class PowerSmash : SkillBase
     {
-        private const float SkillMultiplier = 1.8f;        
+        private const float SkillMultiplier = 1.8f;
         private const int SkillCooldown = 3;
+
         public PowerSmash(DiagnosticsManager diagnostics)
        : base(
             "Power Smash",
@@ -38,7 +38,5 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Skills.Troll
             _diagnostics.AddCheck($"{nameof(PowerSmash)}.{nameof(CalculateRawDamage)}: RawDamage = {raw}.");
             return raw;
         }
-       
-
     }
 }

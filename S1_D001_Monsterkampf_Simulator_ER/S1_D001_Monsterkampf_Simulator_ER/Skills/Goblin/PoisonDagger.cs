@@ -1,6 +1,6 @@
 ﻿/*****************************************************************************
 * Project : Monsterkampf-Simulator (K1, S1, S4)
-* File    : 
+* File    :
 * Date    : xx.xx.2025
 * Author  : Eric Rosenberg
 *
@@ -18,13 +18,12 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Skills.Goblin
 {
     internal class PoisonDagger : SkillBase
     {
-
         // === Fields ===
         private const float SkillMultiplier = 0.10f;
+
         private const int SkillDuration = 2;
         private const int SkillCooldown = 1;
         private const float BasicDamage = 1f;
-
 
         public PoisonDagger(DiagnosticsManager diagnostics) : base(
             "Poison Dagger",
@@ -43,14 +42,15 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Skills.Goblin
             _diagnostics.AddCheck($"{nameof(PoisonDagger)}.{nameof(CalculateRawDamage)}: RawDamage = {raw}.");
             return raw;
         }
+
         public override void OnHit(MonsterBase attacker, MonsterBase target)
         {
             target.AddStatusEffect(new PoisonEffect(
-                duration: SkillDuration,       
-                multiplier: SkillMultiplier,    
+                duration: SkillDuration,
+                multiplier: SkillMultiplier,
                 _diagnostics));
 
             _diagnostics.AddCheck($"{nameof(PoisonDagger)}.{nameof(OnHit)}: Applied PoisonEffect (10% for 2 rounds) on {target.Race}.");
-        }        
+        }
     }
 }

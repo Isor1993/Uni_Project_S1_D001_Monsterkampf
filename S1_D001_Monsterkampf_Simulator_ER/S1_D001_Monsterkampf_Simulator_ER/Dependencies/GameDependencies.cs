@@ -2,15 +2,12 @@
 using S1_D001_Monsterkampf_Simulator_ER.Controllers;
 using S1_D001_Monsterkampf_Simulator_ER.Factories;
 using S1_D001_Monsterkampf_Simulator_ER.Managers;
-using S1_D001_Monsterkampf_Simulator_ER.Monsters;
 using S1_D001_Monsterkampf_Simulator_ER.Systems.Damage;
-
 
 namespace S1_D001_Monsterkampf_Simulator_ER.Dependencies
 {
-
     /// <summary>
-    /// 
+    ///
     /// </summary>
     /// <param name="Battle"></param>
     /// <param name="Rules"></param>
@@ -20,7 +17,7 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Dependencies
     /// <param name="Diagnostics"></param>
     internal sealed record GameDependencies
     (
-        
+
         DamagePipeline DamagePipeline,
         UIManager UI,
         IPlayerInput Input,
@@ -33,7 +30,6 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Dependencies
         EnemyController EnemyController,
         MonsterFactory MonsterFactory,
         ScreenManager Screen
-   
+
     );
 }
-
