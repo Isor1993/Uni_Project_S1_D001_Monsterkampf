@@ -3,18 +3,14 @@ using S1_D001_Monsterkampf_Simulator_ER.Controllers;
 using S1_D001_Monsterkampf_Simulator_ER.Dependencies;
 using S1_D001_Monsterkampf_Simulator_ER.Factories;
 using S1_D001_Monsterkampf_Simulator_ER.Managers;
-using S1_D001_Monsterkampf_Simulator_ER.Monsters;
 using S1_D001_Monsterkampf_Simulator_ER.Player;
-using S1_D001_Monsterkampf_Simulator_ER.Skills;
 using S1_D001_Monsterkampf_Simulator_ER.Systems.Damage;
-using S1_D001_Monsterkampf_Simulator_ER.Systems.StatusEffects;
-
 
 namespace S1_D001_Monsterkampf_Simulator_ER
 {
     internal class Program
     {
-        static void Main(string[] args)
+        private static void Main(string[] args)
         {
             Console.OutputEncoding = System.Text.Encoding.UTF8;
             // === CORE SYSTEMS ===
@@ -32,7 +28,7 @@ namespace S1_D001_Monsterkampf_Simulator_ER
             IPlayerInput playerInput = new KeyboardInputManager();
 
             // === UI SYSTEM ===
-            var ui = new UIManager(symbol, diagnostics,balancing);
+            var ui = new UIManager(symbol, diagnostics, balancing);
 
             // === FACTORIES ===
             var monsterFactory = new MonsterFactory(diagnostics, balancing);
@@ -40,10 +36,10 @@ namespace S1_D001_Monsterkampf_Simulator_ER
             // === CONTROLLER ===
             var playerController = new PlayerController(null!, diagnostics, ui, keyboardInput);
             var enemyController = new EnemyController(null!, diagnostics, random);
-            var screen = new ScreenManager(symbol,playerController);
+            var screen = new ScreenManager(symbol, playerController);
 
             // === GAME DEPENDENCIES ===
-            var gameDeps = new GameDependencies(pipeline, ui, playerInput, inputManager, random, diagnostics, print, playerController, balancing, enemyController, monsterFactory,screen);
+            var gameDeps = new GameDependencies(pipeline, ui, playerInput, inputManager, random, diagnostics, print, playerController, balancing, enemyController, monsterFactory, screen);
 
             // === BATTLEMANAGER DEPENDENCIES (initial leer) ===
             var emptyBattleDeps = new BattleManagerDependencies(
