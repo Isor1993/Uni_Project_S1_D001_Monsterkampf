@@ -1,26 +1,32 @@
 ﻿/*****************************************************************************
 * Project : Monsterkampf-Simulator (K1, S1, S4)
-* File    : 
-* Date    : xx.xx.2025
+* File    : SymbolManager.cs
+* Date    : 03.12.2025
 * Author  : Eric Rosenberg
 *
 * Description :
-* *
+*   Provides all Unicode symbols used throughout the UI (borders, corners,
+*   HP bars, pointer symbol, box frames, wall-drawing characters).
+*   Centralizes all UI character rendering so the visuals can be changed or
+*   upgraded easily without modifying individual UI components.
+*
+* Responsibilities :
+*   - Provide symbols for info boxes, monster boxes, and message boxes
+*   - Provide HP bar symbols (filled / unfilled)
+*   - Provide corner and line drawing characters for all UI borders
+*   - Provide pointer symbol for selection menus
+*   - Expose symbols via read-only properties for consistent usage
+*
 * History :
-* xx.xx.2025 ER Created
+*   03.12.2025 ER Created
 ******************************************************************************/
 
 namespace S1_D001_Monsterkampf_Simulator_ER.Managers
-{
-    /// <summary>
-    /// Provides all visual Unicode symbols used in the console-based Escape Room.
-    /// </summary>
+{   
     internal class SymbolManager
     {
-
-        // Private fields for symbols
-        // Some Symbols are needed for later updates
-        private char _pointerSymbol = '\u25BA';//                      ' ► '
+               
+        private char _pointerSymbol = '\u25BA';//                    ' ► '
 
         private char _infoboxCornerTopLeftSymbol = '\u250c';//       ' ┌ '
 
@@ -34,9 +40,9 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
 
         private char _infoBoxVerticalLineSymbol = '\u2502'; //       ' │ '
 
-        private char _filledHpBar = '\u2588'; //       ' █ '
+        private char _filledHpBar = '\u2588'; //                     ' █ '
 
-        private char _unfilledHpBar = '\u2591'; //       ' ░ '
+        private char _unfilledHpBar = '\u2591'; //                   ' ░ '
 
         private char _wallTDownSymbol = '\u2566'; //                 ' ╦ '
 
@@ -59,114 +65,88 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
         private char _wallCornerBottomLeftSymbol = '\u255A';//       ' ╚ '
 
         private char _wallCornerBottomRightSymbol = '\u255D';//      ' ╝ '
-
-        private char _playerSymbol = '\u2659';//                     ' ♙ '
-
-        private char _trapSymbol = '\u2297';// ;                     ' ⊗ '
-
-        private char _fogSymbol = '\u2592';// ;                      ' ▒ '
-
-        private char _deathSymbol = '\u2620';  //                    ' ☠ '
-
-        private char _keyFragmentSymbol = '\u26BF';  //              ' ⚿ '
-
-        private char _questSymbol = '\u003f';//                      ' ? ' 
-
-        private char _emptySymbol = ' ';//                           '   '
-
-        private char _closedDoorVerticalSymbol = '\u25AE';//         ' ▮ '
-
-        private char _openDoorVerticalSymbol = '\u25AF';//           ' ▯ '
-
-        private char _closedDoorHorizontalSymbol = '\u25AC';//          ' ▬ '
-
-        private char _openDoorHorizontalSymbol = '\u25AD';//            ' ▭ '
-
-        private char _timeWatchSymbol = '\u23f1';//                  ' ⏱ '
-
-        private char _hearthSymbol = '\u2764';//                      ' ❤ '
-
+       
         // Properties with get and set for possible upgrades later
 
         /// <summary>
         /// Pointer Symbol: ►
         /// </summary>
-        public char PointerSymbol { get => _pointerSymbol; }
+        public char PointerSymbol => _pointerSymbol;
 
         /// <summary>
         /// Hp Bar for current HP: █
         /// </summary>
-        public char filledHpBar { get => _filledHpBar; }
+        public char filledHpBar => _filledHpBar;
 
         /// <summary>
         /// Hp Bar for HP range to max HP: ░
         /// </summary>
-        public char unfilledBar {  get => _unfilledHpBar; }
+        public char unfilledBar => _unfilledHpBar;
 
         /// <summary>
         /// Infobox Top-left corner: ┌
         /// </summary>
-        public char InfoBoxCornerTopLeftSymbol { get => _infoboxCornerTopLeftSymbol;}
+        public char InfoBoxCornerTopLeftSymbol => _infoboxCornerTopLeftSymbol;
 
         /// <summary>
         /// Infobox Top-right corner: ┐
         /// </summary>
-        public char InfoBoxCornerTopRightSymbol { get => _infoBoxCornerTopRightSymbol; }
+        public char InfoBoxCornerTopRightSymbol => _infoBoxCornerTopRightSymbol;
 
         /// <summary>
         /// Infobox Bottom-left corner: └
         /// </summary>
-        public char InfoBoxCornerBottomLeftSymbol { get => _infoBoxCornerBottomLeftSymbol; }
+        public char InfoBoxCornerBottomLeftSymbol => _infoBoxCornerBottomLeftSymbol;
 
         /// <summary>
         /// Infobox Bottom-right corner: ┘
         /// </summary>
-        public char InfoBoxCornerBottomRightSymbol { get => _infoBoxCornerBottomRightSymbol; }
+        public char InfoBoxCornerBottomRightSymbol => _infoBoxCornerBottomRightSymbol;
 
         /// <summary>
         /// Infobox horizontal line symbol: ─
         /// </summary>
-        public char InfoBoxHorizontalLineSymbol { get => _infoBoxHorizontalLineSymbol; }
+        public char InfoBoxHorizontalLineSymbol => _infoBoxHorizontalLineSymbol;
 
         /// <summary>
         /// Infobox vertical line symbol: │
         /// </summary>
-        public char InfoBoxVerticalLineSymbol { get => _infoBoxVerticalLineSymbol; }
+        public char InfoBoxVerticalLineSymbol  => _infoBoxVerticalLineSymbol; 
 
         /// <summary>
         /// Wall intersection (top-down): ╦
         /// </summary>
-        public char WallTDownSymbol { get => _wallTDownSymbol; private set => _wallTDownSymbol = value; }
+        public char WallTDownSymbol => _wallTDownSymbol;
 
         /// <summary>
         /// Wall intersection (bottom-up): ╩
         /// </summary>
-        public char WallTUpSymbol { get => _wallTUpSymbol; private set => _wallTUpSymbol = value; }
+        public char WallTUpSymbol => _wallTUpSymbol;
 
         /// <summary>
         /// Wall intersection (left-right): ╠
         /// </summary>
-        public char WallTRightSymbol { get => _wallTRightSymbol; private set => _wallTRightSymbol = value; }
+        public char WallTRightSymbol => _wallTRightSymbol;
 
         /// <summary>
         /// Wall intersection (right-left): ╣
         /// </summary>
-        public char WallTLeftSymbol { get => _wallTLeftSymbol; private set => _wallTLeftSymbol = value; }
+        public char WallTLeftSymbol => _wallTLeftSymbol;
 
         /// <summary>
         /// Wall cross intersection: ╬
         /// </summary>
-        public char WallCrossSymbol { get => _wallCrossSymbol; private set => _wallCrossSymbol = value; }
+        public char WallCrossSymbol => _wallCrossSymbol;
 
         /// <summary>
         /// Horizontal wall: ═
         /// </summary>
-        public char WallHorizontalSymbol { get => _wallHorizontalSymbol; private set => _wallHorizontalSymbol = value; }
+        public char WallHorizontalSymbol => _wallHorizontalSymbol; 
 
         /// <summary>
         /// Vertical wall: ║
         /// </summary>
-        public char WallVerticalSymbol { get => _wallVerticalSymbol; private set => _wallVerticalSymbol = value; }
+        public char WallVerticalSymbol  => _wallVerticalSymbol;
 
         /// <summary>
         /// Top-left corner: ╔
@@ -186,71 +166,6 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
         /// <summary>
         /// Bottom-right corner: ╝
         /// </summary>
-        public char WallCornerBottomRightSymbol { get => _wallCornerBottomRightSymbol; private set => _wallCornerBottomRightSymbol = value; }
-
-        /// <summary>
-        /// Player: ♙
-        /// </summary>
-        public char PlayerSymbol { get => _playerSymbol; private set => _playerSymbol = value; }
-
-        /// <summary>
-        /// Trap: ⊗
-        /// </summary>
-        public char TrapSymbol { get => _trapSymbol; private set => _trapSymbol = value; }
-
-        /// <summary>
-        /// Fog of war: ▒
-        /// </summary>
-        public char FogSymbol { get => _fogSymbol; private set => _fogSymbol = value; }
-
-        /// <summary>
-        /// Death: ☠
-        /// </summary>
-        public char DeathSymbol { get => _deathSymbol; private set => _deathSymbol = value; }
-
-        /// <summary>
-        /// Key fragment: ⚿
-        /// </summary>
-        public char KeyFragmentSymbol { get => _keyFragmentSymbol; private set => _keyFragmentSymbol = value; }
-
-        /// <summary>
-        /// Quest mark: ?
-        /// </summary>
-        public char QuestSymbol { get => _questSymbol; private set => _questSymbol = value; }
-
-        /// <summary>
-        /// Empty space.
-        /// </summary>
-        public char EmptySymbol { get => _emptySymbol; private set => _emptySymbol = value; }
-
-        /// <summary>
-        /// Closed vertical door: ▮
-        /// </summary>
-        public char ClosedDoorVerticalSymbol { get => _closedDoorVerticalSymbol; private set => _closedDoorVerticalSymbol = value; }
-
-        /// <summary>
-        /// Open vertical door: ▯
-        /// </summary>
-        public char OpenDoorVerticalSymbol { get => _openDoorVerticalSymbol; private set => _openDoorVerticalSymbol = value; }
-
-        /// <summary>
-        /// Closed horizontal door: ▬
-        /// </summary>
-        public char ClosedDoorHorizontalSymbol { get => _closedDoorHorizontalSymbol; private set => _closedDoorHorizontalSymbol = value; }
-
-        /// <summary>
-        /// Open horizontal door: ▭
-        /// </summary>
-        public char OpenDoorHorizontalSymbol { get => _openDoorHorizontalSymbol; private set => _openDoorHorizontalSymbol = value; }
-
-        /// <summary>
-        /// Time watch: ⏱
-        /// </summary>
-        public char TimeWatchSymbol { get => _timeWatchSymbol; private set => _timeWatchSymbol = value; }
-
-        /// <summary>
-        /// Heart: ❤
-        /// </summary>
-        public char HearthSymbol { get => _hearthSymbol; private set => _hearthSymbol = value; }
+        public char WallCornerBottomRightSymbol { get => _wallCornerBottomRightSymbol; private set => _wallCornerBottomRightSymbol = value; }        
     }
 }

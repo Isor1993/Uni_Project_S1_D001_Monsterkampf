@@ -1,21 +1,21 @@
 ﻿/*****************************************************************************
 * Project : Monsterkampf-Simulator (K1, S1, S4)
-* File    : IPlayerInput.cs
-* Date    : xx.xx.2025
+* File    : PlayerCommand.cs
+* Date    : 03.12.2025
 * Author  : Eric Rosenberg
 *
 * Description :
-* Defines player input commands and the interface for reading input during
-* battles (skill navigation, confirmations, etc.).
+* Defines all possible UI navigation commands the player can trigger, and the
+* input interface used by keyboard and future input devices.
 *
 * History :
-* xx.xx.2025 ER Created
+* 03.12.2025 ER Created
 ******************************************************************************/
 
 namespace S1_D001_Monsterkampf_Simulator_ER.Managers
 {
     /// <summary>
-    /// Possible commands the player can execute when navigating the UI.
+    /// Represents all player navigation commands used in menus and battle UI.
     /// </summary>
     public enum PlayerCommand
     {
@@ -26,7 +26,7 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
     }
 
     /// <summary>
-    /// Defines the interface for reading player input (keyboard or other devices).
+    /// Interface for reading player input (keyboard or alternative controls).
     /// </summary>
     public interface IPlayerInput
     {
@@ -35,5 +35,5 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
         /// </summary>
         PlayerCommand ReadCommand();
     }
-    
-    }
+
+}

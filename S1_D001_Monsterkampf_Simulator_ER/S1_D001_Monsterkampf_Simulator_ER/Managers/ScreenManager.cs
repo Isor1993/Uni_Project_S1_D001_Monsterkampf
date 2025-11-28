@@ -1,32 +1,35 @@
 ﻿/*****************************************************************************
 * Project : Monsterkampf-Simulator (K1, S1, S4)
-* File    : 
-* Date    : xx.xx.2025
+* File    : ScreenManager.cs
+* Date    : 03.12.2025
 * Author  : Eric Rosenberg
 *
 * Description :
-* *
+*   Handles all full-screen console renderings such as Start-Screen,
+*   Tutorial-Screen and End-Screen. Responsible for drawing headers,
+*   decorative ASCII sprites, tutorial text, end text and frame layouts.
+*
+* Responsibilities :
+*   - Render start screen including header and monster sprites
+*   - Render tutorial screen including frame and tutorial instructions
+*   - Render end screen including stats, contact info and frame
+*   - Manage layout offsets and positioning for all screen elements
+*
 * History :
-* xx.xx.2025 ER Created
+*   03.12.2025 ER Created
 ******************************************************************************/
 using S1_D001_Monsterkampf_Simulator_ER.Controllers;
 using S1_D001_Monsterkampf_Simulator_ER.Monsters;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace S1_D001_Monsterkampf_Simulator_ER.Managers
 {
     internal class ScreenManager
     {
         // === Dependencies ===
-        private readonly SymbolManager _symbol;        
+        private readonly SymbolManager _symbol;
         private readonly PlayerController _playerController;
 
         // === Fields ===
-
 
         const int HeaderPositionX = 0;
         const int HeaderPositionY = 0;
@@ -36,36 +39,31 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
         const int StartSpriteOffsetY = 14;
         const int TutorialOffsetX = 39;
         const int EndOffsetX = 39;
-        private string TutorialLine_0 = " Welcome to my monster simulation fighter project!";
-        private string TutorialLine_1 = " [W] or [↑]    = Move up in the selection to choose options/skills";
-        private string TutorialLine_2 = " [S] or [↓]    = Move down in the selection to choose options/skills";
-        private string TutorialLine_3 = " [ENTER]       = Confirm a selection";
-        private string TutorialLine_4 = " Monsters      : There are currently 4 monsters";
-        private string TutorialLine_5 = " Passive skills: Every monster has one which is always active at the start";
-        private string TutorialLine_6 = " Active skills : Basic or special attacks with effects and cooldowns";
-        private string TutorialLine_7 = " Cooldowns     : Cooldowns are measured in rounds";
-        private string TutorialLine_8 = " Stats         : HP    = Health";
-        private string TutorialLine_9 = "                 AP    = Attack Power";
-        private string TutorialLine_10 = "                 DP    = Defense";
-        private string TutorialLine_11 = "                 Speed = Decides who will start the round";
-        private string TutorialLine_12 = " I wish you a lot of fun! After each won fight, you get a new enemy.";
-        private string TutorialLine_13 = " You also gain a level-up and a stat point to make your monster stronger.";
 
-        private string EndLine_0 =  " I hope you had a little bit of fun! :)  ";
-        private string EndLine_1 =  " This small project was created during my studies at ";
-        private string EndLine_2 =  " the university.In the ReadMe file, you’ll find information";
-        private string EndLine_3 =  " about the Project. Your Final Stats below ";
-        private string EndLine_4 =  " Final Stats   ";
-        private string EndLine_7 =  " Contact info:  ";
-        private string EndLine_8 =  " Instagram: https://www.instagram.com/isor_gamedev  ";
-        private string EndLine_9 =  " GitHub: https://github.com/Isor1993 ";
-        private string EndLine_10 = " E-mail: IsorDev@email.de    ";
+        private string tutorialLine_0 = " Welcome to my monster simulation fighter project!";
+        private string tutorialLine_1 = " [W] or [↑]    = Move up in the selection to choose options/skills";
+        private string tutorialLine_2 = " [S] or [↓]    = Move down in the selection to choose options/skills";
+        private string tutorialLine_3 = " [ENTER]       = Confirm a selection";
+        private string tutorialLine_4 = " Monsters      : There are currently 4 monsters";
+        private string tutorialLine_5 = " Passive skills: Every monster has one which is always active at the start";
+        private string tutorialLine_6 = " Active skills : Basic or special attacks with effects and cooldowns";
+        private string tutorialLine_7 = " Cooldowns     : Cooldowns are measured in rounds";
+        private string tutorialLine_8 = " Stats         : HP    = Health";
+        private string tutorialLine_9 = "                 AP    = Attack Power";
+        private string tutorialLine_10 = "                 DP    = Defense";
+        private string tutorialLine_11 = "                 Speed = Decides who will start the round";
+        private string tutorialLine_12 = " I wish you a lot of fun! After each won fight, you get a new enemy.";
+        private string tutorialLine_13 = " You also gain a level-up and a stat point to make your monster stronger.";
 
-
-
-
-
-
+        private string endLine_0 = " I hope you had a little bit of fun! :)  ";
+        private string endLine_1 = " This small project was created during my studies at ";
+        private string endLine_2 = " the university.In the ReadMe file, you’ll find information";
+        private string endLine_3 = " about the Project. Your Final Stats below ";
+        private string endLine_4 = " Final Stats   ";
+        private string endLine_7 = " Contact info:  ";
+        private string endLine_8 = " Instagram: https://www.instagram.com/isor_gamedev  ";
+        private string endLine_9 = " GitHub: https://github.com/Isor1993 ";
+        private string endLine_10 = " E-mail: IsorDev@email.de    ";
 
         private readonly string[] HeaderStartScreen_1 =
         {
@@ -77,6 +75,7 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
             @"| |  | | (_) | | | \__ \ ||  __/ |   ",
             @"|_|  |_|\___/|_| |_|___/\__\___|_|   "
         };
+
         private readonly string[] HeaderStartScreen_2 =
         {
 
@@ -87,6 +86,7 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
             @"| |_) | (_| | |_| |_| |  __/ |   ",
             @"|____/ \__,_|\__|\__|_|\___|_|   "
         };
+
         private readonly string[] HeaderTutorialScreen =
         {
 
@@ -108,17 +108,22 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
             @"    |_|  |_| |_|\___|  |______|_| |_|\__,_|"
         };
 
-
+        /// <summary>
+        /// Creates a new ScreenManager which controls all start, tutorial,
+        /// and end screen console renderings.
+        /// </summary>
+        /// <param name="symbol">Reference to the SymbolManager providing wall and UI characters.</param>
+        /// <param name="playerController">Reference to the player controller for accessing the player's monster and stats.</param>
         public ScreenManager(SymbolManager symbol, PlayerController playerController)
         {
             _symbol = symbol;
-           
+
             _playerController = playerController;
         }
 
-
-
-
+        /// <summary>
+        /// Renders the full start screen including header and all monster sprites.
+        /// </summary>
         public void PrintScreenStart()
         {
             PrintStartHeader();
@@ -127,6 +132,11 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
             PrintTrollP();
             PrintSlimeE();
         }
+
+        /// <summary>
+        /// Renders the full tutorial screen including the header, frame,
+        /// and all tutorial instruction text lines.
+        /// </summary>
         public void PrintScreenTutorial()
         {
             PrintTutorialHeader();
@@ -134,6 +144,11 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
             PrintTutorialText();
 
         }
+
+        /// <summary>
+        /// Renders the full end screen including frame, header,
+        /// end text, statistics display and contact information.
+        /// </summary>
         public void PrintScreenEnd()
         {
             PrintEndFrame();
@@ -141,50 +156,54 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
             PrintEndText();
 
         }
+
+        /// <summary>
+        /// Draws the end text including final stats and contact information.
+        /// </summary>
         private void PrintEndText()
         {
             int posX = 23;
             int posY = 10;
             Console.SetCursorPosition(posX, posY);
-            Console.WriteLine(EndLine_0);
+            Console.WriteLine(endLine_0);
             posY++;
             Console.SetCursorPosition(posX, posY);
-            Console.WriteLine(EndLine_1);
+            Console.WriteLine(endLine_1);
             posY++;
             Console.SetCursorPosition(posX, posY);
-            Console.WriteLine(EndLine_2);
+            Console.WriteLine(endLine_2);
             posY++;
             Console.SetCursorPosition(posX, posY);
-            Console.WriteLine(EndLine_3);
+            Console.WriteLine(endLine_3);
             posY++;
             posY++;
             Console.SetCursorPosition(posX, posY);
-            Console.WriteLine(EndLine_4);
-            posY++;            
+            Console.WriteLine(endLine_4);
+            posY++;
             Console.SetCursorPosition(posX, posY);
-            Console.WriteLine($" Total Fights : {GameManager.totalFights}");
+            Console.WriteLine($" Total Fights : {GameManager.TotalFights}");
             posY++;
             Console.SetCursorPosition(posX, posY);
             Console.WriteLine($" Monster Lvl  : {_playerController.Monster.Level}");
             posY++;
             posY++;
             Console.SetCursorPosition(posX, posY);
-            Console.WriteLine(EndLine_7);
+            Console.WriteLine(endLine_7);
             posY++;
             Console.SetCursorPosition(posX, posY);
-            Console.WriteLine(EndLine_8);
+            Console.WriteLine(endLine_8);
             posY++;
             Console.SetCursorPosition(posX, posY);
-            Console.WriteLine(EndLine_9);
+            Console.WriteLine(endLine_9);
             posY++;
             Console.SetCursorPosition(posX, posY);
-            Console.WriteLine(EndLine_10);
+            Console.WriteLine(endLine_10);
             posY++;
-           
-
-
-
         }
+
+        /// <summary>
+        /// Draws the ASCII header for the end screen.
+        /// </summary>
         private void PrintEndHeader()
         {
             int posX = HeaderPositionX + EndOffsetX;
@@ -196,6 +215,10 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
                 posY++;
             }
         }
+
+        /// <summary>
+        /// Draws the rectangular frame used in the end screen.
+        /// </summary>
         private void PrintEndFrame()
         {
             int maxRow = 16;
@@ -225,6 +248,10 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
                 Console.WriteLine();
             }
         }
+
+        /// <summary>
+        /// Writes all tutorial descriptive text lines into the tutorial frame.
+        /// </summary>
         private void PrintTutorialText()
         {
             int posX = 23;
@@ -232,49 +259,53 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
             Console.SetCursorPosition(posX, posY);
             posY++;
             posY++;
-            Console.WriteLine(TutorialLine_0);
+            Console.WriteLine(tutorialLine_0);
             Console.SetCursorPosition(posX, posY);
             posY++;
-            Console.WriteLine(TutorialLine_1);
+            Console.WriteLine(tutorialLine_1);
             Console.SetCursorPosition(posX, posY);
             posY++;
-            Console.WriteLine(TutorialLine_2);
+            Console.WriteLine(tutorialLine_2);
             Console.SetCursorPosition(posX, posY);
             posY++;
-            Console.WriteLine(TutorialLine_3);
+            Console.WriteLine(tutorialLine_3);
             Console.SetCursorPosition(posX, posY);
             posY++;
-            Console.WriteLine(TutorialLine_4);
+            Console.WriteLine(tutorialLine_4);
             Console.SetCursorPosition(posX, posY);
             posY++;
-            Console.WriteLine(TutorialLine_5);
+            Console.WriteLine(tutorialLine_5);
             Console.SetCursorPosition(posX, posY);
             posY++;
-            Console.WriteLine(TutorialLine_6);
+            Console.WriteLine(tutorialLine_6);
             Console.SetCursorPosition(posX, posY);
             posY++;
-            Console.WriteLine(TutorialLine_7);
+            Console.WriteLine(tutorialLine_7);
             Console.SetCursorPosition(posX, posY);
             posY++;
-            Console.WriteLine(TutorialLine_8);
+            Console.WriteLine(tutorialLine_8);
             Console.SetCursorPosition(posX, posY);
             posY++;
-            Console.WriteLine(TutorialLine_9);
+            Console.WriteLine(tutorialLine_9);
             Console.SetCursorPosition(posX, posY);
             posY++;
-            Console.WriteLine(TutorialLine_10);
+            Console.WriteLine(tutorialLine_10);
             Console.SetCursorPosition(posX, posY);
             posY++;
             posY++;
-            Console.WriteLine(TutorialLine_11);
+            Console.WriteLine(tutorialLine_11);
             Console.SetCursorPosition(posX, posY);
             posY++;
-            Console.WriteLine(TutorialLine_12);
+            Console.WriteLine(tutorialLine_12);
             Console.SetCursorPosition(posX, posY);
             posY++;
-            Console.WriteLine(TutorialLine_13);
+            Console.WriteLine(tutorialLine_13);
             Console.SetCursorPosition(posX, posY);
         }
+
+        /// <summary>
+        /// Draws the rectangular frame used in the tutorial screen.
+        /// </summary>
         private void PrintTutorialFrame()
         {
             int maxRow = 19;
@@ -304,6 +335,10 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
                 Console.WriteLine();
             }
         }
+
+        /// <summary>
+        /// Draws the ASCII header for the tutorial screen.
+        /// </summary>
         private void PrintTutorialHeader()
         {
             int posX = HeaderPositionX + TutorialOffsetX;
@@ -315,6 +350,10 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
                 posY++;
             }
         }
+
+        /// <summary>
+        /// Draws the large ASCII Start-Screen header consisting of two stacked words.
+        /// </summary>
         private void PrintStartHeader()
         {
             const int WordOffsetX = 40;
@@ -334,6 +373,10 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
                 posY++;
             }
         }
+
+        /// <summary>
+        /// Draws the Goblin player-side sprite on the Start-Screen.
+        /// </summary>
         private void PrintGoblinP()
         {
             const int OffsetX = StartSpriteOffsetX;
@@ -346,10 +389,14 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
                 Console.Write(Goblin.GoblinSpriteP[i]);
             }
         }
+
+        /// <summary>
+        /// Draws the Orc enemy-side sprite on the Start-Screen.
+        /// </summary>
         private void PrintOrcE()
         {
             const int OffsetX = 20 + StartSpriteOffsetX;
-            const int OffsetY = StartSpriteOffsetY - 2;
+            const int OffsetY = StartSpriteOffsetY - 1;
             int x = OffsetX;
             int y = OffsetY;
             for (int i = 0; i < Orc.OrcSpriteE.Length; i++)
@@ -358,10 +405,14 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
                 Console.Write(Orc.OrcSpriteE[i]);
             }
         }
+
+        /// <summary>
+        /// Draws the Troll player-side sprite on the Start-Screen.
+        /// </summary>
         private void PrintTrollP()
         {
             const int OffsetX = 55 + StartSpriteOffsetX;
-            const int OffsetY = StartSpriteOffsetY - 2;
+            const int OffsetY = StartSpriteOffsetY - 1;
             int x = OffsetX;
             int y = OffsetY;
             for (int i = 0; i < Troll.TrollSpriteP.Length; i++)
@@ -370,6 +421,10 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
                 Console.Write(Troll.TrollSpriteP[i]);
             }
         }
+
+        /// <summary>
+        /// Draws the Slime enemy-side sprite on the Start-Screen.
+        /// </summary>
         private void PrintSlimeE()
         {
             const int OffsetX = 75 + StartSpriteOffsetX;

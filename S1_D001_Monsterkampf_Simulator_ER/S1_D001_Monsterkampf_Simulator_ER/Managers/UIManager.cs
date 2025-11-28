@@ -1,21 +1,27 @@
 ﻿/*****************************************************************************
 * Project : Monsterkampf-Simulator (K1, S1, S4)
-* File    : 
-* Date    : xx.xx.2025
+* File    : UIManager.cs
+* Date    : 03.12.2025
 * Author  : Eric Rosenberg
 *
 * Description :
-* *
+*   Handles all console-based battle UI. Draws layout frames, monster info
+*   boxes, skill selection box and message box, and updates them during combat.
+*
+* Responsibilities :
+*   - Render static UI frames (outline, info boxes, skill/message boxes)
+*   - Show monster stats, skills, and selection cursors
+*   - Display contextual messages (attacks, damage, choices, results)
+*   - Support stat allocation and monster selection workflows
+*
 * History :
-* xx.xx.2025 ER Created
+*   03.12.2025 ER Created
 ******************************************************************************/
 
 using S1_D001_Monsterkampf_Simulator_ER.Balancing;
 using S1_D001_Monsterkampf_Simulator_ER.Monsters;
 using S1_D001_Monsterkampf_Simulator_ER.Skills;
 using S1_D001_Monsterkampf_Simulator_ER.Systems.StatusEffects;
-using System.ComponentModel;
-using System.Numerics;
 
 namespace S1_D001_Monsterkampf_Simulator_ER.Managers
 {
@@ -25,15 +31,38 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
         private readonly DiagnosticsManager _diagnostics;
         private readonly MonsterBalancing _balancing;
 
-
+        /// <summary>
+        /// X position used to render the player’s monster box.
+        /// </summary>
         public int PlayerPositionX => 20;
+
+        /// <summary>
+        /// Y position used to render the player’s monster box.
+        /// </summary>
         public int PlayerPositionY => 3;
+
+        /// <summary>
+        /// X position used to render the enemy’s monster box.
+        /// </summary>
         public int EnemyPositionX => 63;
+
+        /// <summary>
+        /// Y position used to render the enemy’s monster box.
+        /// </summary>
         public int EnemyPositionY => 3;
 
+
+        /// <summary>
+        /// Generic offset used as padding inside framed areas.
+        /// </summary>
         const int EmptyOffset = 1;
 
-
+        /// <summary>
+        /// Creates a new UI manager instance for drawing all battle UI.
+        /// </summary>
+        /// <param name="symbol">Symbol manager providing ASCII characters.</param>
+        /// <param name="diagnostics">Diagnostics manager for debug logging.</param>
+        /// <param name="balancing">Balancing values used for stat previews.</param>
         public UIManager(SymbolManager symbol, DiagnosticsManager diagnostics, MonsterBalancing balancing)
         {
             _symbol = symbol;
@@ -41,17 +70,10 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
             _balancing = balancing;
 
         }
-        //TODO könnte veraltet sein muss geändert werden später viel.
-        public void ShowStatDistributionMenu(int unassignedStatPoints)
-        {
-            new NotImplementedException();
-        }
-        //TODO könnte veraltet sein muss geändert werden später viel.
-        public void PrintOptions()
-        {
-            new NotImplementedException();
-        }
 
+        /// <summary>
+        /// Draws the outer rectangular outline for the whole battle screen.
+        /// </summary>
         public void PrintOutlineLayout()
         {
             // Position Outline
@@ -82,7 +104,9 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
             }
         }
 
-
+        /// <summary>
+        /// Draws the player monster info box frame and static labels.
+        /// </summary>
         public void PrintMonsterInfoBoxPlayer()
         {
             const int BoxHeight = 6;
@@ -92,6 +116,10 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
             DrawMonsterBoxFrame(BoxPositionX, BoxPositionY, BoxHeight, BoxWidth);
             DrawMonsterLabelStats(BoxPositionX, BoxPositionY);
         }
+
+        /// <summary>
+        /// Draws the enemy monster info box frame and static labels.
+        /// </summary>
         public void PrintMonsterInfoBoxEnemy()
         {
             const int BoxHeight = 6;
@@ -101,6 +129,10 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
             DrawMonsterBoxFrame(BoxPositionX, BoxPositionY, BoxHeight, BoxWidth);
             DrawMonsterLabelStats(BoxPositionX, BoxPositionY);
         }
+
+        /// <summary>
+        /// Draws the message box frame at the bottom-right side of the screen.
+        /// </summary>
         public void PrintMessageBoxLayout()
         {
             // Position Outline
@@ -131,6 +163,10 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
                 }
             }
         }
+
+        /// <summary>
+        ///  Draws the skill selection box frame at the bottom-left side of the screen.
+        /// </summary>
         public void PrintSkillBoxLayout()
         {
             // Position Outline
@@ -160,6 +196,12 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
                 }
             }
         }
+
+
+        /// <summary>
+        /// Updates the player monster info box with current stats and HP bar.
+        /// </summary>
+        /// <param name="monster">The player’s monster to display.</param>
         public void UpdateMonsterBoxPlayer(MonsterBase monster)
         {
             // Position Outline
@@ -168,6 +210,11 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
 
             UpdateMonsterLabelStats(x, y, monster);
         }
+
+        /// <summary>
+        /// Updates the enemy monster info box with current stats and HP bar.
+        /// </summary>
+        /// <param name="monster">The enemy monster to display.</param>
         public void UpdateMonsterBoxEnemy(MonsterBase monster)
         {
             // Position Outline
@@ -176,6 +223,10 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
 
             UpdateMonsterLabelStats(x, y, monster);
         }
+
+        /// <summary>
+        /// Clears the contents inside the skill box frame (without deleting the borders).
+        /// </summary>
         public void ClearSkillBox()
         {
             {
@@ -192,6 +243,13 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
                 ClearArea(x + FrameOffset, y + FrameOffset, ClearWidth, ClearHeight);
             }
         }
+
+        /// <summary>
+        /// Updates the skill box with the player’s active skills and highlights
+        /// the currently selected entry.
+        /// </summary>
+        /// <param name="skills">The skill package of the player monster.</param>
+        /// <param name="pointerIndex">Index of the currently selected skill (0-based).</param>
         public void UpdateSkillBox(SkillPackage skills, int pointerIndex)
         {
             // Position Outline
@@ -239,6 +297,14 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
             Console.SetCursorPosition(pointerX, pointerY);
             Console.Write(_symbol.PointerSymbol);
         }
+
+        /// <summary>
+        /// Updates the monster info box at the given position with current HP,
+        /// level and other stats of the supplied monster.
+        /// </summary>
+        /// <param name="x">Top-left X position of the info box.</param>
+        /// <param name="y">Top-left Y position of the info box.</param>
+        /// <param name="monster">The monster whose stats are shown.</param>
         private void UpdateMonsterLabelStats(int x, int y, MonsterBase monster)
         {
             const int MaxValue = 999999;
@@ -294,6 +360,13 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
             }
             else Console.Write("DP   : > 9999");
         }
+
+        /// <summary>
+        /// Draws an HP bar consisting of filled and unfilled segments.
+        /// </summary>
+        /// <param name="currentHP">The current HP value.</param>
+        /// <param name="maxHP">The maximum HP value.</param>
+        /// <param name="maxBar">Number of segments the bar should have.</param>
         private void DrawHPBar(float currentHP, float maxHP, int maxBar)
         {
             float singleBarValue = maxHP / maxBar;
@@ -305,6 +378,12 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
             Console.Write(new string(_symbol.unfilledBar, unfilledBars));
             Console.ResetColor();
         }
+
+        /// <summary>
+        /// Clears the numeric/stat text region inside a monster info box.
+        /// </summary>
+        /// <param name="x">Top-left X position of the info box.</param>
+        /// <param name="y">Top-left Y position of the info box.</param>
         private void ClearMonsterLabelStats(int x, int y)
         {
             const int DrawLabelOffsetLeft = 2; ;
@@ -340,6 +419,14 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
             Console.SetCursorPosition(x + DrawLableOffsetRight + StatStringOffset_2, y + yOffset);
             Console.Write(new string(' ', maxValueCharSpace));
         }
+
+        /// <summary>
+        /// Clears a rectangular area on the console by writing spaces.
+        /// </summary>
+        /// <param name="x">Top-left X position.</param>
+        /// <param name="y">Top-left Y position.</param>
+        /// <param name="width">Width of the area in characters.</param>
+        /// <param name="height">Height of the area in characters.</param>
         private void ClearArea(int x, int y, int width, int height)
         {
             string blank = new string(' ', width);
@@ -350,6 +437,14 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
                 Console.Write(blank);
             }
         }
+
+        /// <summary>
+        /// Draws a rectangular frame for a monster info box using info-box symbols.
+        /// </summary>
+        /// <param name="x">Top-left X position of the frame.</param>
+        /// <param name="y">Top-left Y position of the frame.</param>
+        /// <param name="height">Height of the frame in rows.</param>
+        /// <param name="width">Width of the frame in columns.</param>
         private void DrawMonsterBoxFrame(int x, int y, int height, int width)
         {
             for (int row = 0; row < height; row++)
@@ -373,6 +468,11 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
                 }
             }
         }
+        /// <summary>
+        /// Writes static stat labels (HP, LVL, Speed, AP, DP) into a monster box.
+        /// </summary>
+        /// <param name="x">Top-left X position of the box.</param>
+        /// <param name="y">Top-left Y position of the box.</param>
         private void DrawMonsterLabelStats(int x, int y)
         {
             const int LabelOffsetLeft = 2; ;
@@ -403,12 +503,23 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
             Console.Write("DP   :");
         }
 
+        /// <summary>
+        /// Updates the message box with information about an attack performed
+        /// by the player (attacker) on the enemy (target).
+        /// </summary>
+        /// <param name="attacker">The monster performing the attack.</param>
+        /// <param name="target">The monster receiving the attack.</param>
+        /// <param name="usedSkill">The skill used during the attack.</param>
+        /// <param name="finalDamage">Final damage dealt to the target.</param>
+        /// <param name="triggeredEffect">
+        /// Optional status effect that was triggered by the hit; null if none.
+        /// </param>
         public void UpdateMessageBoxForAttack(MonsterBase attacker, MonsterBase target, SkillBase usedSkill, float finalDamage, StatusEffectBase? triggeredEffect)
         {
             // Position Outline
             int x = 20;
             int y = 23;
-            // === Innenbereich bestimmen ===
+
             const int FrameOffset = 1;
             const int InnerWidth = 78;
             const int InnerHeight = 4;
@@ -417,16 +528,13 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
             int contentY = y + FrameOffset;
             int lineY = contentY;
 
-            // === Clear old content ===
             ClearArea(contentX, contentY, InnerWidth, InnerHeight);
 
-            // === Text vorbereiten ===
             string line1 = $" {attacker.Race} attacks the {target.Race} using [{usedSkill.Name}].";
             string line2 = $" You dealt [{finalDamage:0}] damage.";
             string line3 = triggeredEffect != null ? $" The effect [{triggeredEffect.Name}] has been triggered." : "";
             string line4 = $" {_symbol.PointerSymbol} [Enter]";
 
-            // === Zeichnen ===
             Console.SetCursorPosition(contentX, lineY);
             Console.Write(line1);
             lineY++;
@@ -441,20 +549,27 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
                 Console.Write(line3);
             }
 
-            // Enter unten rechts
             Console.SetCursorPosition(contentX + InnerWidth - line4.Length, contentY + InnerHeight - 1);
             Console.Write(line4);
-
         }
 
-
-
+        /// <summary>
+        /// Updates the message box with information about damage the player
+        /// has taken from an enemy attack.
+        /// </summary>
+        /// <param name="attacker">The enemy monster dealing the damage.</param>
+        /// <param name="defender">The player monster receiving the damage.</param>
+        /// <param name="skill">The skill that caused the damage.</param>
+        /// <param name="damage">Final damage value received.</param>
+        /// <param name="triggeredEffect">
+        /// Optional status effect that was applied to the defender; null if none.
+        /// </param>
         public void UpdateMessageBoxForTakeDamage(MonsterBase attacker, MonsterBase defender, SkillBase skill, float damage, StatusEffectBase? triggeredEffect)
         {
             // Position Outline
             int x = 20;
             int y = 23;
-            // Innenbereich der MessageBox bestimmen
+
             const int FrameOffset = 1;
             const int InnerWidth = 78;
             const int InnerHeight = 4;
@@ -463,10 +578,10 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
             int contentY = y + FrameOffset;
             int lineY = contentY;
 
-            // Box leeren
+
             ClearArea(contentX, contentY, InnerWidth, InnerHeight);
 
-            // Textzeilen
+
             string line1 = $" {attacker.Race} hits you using [{skill.Name}].";
             string line2 = $" You received [{damage:0}] damage.";
 
@@ -474,7 +589,6 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
 
             string enterLine = $"{_symbol.PointerSymbol} [Enter]";
 
-            // Schreiben
             Console.SetCursorPosition(contentX, lineY++);
             Console.Write(line1);
 
@@ -487,35 +601,37 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
                 Console.Write(line3);
             }
 
-            // Enter unten rechts
             Console.SetCursorPosition(contentX + InnerWidth - enterLine.Length, contentY + InnerHeight - 1);
             Console.Write(enterLine);
         }
 
+        /// <summary>
+        /// Updates the message box to show detailed information about the
+        /// currently selected skill in the skill box.
+        /// </summary>
+        /// <param name="skill">The skill which information should be displayed.</param>
         public void UpdateMessageBoxForChooseSkill(SkillBase skill)
         {
             // Position Outline
             int x = 20;
             int y = 23;
-            // Innenbereich der MessageBox bestimmen
+
             const int FrameOffset = 1;
-            const int InnerWidth = 78;   // 80 Gesamtbreite - 2 Rahmen
-            const int InnerHeight = 4;   // 6 Gesamt - 2 Rahmen
+            const int InnerWidth = 78;
+            const int InnerHeight = 4;
 
             int contentX = x + FrameOffset;
             int contentY = y + FrameOffset;
             int contentLineY = contentY;
 
-            // alten Inhalt löschen
+
             ClearArea(contentX, contentY, InnerWidth, InnerHeight);
 
-            // Schritt 2: hier kommen gleich Description / Cooldown / Power hin
             string line1 = $"Skill      : {skill.Name}   DamageType: {skill.DamageType}";
             string line2 = $"Power      : {(skill.Power * 100):0}%                   CD: {skill.Cooldown}";
             string line3 = $"Description: {skill.Description}";
             string line4 = $"{_symbol.PointerSymbol} [Enter]";
 
-            // Schreiben
             Console.SetCursorPosition(contentX, contentLineY);
             Console.Write(line1);
             contentLineY++;
@@ -526,14 +642,16 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
             Console.SetCursorPosition(contentX, contentLineY);
             Console.Write(line3);
 
-            // rechts unten:
             Console.SetCursorPosition(contentX + InnerWidth - line4.Length, contentY + InnerHeight - 1);
             Console.Write(line4);
         }
+
         /// <summary>
-        /// Shows 4 selectable monsters in the skill-box area using the same UI layout.
-        /// Pointer moves vertically exactly like skill selection.
+        /// Updates the skill box to show a list of monster races for selection
+        /// and highlights the currently selected race.
         /// </summary>
+        /// <param name="races">Array of available monster races.</param>
+        /// <param name="pointerIndex">Index of the currently selected race.</param>
         public void UpdateMonsterSelectionBox(RaceType[] races, int pointerIndex)
         {
             // SkillBox Layout Position
@@ -546,16 +664,14 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
             const int ClearWidth = width - FrameOffset * 2;
             const int ClearHeight = height - FrameOffset * 2;
             const int PointerOffset = 1;
-            const int MaxShown = 4; // wie Skills
+            const int MaxShown = 4;
 
             int lineY = y + FrameOffset;
             int pointerX = x + EmptyOffset;
             int pointerY = y + EmptyOffset + pointerIndex;
 
-            // Alten Text löschen
             ClearArea(x + FrameOffset, y + FrameOffset, ClearWidth, ClearHeight);
 
-            // 4 Monster-Namen anzeigen
             for (int i = 0; i < races.Length && i < MaxShown; i++)
             {
                 Console.SetCursorPosition(x + FrameOffset + PointerOffset, lineY);
@@ -563,23 +679,31 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
                 lineY++;
             }
 
-            // Pointer zeichnen
             Console.SetCursorPosition(pointerX, pointerY);
             Console.Write(_symbol.PointerSymbol);
         }
 
         /// <summary>
-        /// Shows the monster selection menu (simple console menu).
+        /// Draws all required UI elements for the monster selection screen
+        /// and displays the list of races.
         /// </summary>
+        /// <param name="races">Array of available monster races.</param>
+        /// <param name="pointerIndex">Index of the currently selected race.</param>
         public void ShowMonsterSelectionMenu(RaceType[] races, int pointerIndex)
         {
             PrintOutlineLayout();
             PrintSkillBoxLayout();
             PrintMessageBoxLayout();
-            //TODO alle monstersprites printen 
             UpdateMonsterSelectionBox(races, pointerIndex);
-
         }
+
+        /// <summary>
+        /// Updates the message box with information about the currently
+        /// highlighted monster choice (stats and description).
+        /// </summary>
+        /// <param name="race">The race of the highlighted monster.</param>
+        /// <param name="meta">Meta stats of the highlighted monster.</param>
+        /// <param name="description">Flavor text describing the monster.</param>
         public void UpdateMessageBoxForMonsterChoice(RaceType race, MonsterMeta meta, string description)
         {
             // Position der MessageBox
@@ -594,16 +718,15 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
             int contentY = y + FrameOffset;
             int lineY = contentY;
 
-            // Clear old content
+
             ClearArea(contentX, contentY, InnerWidth, InnerHeight);
 
-            // Text vorbereiten
+
             string line1 = $" Monster : {race}";
             string line2 = $" Stats   : HP {meta.MaxHP:0} | AP {meta.AP:0.0} | DP {meta.DP:0.0} | SPD {meta.Speed}";
             string line3 = $" Info    : {description}";
             string enterLine = $"{_symbol.PointerSymbol} [Enter]";
 
-            // Schreiben
             Console.SetCursorPosition(contentX, lineY++);
             Console.Write(line1);
 
@@ -613,12 +736,15 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
             Console.SetCursorPosition(contentX, lineY++);
             Console.Write(line3);
 
-            // Enter unten rechts
             Console.SetCursorPosition(contentX + InnerWidth - enterLine.Length, contentY + InnerHeight - 1);
             Console.Write(enterLine);
-
         }
 
+        /// <summary>
+        /// Updates the skill/stat choice box to show the four possible
+        /// stat upgrade options (HP, AP, DP, Speed) and highlights the selection.
+        /// </summary>
+        /// <param name="pointerIndex">Index of the currently selected stat.</param>
         public void UpdateStatChoiceBox(int pointerIndex)
         {
             // Position wie SkillBox
@@ -635,10 +761,8 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
             int pointerX = x + EmptyOffset;
             int pointerY = y + EmptyOffset + pointerIndex;
 
-            // 1. Innenbereich löschen
             ClearArea(x + FrameOffset, y + FrameOffset, ClearWidth, ClearHeight);
 
-            // 2. Stat-Namen anzeigen
             string[] stats = { "Increase HP", "Increase AP", "Increase DP", "Increase Speed" };
 
             for (int i = 0; i < stats.Length; i++)
@@ -648,11 +772,16 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
                 lineY++;
             }
 
-            // 3. Pointer setzen
             Console.SetCursorPosition(pointerX, pointerY);
             Console.Write(_symbol.PointerSymbol);
         }
 
+        /// <summary>
+        /// Updates the message box to show a preview of the selected stat
+        /// increase, including old and new values and a short description.
+        /// </summary>
+        /// <param name="stat">The stat type that may be increased.</param>
+        /// <param name="player">The player monster whose stats are previewed.</param>
         public void UpdateMessageBoxForStatChoice(StatType stat, MonsterBase player)
         {
             // Position Outline (wie alle Message-Boxen)
@@ -667,10 +796,8 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
             int contentY = y + FrameOffset;
             int lineY = contentY;
 
-            // Box leeren
             ClearArea(contentX, contentY, InnerWidth, InnerHeight);
 
-            // Beschreibung pro Stat
             string description = stat switch
             {
                 StatType.MaxHP => "Increases maximum HP, improving survivability.",
@@ -680,7 +807,6 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
                 _ => "Unknown Stat."
             };
 
-            // Aktuellen Wert holen
             float currentValue = stat switch
             {
                 StatType.MaxHP => player.Meta.MaxHP,
@@ -698,13 +824,11 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
                 _ => 0
             };
 
-            // Textzeilen
             string line1 = $" Stat      : {stat}";
             string line2 = $" Current   : {currentValue:0.0} -> {newValue}";
             string line3 = $" Effect    : {description}";
             string enterLine = $"{_symbol.PointerSymbol} [Enter]";
 
-            // Schreiben
             Console.SetCursorPosition(contentX, lineY++);
             Console.Write(line1);
 
@@ -719,6 +843,13 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
             Console.Write(enterLine);
         }
 
+        /// <summary>
+        /// Updates the message box with condensed information about the last fight
+        /// (win/lose state, fight number, total rounds).
+        /// </summary>
+        /// <param name="playerWon">True if the player won the fight.</param>
+        /// <param name="fightNumber">The current fight number.</param>
+        /// <param name="totalRounds">How many rounds the fight lasted.</param>
         public void UpdateMessageBoxRoundInfo(bool playerWon, int fightNumber, int totalRounds)
         {
             // Position Outline (wie alle Message-Boxen)
@@ -733,10 +864,10 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
             int contentY = y + FrameOffset;
             int lineY = contentY;
 
-            // Box leeren
+
             ClearArea(contentX, contentY, InnerWidth, InnerHeight);
 
-            // Textzeilen
+
             string line1 = playerWon
                 ? $" You won the fight."
                 : $" You lost the fight.";
@@ -749,7 +880,6 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
 
             string enterLine = $"{_symbol.PointerSymbol} [Enter]";
 
-            // Schreiben
             Console.SetCursorPosition(contentX, lineY++);
             Console.Write(line1);
 
@@ -759,63 +889,9 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
             Console.SetCursorPosition(contentX, lineY++);
             Console.Write(line3);
 
-            // Enter rechts unten
             Console.SetCursorPosition(contentX + InnerWidth - enterLine.Length,
                                       contentY + InnerHeight - 1);
             Console.Write(enterLine);
         }
-
-        //TODO kommt später in die richtige monsterklasse
-        private readonly string[] SlimeSpriteE =
-        {
-            "     ____",
-            "    (    )",
-            "   (O O   )",
-            "   (__     )",
-            "   (V V    )",
-            "  (________)"
-        };
-
-
-        //TODO kommt später in die richtige monsterklasse
-        private readonly string[] SlimeSpriteP =
-        {
-            "     ____",
-            "    (    )",
-            "   (   O O)",
-            "  (    __ )",
-            "  (    V V)",
-            "  (________)"
-        };
-
-        public void PrintSlimeE()
-        {
-            const int OffsetY = 10;
-            const int OffsetX = 7;
-            int x = EnemyPositionX + OffsetX;
-            int y = EnemyPositionY + OffsetY;
-            for (int i = 0; i < SlimeSpriteE.Length; i++)
-            {
-                Console.SetCursorPosition(x, y + i);
-                Console.Write(SlimeSpriteE[i]);
-            }
-        }
-
-        public void PrintSlimeP()
-        {
-            const int OffsetY = 10;
-            const int OffsetX = 7;
-            int x = PlayerPositionX + OffsetX;
-            int y = PlayerPositionY + OffsetY;
-            for (int i = 0; i < SlimeSpriteP.Length; i++)
-            {
-                Console.SetCursorPosition(x, y + i);
-                Console.Write(SlimeSpriteP[i]);
-            }
-
-        }
-
-
     }
-
 }

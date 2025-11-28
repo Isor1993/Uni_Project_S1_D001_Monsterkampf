@@ -1,32 +1,50 @@
 ﻿/*****************************************************************************
 * Project : Monsterkampf-Simulator (K1, S1, S4)
-* File    : 
-* Date    : xx.xx.2025
+* File    : GameManager.cs
+* Date    : 03.12.2025
 * Author  : Eric Rosenberg
 *
 * Description :
-* *
+*   Central state machine that controls the entire game flow of the
+*   Monsterkampf-Simulator. Handles transitions between start screen,
+*   tutorial, monster selection, battles, rewards, level-ups, stage scaling,
+*   and final end screen. Coordinates all dependencies and global systems.
+*
+* Responsibilities :
+*   - Maintain and switch GameState (Start → Tutorial → ChooseMonster → ...)
+*   - Trigger all major game screen renders (start/tutorial/end)
+*   - Initialize battles and evaluate results
+*   - Manage player stat rewards, level-ups and HP resets
+*   - Spawn and scale new enemy monsters for the next stage
+*   - Track total fights & completed battles
+*
 * History :
-* xx.xx.2025 ER Created
+*   03.12.2025 ER Created
 ******************************************************************************/
-
 
 using S1_D001_Monsterkampf_Simulator_ER.Balancing;
 using S1_D001_Monsterkampf_Simulator_ER.Dependencies;
 using S1_D001_Monsterkampf_Simulator_ER.Monsters;
 using S1_D001_Monsterkampf_Simulator_ER.Player;
-using System;
-using System.Diagnostics;
-using System.Reflection;
-using System.Reflection.Emit;
-using System.Security.AccessControl;
 
 namespace S1_D001_Monsterkampf_Simulator_ER.Managers
 {
-
     internal class GameManager
     {
-        private enum GameState { Start, Tutorial, ChooseMonster, BattleStart, HandleRewards, NextStage, End, Quit }
+        /// <summary>
+        /// All possible states of the main game flow.
+        /// </summary>
+        private enum GameState
+        {
+            Start,
+            Tutorial,
+            ChooseMonster,
+            BattleStart,
+            HandleRewards,
+            NextStage,
+            End,
+            Quit
+        }
 
         // === Dependencies ===
         private readonly GameDependencies _deps;
@@ -36,13 +54,24 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
         // === Fields ===
         private GameState _currentState = GameState.Start;
         private bool isRunning = true;
+
+        /// <summary>
+        /// Holds general player progression values
+        /// such as completed battles and unassigned stat points.
+        /// </summary>
         public PlayerData PlayerData { get; } = new PlayerData();
 
-        public static int totalFights { get; private set; }
         /// <summary>
-        /// 
+        /// Tracks how many battles were played in the entire session.
         /// </summary>
-        /// <param name="gameDependencies"></param>
+        public static int TotalFights { get; private set; }
+
+        /// <summary>
+        /// Creates the GameManager and injects all required systems.
+        /// </summary>
+        /// <param name="gameDependencies">Full dependency bundle (UI, controllers, random, factory, etc.)</param>
+        /// <param name="inputManager">Handles pointer-style menu navigation</param>
+        /// <param name="playerInput">Reads actual input commands from keyboard</param>
         public GameManager(GameDependencies gameDependencies, InputManager inputManager, IPlayerInput playerInput)
         {
             _deps = gameDependencies;
@@ -50,8 +79,10 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
             _playerInput = playerInput;
         }
 
-
-
+        /// <summary>
+        /// Main loop of the entire game. Runs until QuitGame() is called.
+        /// Handles state transitions and ensures each screen/step is executed.
+        /// </summary>
         public void RunGame()
         {
             while (isRunning)
@@ -106,7 +137,9 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
             }
         }
 
-
+        /// <summary>
+        /// Shows the animated start screen and waits for player input.
+        /// </summary>
         private void StartScreen()
         {
             Console.Clear();
@@ -115,7 +148,9 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
             _currentState = GameState.Tutorial;
         }
 
-
+        /// <summary>
+        /// Shows tutorial instructions and waits for confirmation.
+        /// </summary>
         private void TutorialScreen()
         {
             Console.Clear();
@@ -126,18 +161,16 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
 
         }
 
-
-
-
+        /// <summary>
+        /// Lets the player select one of four starting monsters.
+        /// Updates UI live as the pointer moves. Creates the chosen monster.
+        /// </summary>
         private void ChooseMonster()
         {
             Console.Clear();
             _deps.Diagnostics.AddCheck($"{nameof(GameManager)}.{nameof(ChooseMonster)}: Monster selection started.");
 
-            // 1. Monster-Liste (4 Stück)
             RaceType[] monsterChoices = new[] { RaceType.Slime, RaceType.Goblin, RaceType.Orc, RaceType.Troll };
-
-            // 2. UI vorbereiten
 
             int pointer = 0;
             bool confirmed = false;
@@ -153,12 +186,9 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
 
                 _deps.UI.UpdateMessageBoxForMonsterChoice(race, meta, desc);
             }
-            // 3. Erste Anzeige
             _deps.UI.UpdateMonsterSelectionBox(monsterChoices, pointer);
             RefreshMessageBox();
 
-
-            // 4. Pointer bewegen
             while (!confirmed)
             {
                 PlayerCommand cmd = _deps.Input.ReadCommand();
@@ -183,7 +213,6 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
                 RefreshMessageBox();
             }
 
-            // 5. Auswahl übernehmen
             RaceType chosenRace = monsterChoices[pointer];
             int startLevel = _deps.Balancing.StartLevel;
 
@@ -192,38 +221,35 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
 
             _deps.Diagnostics.AddCheck($"{nameof(GameManager)}.{nameof(ChooseMonster)}: Player selected {chosenRace} at Level {startLevel}.");
 
-            // 6. Weiter
             _currentState = GameState.NextStage;
         }
 
-
-
+        /// <summary>
+        /// Starts a new battle, evaluates result, updates fight counter,
+        /// and decides whether to give rewards or show the end screen.
+        /// </summary>
         private void StartBattle()
         {
             _deps.Diagnostics.AddCheck($"{nameof(GameManager)}.{nameof(StartBattle)}: Battle starting...");
 
-            // BattleManagerDependencies frisch erzeugen
             var battleDeps = new BattleManagerDependencies(_deps.PlayerController, _deps.EnemyController, _deps.Diagnostics, _deps.Random, _deps.DamagePipeline, PlayerData, _deps.Balancing, _deps.UI);
 
-            // BattleManager erzeugen
             BattleManager battle = new BattleManager(battleDeps, _inputManager, _playerInput);
 
-            // Kampf ausführen
             battle.RunBattle();
 
-            // Ergebnis bestimmen
             BattleResult result = battle.DetermineBattleResult();
-            totalFights++;
+            TotalFights++;
             if (result == BattleResult.PlayerWon)
             {
-                _deps.UI.UpdateMessageBoxRoundInfo(true, totalFights, battle.TotalRounds);
+                _deps.UI.UpdateMessageBoxRoundInfo(true, TotalFights, battle.TotalRounds);
                 _deps.InputManager.WaitForEnter(_playerInput);
                 _deps.Diagnostics.AddCheck($"{nameof(GameManager)}.{nameof(StartBattle)}: Player won the battle.");
                 _currentState = GameState.HandleRewards;
             }
             else
             {
-                _deps.UI.UpdateMessageBoxRoundInfo(false, totalFights, battle.TotalRounds);
+                _deps.UI.UpdateMessageBoxRoundInfo(false, TotalFights, battle.TotalRounds);
                 _deps.InputManager.WaitForEnter(_playerInput);
                 _deps.Diagnostics.AddCheck($"{nameof(GameManager)}.{nameof(StartBattle)}: Player lost the battle.");
                 _currentState = GameState.End;
@@ -231,28 +257,26 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
             battle.TotalRounds = 0;
         }
 
-
-
+        /// <summary>
+        /// Prepares the next enemy: resets player HP, calculates bonus scaling,
+        /// picks random race, creates & scales enemy, and moves to BattleStart.
+        /// </summary>
         private void HandleRewards()
         {
             _deps.Diagnostics.AddCheck($"{nameof(GameManager)}.{nameof(HandleRewards)}: Handling rewards...");
 
             MonsterBase player = _deps.PlayerController.Monster;
 
-            // --- 1. Alle StatPoints verteilen ---
             while (PlayerData.UnassignedStatPoints > 0)
             {
                 _deps.Diagnostics.AddCheck(
                     $"{nameof(GameManager)}.{nameof(HandleRewards)}: Player has {PlayerData.UnassignedStatPoints} stat point(s).");
 
-                // UI anzeigen
-                _deps.UI.PrintSkillBoxLayout();  // nutzt dieselbe Box für Stat-Auswahl
+                _deps.UI.PrintSkillBoxLayout();
                 _deps.UI.PrintMessageBoxLayout();
 
-                // Pointer-Menü aktivieren (neue Methode in InputManager)
                 StatType choice = _deps.InputManager.ReadStatIncreaseChoice(_deps.UI, player);
 
-                // Stat erhöhen
                 player.ApplyStatPointIncrease(choice, _deps.Balancing);
                 PlayerData.UnassignedStatPoints--;
 
@@ -260,20 +284,20 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
                     $"{nameof(GameManager)}.{nameof(HandleRewards)}: +1 {choice}. Remaining={PlayerData.UnassignedStatPoints}");
             }
 
-            // --- 2. LevelUp berechnen ---
             int newLevel = player.Level + _deps.Balancing.LevelUpScaling;
 
 
-            player.ApplyLevelUp(player.Meta, _deps.Balancing);
+            player.ApplyLevelUp(_deps.Balancing);
             player.SkillPackage.ResetCooldowns();
             _deps.Diagnostics.AddCheck(
                 $"{nameof(GameManager)}.{nameof(HandleRewards)}: Player leveled up to {player.Level}. Stats updated!");
 
-            // --- 3. Weiter zu NextStage ---
             _currentState = GameState.NextStage;
         }
 
-
+        /// <summary>
+        /// Scales enemy stats based on level and balancing curves.
+        /// </summary>
         private void NextStage()
         {
             _deps.Diagnostics.AddCheck($"{nameof(GameManager)}.{nameof(NextStage)}: Preparing next stage...");
@@ -301,7 +325,9 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
             _currentState = GameState.BattleStart;
         }
 
-
+        /// <summary>
+        /// Renders end screen and waits for confirmation before quitting.
+        /// </summary>
         public void ScaleEnemy(MonsterBase enemy, int level, MonsterBalancing balancing)
         {
             enemy.Meta.MaxHP += (1 + balancing.HPScaling) * level;
@@ -316,9 +342,9 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
             enemy.Meta.CurrentHP = enemy.Meta.MaxHP;
         }
 
-
-
-
+        /// <summary>
+        /// Stops the main loop and ends the game session.
+        /// </summary>
         private void Endscreen()
         {
             Console.Clear();
@@ -329,7 +355,9 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
 
         }
 
-
+        /// <summary>
+        /// 
+        /// </summary>
         private void QuitGame()
         {
             isRunning = false;

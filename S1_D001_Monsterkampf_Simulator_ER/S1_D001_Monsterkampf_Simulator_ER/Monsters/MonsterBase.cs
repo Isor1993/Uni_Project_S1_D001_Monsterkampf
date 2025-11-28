@@ -1,29 +1,35 @@
 ﻿/*****************************************************************************
 * Project : Monsterkampf-Simulator (K1, S1, S4)
-* File    : 
-* Date    : xx.xx.2025
+* File    : MonsterBase.cs
+* Date    : 03.12.2025
 * Author  : Eric Rosenberg
 *
 * Description :
-* *
+*   Abstract base class for all monsters. Holds core stats, resistances,
+*   skills, status effects, and shared combat logic.
+*
+* Responsibilities :
+*   - Provide shared monster data (meta, resistances, level, race)
+*   - Handle attacking, taking damage and status effect processing
+*   - Provide stat increase & level-up behavior
+*   - Define abstract PrintSprite() for ASCII rendering
+*   - Provide AI skill selection behavior
+*
 * History :
-* xx.xx.2025 ER Created
+*   03.12.2025 ER Created
 ******************************************************************************/
-
 
 using S1_D001_Monsterkampf_Simulator_ER.Balancing;
 using S1_D001_Monsterkampf_Simulator_ER.Managers;
-using S1_D001_Monsterkampf_Simulator_ER.Player;
 using S1_D001_Monsterkampf_Simulator_ER.Skills;
-using S1_D001_Monsterkampf_Simulator_ER.Skills.Goblin;
 using S1_D001_Monsterkampf_Simulator_ER.Systems.Damage;
 using S1_D001_Monsterkampf_Simulator_ER.Systems.StatusEffects;
-using System.Net.WebSockets;
 
 namespace S1_D001_Monsterkampf_Simulator_ER.Monsters
 {
-
-
+    /// <summary>
+    /// The different monster race types.
+    /// Used to identify the monster species (Orc, Troll, Goblin, Slime).
     public enum RaceType
     {
         None = 0,
@@ -33,16 +39,17 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Monsters
         Slime = 4,
 
     }
-    //TODO alle enums viel in eine cs datei ??
+
+    /// <summary>
+    /// Represents all possible stats that can be increased through stat points.
+    /// </summary>
     public enum StatType
     {
         MaxHP,
         AP,
         DP,
         Speed
-
     }
-
 
     internal abstract class MonsterBase
     {
@@ -54,17 +61,35 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Monsters
         protected SkillPackage _skills;
         private List<StatusEffectBase> _statusEffects = new List<StatusEffectBase>();
 
-
+        /// <summary>
+        /// Monster flavor description shown in UI and log output.
+        /// </summary>
         public abstract string Description { get; }
 
+        /// <summary>
+        /// Contains active skills, passive skills, and support skills.
+        /// </summary>
         public SkillPackage SkillPackage => _skills;
 
+        /// <summary>
+        /// The race classification of the monster.
+        /// </summary>
         public RaceType Race { get; }
 
-
+        /// <summary>
+        /// The current level of the monster.
+        /// </summary>
         public int Level { get; set; }
 
-
+        /// <summary>
+        /// Creates a base monster and injects all core data required for combat.
+        /// </summary>
+        /// <param name="meta">Stat container (HP, AP, DP, Speed).</param>
+        /// <param name="resistance">Resistance values for fire, water, poison, physical.</param>
+        /// <param name="race">Assigned monster race.</param>
+        /// <param name="level">Monster level.</param>
+        /// <param name="skill">Skill package (active, passive, meta skills).</param>
+        /// <param name="diagnosticsManager">Diagnostics manager for debug logging.</param>
         protected MonsterBase(MonsterMeta meta, MonsterResistance resistance, RaceType race, int level, SkillPackage skill, DiagnosticsManager diagnosticsManager)
         {
             Race = race;
@@ -76,16 +101,31 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Monsters
         }
 
 
-
+        /// <summary>
+        /// Returns the monster's meta stats (HP, AP, DP, Speed).
+        /// </summary>
         public MonsterMeta Meta => _meta;
 
-
+        /// <summary>
+        /// Returns all elemental/physical resistances.
+        /// </summary>
         public MonsterResistance Resistance => _resistance;
 
-
+        /// <summary>
+        /// Called once when the monster spawns into battle.
+        /// Typically used to apply passive spawn effects.
+        /// </summary>
         public abstract void Spawn();
 
-       
+        /// <summary>
+        /// Performs an attack on another monster using a skill and
+        /// a damage pipeline.
+        /// </summary>
+        /// <param name="target">The monster receiving the attack.</param>
+        /// <param name="skill">The skill being used for the attack.</param>
+        /// <param name="pipeline">Pipeline that processes damage steps.</param>
+        /// <returns>Final damage dealt after all pipeline steps.</returns>
+        /// <exception cref="ArgumentNullException">Thrown if target or skill is null.</exception>
         public virtual float Attack(MonsterBase target, SkillBase skill, DamagePipeline pipeline)
         {
             if (target == null)
@@ -102,10 +142,23 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Monsters
 
             return finalDamage;
         }
+
+        /// <summary>
+        /// Creates a fallback basic attack skill used when no other skills are ready.
+        /// </summary>
+        /// <returns>A new BasicAttack instance.</returns>
         private SkillBase CreateBasicAttack()
         {
             return new BasicAttack(_diagnostics);
         }
+
+        /// <summary>
+        /// Decides which skill the AI should use this turn.
+        /// Prioritizes high-power skills if off cooldown.
+        /// Falls back to Basic Attack.
+        /// </summary>
+        /// <param name="random">Random number generator for tie-breaking.</param>
+        /// <returns>The chosen SkillBase instance.</returns>
         public SkillBase ChooseSkillForAI(RandomManager random)
         {
             // 1. Skills sammeln, die bereit sind (IsReady == true)
@@ -153,7 +206,10 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Monsters
             return basicAttack;
         }
 
-
+        /// <summary>
+        /// Applies the passive skill if the monster has one.
+        /// Called automatically during Spawn().
+        /// </summary>
         public virtual void UsePasiveSkill()
         {
             if (_skills.PassiveSkill is IPassiveSkill passive)
@@ -166,10 +222,11 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Monsters
             }
         }
 
-
-        public virtual void UseAktiveSkill() { }
-
-
+        /// <summary>
+        /// Heals the monster by a specified amount
+        /// without exceeding MaxHP.
+        /// </summary>
+        /// <param name="heal">Healing amount.</param>
         public virtual void Heal(float heal)
         {
             Meta.CurrentHP += heal;
@@ -181,12 +238,21 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Monsters
             _diagnostics.AddCheck($"{nameof(MonsterBase)}.{nameof(Heal)}: {Race} got {heal} Hp healed.");
         }
 
+        /// <summary>
+        /// Adds a status effect (burn, poison, buff, debuff) to the monster.
+        /// </summary>
+        /// <param name="effect">The effect to apply.</param>
         public void AddStatusEffect(StatusEffectBase effect)
         {
             _statusEffects.Add(effect);
             _diagnostics.AddCheck($"{nameof(MonsterBase)}.{nameof(AddStatusEffect)}: Added status effect '{effect.Name}' on {Race}.");
         }
 
+        /// <summary>
+        /// Updates all status effect durations.
+        /// Removes expired effects and triggers their OnExpire().
+        /// Called once per turn.
+        /// </summary>
         public void ProcessStatusEffectDurations()
         {
             List<StatusEffectBase> expired = new();
@@ -210,6 +276,10 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Monsters
             _diagnostics.AddCheck($"{nameof(MonsterBase)}.{nameof(ProcessStatusEffectDurations)}: Duration tick processed for {Race}.");
         }
 
+        /// <summary>
+        /// Applies all "start of turn" effects such as buffs, debuffs,
+        /// or special triggers (e.g., regeneration).
+        /// </summary>
         public void ProcessStartOfTurnEffects()
         {
             foreach (StatusEffectBase effect in _statusEffects)
@@ -219,6 +289,10 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Monsters
 
             _diagnostics.AddCheck($"{nameof(MonsterBase)}.{nameof(ProcessStartOfTurnEffects)}: Start-of-turn effects processed for {Race}.");
         }
+
+        /// <summary>
+        /// Applies all "end of turn" effects such as damage-over-time.
+        /// </summary>
         public void ProcessEndOfTurnEffects()
         {
             foreach (StatusEffectBase effect in _statusEffects)
@@ -229,6 +303,11 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Monsters
             _diagnostics.AddCheck($"{nameof(MonsterBase)}.{nameof(ProcessEndOfTurnEffects)}: End-of-turn effects processed for {Race}.");
         }
 
+        /// <summary>
+        /// Reduces the monster's HP by the incoming damage.
+        /// Cannot reduce HP below zero.
+        /// </summary>
+        /// <param name="damage">Final damage to apply.</param>
         public virtual void TakeDamage(float damage)
         {
             _meta.CurrentHP -= damage;
@@ -239,16 +318,22 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Monsters
             _diagnostics.AddCheck($"{nameof(MonsterBase)}.{nameof(TakeDamage)}: {Race} took {damage} damage.");
         }
 
+        /// <summary>
+        /// Retrieves all active status effects of a specific type.
+        /// </summary>
+        /// <typeparam name="T">The status effect subtype.</typeparam>
+        /// <returns>All matching status effects.</returns>
         public IEnumerable<T> GetStatusEffects<T>() where T : StatusEffectBase
         {
             return _statusEffects.OfType<T>();
         }
 
         /// <summary>
-        /// für später efecte die finaldamage manupulieren
+        ///  Allows status effects to modify the final damage number.
+        /// Ensures the result never drops below 1.
         /// </summary>
-        /// <param name="damage"></param>
-        /// <returns></returns>
+        /// <param name="damage">Incoming final damage.</param>
+        /// <returns>Modified final damage.</returns>
         public virtual float ModifyFinalDamage(float damage)
         {
             float modified = damage;
@@ -260,6 +345,11 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Monsters
             modified = Math.Max(1, modified);
             return modified;
         }
+
+        /// <summary>
+        /// Updates cooldown timers for all skills.
+        /// Should be called at the end of each turn.
+        /// </summary>
         public void ProcessSkillCooldowns()
         {
             foreach (SkillBase skill in _skills.AllSkills)
@@ -269,9 +359,14 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Monsters
             _diagnostics.AddCheck($"{nameof(MonsterBase)}.{nameof(ProcessSkillCooldowns)}: Cooldowns ticked for {Race}.");
         }
 
+        /// <summary>
+        /// Increases one specific stat using a stat point.
+        /// The values come from MonsterBalancing.
+        /// </summary>
+        /// <param name="stat">Stat to increase.</param>
+        /// <param name="balancing">Balancing data for stat gains.</param>
         public void ApplyStatPointIncrease(StatType stat, MonsterBalancing balancing)
         {
-
             switch (stat)
             {
                 case StatType.MaxHP:
@@ -299,20 +394,32 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Monsters
                     _diagnostics.AddError($"{nameof(MonsterBase)}.{nameof(ApplyStatPointIncrease)}: No StatType found.");
                     break;
             }
-
         }
-        public void ApplyLevelUp(MonsterMeta newMeta,MonsterBalancing balancing)
+
+        /// <summary>
+        /// Applies a level-up and scales all stats according to the balancing rules.
+        /// </summary>
+        /// <param name="balancing">Scaling values for HP, AP, DP, Speed.</param>
+        public void ApplyLevelUp(MonsterBalancing balancing)
         {
             Level++;
             const int MultiplierBase = 1;
-            Meta.MaxHP *= (balancing.HPScaling+ MultiplierBase);
-            Meta.CurrentHP =Meta.MaxHP;
-            Meta.AP *= (balancing.APScaling+ MultiplierBase);
-            Meta.DP *= (balancing.DPScaling+ MultiplierBase);
-            Meta.Speed *= (balancing.SpeedScaling+ MultiplierBase);
+            Meta.MaxHP *= (balancing.HPScaling + MultiplierBase);
+            Meta.CurrentHP = Meta.MaxHP;
+            Meta.AP *= (balancing.APScaling + MultiplierBase);
+            Meta.DP *= (balancing.DPScaling + MultiplierBase);
+            Meta.Speed *= (balancing.SpeedScaling + MultiplierBase);
             _diagnostics.AddCheck($"{nameof(MonsterBase)}.{nameof(ApplyLevelUp)}: LevelUp to {Level} and updated stats.");
         }
 
+        /// <summary>
+        /// Must be implemented by each monster to draw its ASCII sprite.
+        /// </summary>
+        public abstract void PrintSprite(bool isPlayer);
+
+        /// <summary>
+        /// Indicates whether the monster still has HP left.
+        /// </summary>
         public bool IsAlive => _meta.CurrentHP > 0;
     }
 }
