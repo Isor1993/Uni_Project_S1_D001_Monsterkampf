@@ -1,13 +1,19 @@
 ﻿/*****************************************************************************
 * Project : Monsterkampf-Simulator (K1, S1, S4)
-* File    :
-* Date    : xx.xx.2025
+* File    : PassiveSkill_Greed.cs
+* Date    : 03.12.2025
 * Author  : Eric Rosenberg
 *
 * Description :
-* *
+*   Passive/meta skill used by the Goblin. Increases the reward gained after
+*   winning a battle without affecting combat directly.
+*
+* Responsibilities :
+*   - Modify the victory reward after a won fight
+*   - Provide debug information about reward changes
+*
 * History :
-* xx.xx.2025 ER Created
+*   03.12.2025 ER Created
 ******************************************************************************/
 
 using S1_D001_Monsterkampf_Simulator_ER.Managers;
@@ -22,6 +28,10 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Skills.Goblin
 
         private const int SkillCooldown = 0;
 
+        /// <summary>
+        /// Creates a new Greed passive skill instance.
+        /// </summary>
+        /// <param name="diagnostics">Diagnostics manager used for debug logging.</param>
         public PassiveSkill_Greed(DiagnosticsManager diagnostics)
             : base(
             "Greed",
@@ -35,21 +45,23 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Skills.Goblin
         }
 
         /// <summary>
-        /// Einheitliche Passive-Schnittstelle für alle passiven Skills.
-        /// Greed hat keinen sofortigen Effekt beim Spawn.
+        /// Called when the passive is initialized.
+        /// Greed has no immediate effect on spawn, only on rewards after victory.
         /// </summary>
+        /// <param name="user">The monster owning the Greed passive.</param>
         public void ApplyPassive(MonsterBase user)
         {
             _diagnostics.AddCheck($"{nameof(PassiveSkill_Greed)}.{nameof(ApplyPassive)}: No immediate spawn effect. Greed will modify rewards after victory.");
         }
 
         /// <summary>
-        /// Der eigentliche Reward-Bonus: +50% Reward nach gewonnenem Kampf.
+        /// Modifies the victory reward by applying the Greed multiplier.
         /// </summary>
+        /// <param name="baseReward">Base reward before modification.</param>
+        /// <returns>Final reward value after applying the multiplier.</returns>
         public override float ModifyVictoryReward(float baseReward)
         {
             float finalReward = baseReward * SkillMultiplier;
-
             _diagnostics.AddCheck($"{nameof(PassiveSkill_Greed)}.{nameof(ModifyVictoryReward)}: BaseReward={baseReward} → FinalReward={finalReward} (+50%).");
 
             return finalReward;

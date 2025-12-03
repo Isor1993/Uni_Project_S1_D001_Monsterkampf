@@ -5,13 +5,14 @@
 * Author  : Eric Rosenberg
 *
 * Description :
-* Handles all player skill selection via pointer movement.
-* - Pointer movement (up/down)
-* - Live UI updates (SkillBox + MessageBox)
-* - Confirming a selected skill
+*   Manages all player-driven combat decisions.
+*   - Handles pointer-based navigation through available skills.
+*   - Updates the UI (SkillBox + MessageBox) live during navigation.
+*   - Validates cooldown restrictions.
+*   - Confirms and returns the selected skill.
 *
 * History :
-* xx.xx.2025 ER Created
+*   xx.xx.2025 ER Created
 ******************************************************************************/
 
 using S1_D001_Monsterkampf_Simulator_ER.Managers;
@@ -30,10 +31,17 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Controllers
         // === Fields ===
         private int _pointerIndex = 0;
 
-        private const int MaxSkillsShown = 4;
-
         private bool _skillConfirmed = false;
 
+        /// <summary>
+        /// Creates a PlayerController that allows the player to choose skills
+        /// via keyboard input and automatically updates all relevant UI boxes.
+        /// </summary>
+        /// <param name="monster">The player's monster instance.</param>
+        /// <param name="diagnostics">DiagnosticsManager for logging and checks.</param>
+        /// <param name="ui">UIManager responsible for updating SkillBox & MessageBox.</param>
+        /// <param name="input">Player input reader (W/S/Enter).</param>
+        /// <exception cref="ArgumentNullException">Thrown if UI or input is null.</exception>
         public PlayerController(MonsterBase monster, DiagnosticsManager diagnostics, UIManager ui, IPlayerInput input)
             : base(monster, diagnostics)
         {
@@ -42,9 +50,13 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Controllers
         }
 
         /// <summary>
-        /// SKILL CHOICE (MAIN ENTRY POINT)
+        /// Handles the complete process of selecting a skill:
+        /// - Shows all skills in the UI
+        /// - Allows pointer movement
+        /// - Confirms the chosen skill
+        /// - Prevents choosing skills that are on cooldown
         /// </summary>
-        /// <returns></returns>
+        /// <returns>The chosen SkillBase.</returns>
         public override SkillBase ChooseSkill()
         {
             _skillConfirmed = false;
@@ -88,9 +100,10 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Controllers
         }
 
         /// <summary>
-        /// POINTER MOVEMENT
+        /// Moves the pointer through the skill list and skips skills
+        /// that currently cannot be selected (cooldown > 0).
         /// </summary>
-        /// <param name="direction"></param>
+        /// <param name="direction">-1 = up, +1 = down.</param>
         private void MovePointer(int direction)
         {
             SkillPackage pack = Monster.SkillPackage;
@@ -116,7 +129,8 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Controllers
         }
 
         /// <summary>
-        /// UI REFRESH
+        /// Updates the SkillBox and MessageBox to reflect the current pointer
+        /// position and the currently highlighted skill.
         /// </summary>
         private void RefreshSkillUI()
         {

@@ -1,9 +1,29 @@
-﻿using S1_D001_Monsterkampf_Simulator_ER.Balancing;
+﻿/*****************************************************************************
+* Project : Monsterkampf-Simulator (K1, S1, S4)
+* File    : Program.cs
+* Date    : xx.xx.2025
+* Author  : Eric Rosenberg
+*
+* Description :
+*   Entry point of the Monster Battle Simulator.
+*   Bootstraps all core systems, initializes dependency injection,
+*   constructs global managers, and starts the game flow.
+*
+* Responsibilities :
+*   - Create and wire all global managers and systems
+*   - Initialize a single unified input system (IPlayerInput)
+*   - Provide complete GameDependencies for the GameManager
+*   - Start the game loop via GameManager.RunGame()
+*
+* History :
+*   xx.xx.2025 ER Created
+******************************************************************************/
+
+using S1_D001_Monsterkampf_Simulator_ER.Balancing;
 using S1_D001_Monsterkampf_Simulator_ER.Controllers;
 using S1_D001_Monsterkampf_Simulator_ER.Dependencies;
 using S1_D001_Monsterkampf_Simulator_ER.Factories;
 using S1_D001_Monsterkampf_Simulator_ER.Managers;
-using S1_D001_Monsterkampf_Simulator_ER.Player;
 using S1_D001_Monsterkampf_Simulator_ER.Systems.Damage;
 
 namespace S1_D001_Monsterkampf_Simulator_ER
@@ -13,50 +33,62 @@ namespace S1_D001_Monsterkampf_Simulator_ER
         private static void Main(string[] args)
         {
             Console.OutputEncoding = System.Text.Encoding.UTF8;
-            // === CORE SYSTEMS ===
+            Console.CursorVisible = false;
+
+            // === CORE SYSTEMS ====================================================
             var diagnostics = new DiagnosticsManager();
             var random = new RandomManager();
             var symbol = new SymbolManager();
+            var print = new PrintManager(diagnostics);
             var balancing = new MonsterBalancing(diagnostics);
             var pipeline = new DamagePipeline(diagnostics);
-            var print = new PrintManager(diagnostics);
 
-            // === INPUT SYSTEM (Keyboard) ===
+            // === INPUT SYSTEM =====================================================
 
-            var keyboardInput = new KeyboardInputManager();      // implements IPlayerInput
-            var inputManager = new InputManager(keyboardInput);  // Stat choice menu controller
-            IPlayerInput playerInput = new KeyboardInputManager();
+            IPlayerInput input = new KeyboardInputManager();
+            var inputManager = new InputManager(input);
 
-            // === UI SYSTEM ===
+            // === UI SYSTEM ========================================================
             var ui = new UIManager(symbol, diagnostics, balancing);
 
-            // === FACTORIES ===
+            // === FACTORIES =========================================================
             var monsterFactory = new MonsterFactory(diagnostics, balancing);
 
-            // === CONTROLLER ===
-            var playerController = new PlayerController(null!, diagnostics, ui, keyboardInput);
-            var enemyController = new EnemyController(null!, diagnostics, random);
+            // === CONTROLLERS =======================================================
+
+            var playerController = new PlayerController(
+                monster: null!,
+                diagnostics: diagnostics,
+                ui: ui,
+                input: input);
+
+            var enemyController = new EnemyController(
+                monster: null!,
+                diagnostics: diagnostics,
+                random: random);
+
+            // === SCREEN SYSTEM =====================================================
             var screen = new ScreenManager(symbol, playerController);
 
-            // === GAME DEPENDENCIES ===
-            var gameDeps = new GameDependencies(pipeline, ui, playerInput, inputManager, random, diagnostics, print, playerController, balancing, enemyController, monsterFactory, screen);
-
-            // === BATTLEMANAGER DEPENDENCIES (initial leer) ===
-            var emptyBattleDeps = new BattleManagerDependencies(
-                PlayerController: playerController,
-                EnemyController: enemyController,
-                Diagnostics: diagnostics,
+            // === GAME DEPENDENCIES ================================================
+            var gameDeps = new GameDependencies(
+                DamagePipeline: pipeline,
+                UI: ui,
+                input,
+                InputManager: inputManager,
                 Random: random,
-                Pipeline: pipeline,
-                PlayerData: new PlayerData(),
+                Diagnostics: diagnostics,
+                Print: print,
+                PlayerController: playerController,
                 Balancing: balancing,
-                UI: ui
-            );
+                EnemyController: enemyController,
+                MonsterFactory: monsterFactory,
+                Screen: screen);
 
-            // === GAMEMANAGER erstellen ===
-            var game = new GameManager(gameDeps, inputManager, playerInput);
+            // === GAME MANAGER ======================================================
+            var game = new GameManager(gameDeps, inputManager, input);
 
-            // === SPIEL STARTEN ===
+            // === START GAME ========================================================
             game.RunGame();
         }
     }

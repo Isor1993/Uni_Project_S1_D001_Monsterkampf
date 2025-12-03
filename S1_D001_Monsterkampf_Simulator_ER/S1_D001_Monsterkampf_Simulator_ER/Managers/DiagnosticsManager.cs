@@ -261,7 +261,6 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
             combined.AddRange(_warnings);
             combined.AddRange(_checks);
 
-            // Sort logs by their timestamp substring — assumes format "[HH:mm:ss.fff]"
             var sorted = combined
                 .OrderBy(log =>
                 {
@@ -272,13 +271,11 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
                     }
                     catch
                     {
-                        // Fallback for malformed logs
                         return DateTime.MinValue;
                     }
                 })
                 .ToList();
 
-            // Print the sorted result
             print.Line("=== Chronological Log Output ===");
             foreach (var log in sorted)
                 Console.WriteLine(log);

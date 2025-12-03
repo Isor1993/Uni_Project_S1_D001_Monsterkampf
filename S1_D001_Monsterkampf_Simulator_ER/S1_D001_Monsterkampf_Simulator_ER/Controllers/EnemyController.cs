@@ -5,8 +5,10 @@
 * Author  : Eric Rosenberg
 *
 * Description :
-* Controller used for enemy AI. Delegates skill selection to the AI logic
-* inside the associated MonsterBase.
+* Controls the AI logic for enemy skill selection.
+* - Uses RandomManager to choose a valid skill
+* - Logs all selections for diagnostics
+* - Provides SetMonster override for dynamic reassignment
 *
 * History :
 * xx.xx.2025 ER Created
@@ -23,13 +25,22 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Controllers
         // === Dependencies ===
         private readonly RandomManager _random;
 
-        // === Fields ===
-
+        /// <summary>
+        /// Constructs a new EnemyController with required dependencies.
+        /// </summary>
+        /// <param name="monster">The monster controlled by the AI.</param>
+        /// <param name="diagnostics">Diagnostics manager for logging.</param>
+        /// <param name="random">RandomManager for weighted/randomized AI decisions.</param>
+        /// <exception cref="ArgumentNullException">Thrown if any dependency is null.</exception>
         public EnemyController(MonsterBase monster, DiagnosticsManager diagnostics, RandomManager random) : base(monster, diagnostics)
         {
             _random = random ?? throw new ArgumentNullException(nameof(random));
         }
 
+        /// <summary>
+        /// Selects a skill using the monster’s AI logic.
+        /// </summary>
+        /// <returns>The chosen skill instance.</returns>
         public override SkillBase ChooseSkill()
         {
             SkillBase chosen = Monster.ChooseSkillForAI(_random);
@@ -39,6 +50,10 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Controllers
             return chosen;
         }
 
+        /// <summary>
+        /// Assigns a new monster to this controller.
+        /// </summary>
+        /// <param name="monster">The new monster instance.</param>
         public void SetMonster(MonsterBase monster)
         {
             base.SetMonster(monster);

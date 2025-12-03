@@ -5,8 +5,9 @@
 * Author  : Eric Rosenberg
 *
 * Description :
-* Reads keyboard input from the user and translates it into PlayerCommand
-* values for navigating menus, selecting skills and confirming actions.
+* Provides keyboard-based player input handling.
+* Translates ConsoleKey input into PlayerCommand actions
+* (MoveUp, MoveDown, Confirm).
 *
 * History :
 * xx.xx.2025 ER Created
@@ -28,10 +29,9 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
                 ConsoleKey.UpArrow => PlayerCommand.MoveUp,
                 ConsoleKey.W => PlayerCommand.MoveUp,
                 ConsoleKey.DownArrow => PlayerCommand.MoveDown,
-                ConsoleKey.S => PlayerCommand.MoveUp,
+                ConsoleKey.S => PlayerCommand.MoveDown,
                 ConsoleKey.Enter => PlayerCommand.Confirm,
 
-                // Everything else returns "None"
                 _ => PlayerCommand.None
             };
         }

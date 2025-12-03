@@ -1,28 +1,35 @@
 ﻿/*****************************************************************************
 * Project : Monsterkampf-Simulator (K1, S1, S4)
-* File    :
+* File    : PlayerData.cs
 * Date    : xx.xx.2025
 * Author  : Eric Rosenberg
 *
 * Description :
-* *
+*   Stores persistent player-related data such as unassigned stat points
+*   and completed battle count.
+*
+* Responsibilities :
+*   - Track available stat points for allocation
+*   - Track the number of completed battles
+*
 * History :
-* xx.xx.2025 ER Created
+*   xx.xx.2025 ER Created
 ******************************************************************************/
-
-using S1_D001_Monsterkampf_Simulator_ER.Monsters;
 
 namespace S1_D001_Monsterkampf_Simulator_ER.Player
 {
     internal class PlayerData
     {
-        // === Dependencies ===
-
         // === Fields ===
+
+        /// <summary>
+        /// Available stat points the player can allocate to monsters.
+        /// </summary>
         public int UnassignedStatPoints { get; set; } = 0;
 
-        public MonsterBase? ActiveMonster { get; set; }
-
+        /// <summary>
+        /// Number of battles successfully completed.
+        /// </summary>
         public int CompletedBattles { get; set; } = 0;
     }
 }

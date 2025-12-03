@@ -1,13 +1,21 @@
 ﻿/*****************************************************************************
 * Project : Monsterkampf-Simulator (K1, S1, S4)
-* File    :
-* Date    : xx.xx.2025
+* File    : DamagePipeline.cs
+* Date    : 03.12.2025
 * Author  : Eric Rosenberg
 *
 * Description :
-* *
+*   Handles the complete damage calculation process for executed skills.
+*   Executes casting behavior, raw damage calculation, defense, resistance,
+*   absorb effects, final modifications and applying the final damage value.
+*
+* Responsibilities :
+*   - Execute the full damage calculation pipeline
+*   - Apply defense, resistances and absorb effects
+*   - Invoke skill OnCast and OnHit behavior
+*
 * History :
-* xx.xx.2025 ER Created
+*   03.12.2025 ER Created
 ******************************************************************************/
 
 using S1_D001_Monsterkampf_Simulator_ER.Managers;
@@ -22,23 +30,31 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Systems.Damage
         // === Dependencies ===
         private readonly DiagnosticsManager _diagnostics;
 
-        // === Fields ===
-
+        /// <summary>
+        /// Creates a new damage pipeline instance.
+        /// </summary>
+        /// <param name="diagnostics">Diagnostics manager used for debug logging.</param>
         public DamagePipeline(DiagnosticsManager diagnostics)
         {
             _diagnostics = diagnostics;
         }
 
         /// <summary>
-        /// Führt die komplette Damage-Pipeline aus:
+        /// Executes the complete damage pipeline:
+        /// Executes the complete damage pipeline:
         /// 1. OnCast
-        /// 2. RawDamage
-        /// 3. Defense
-        /// 4. Resistance
-        /// 5. Absorb/Schilde/Thorns
-        /// 6. target.TakeDamage
-        /// 7. OnHit
+        /// 2. RawDamage calculation
+        /// 3. Defense reduction
+        /// 4. Resistance reduction
+        /// 5. Absorb effects
+        /// 6. Final damage modifications
+        /// 7. Apply damage to target
+        /// 8. OnHit
         /// </summary>
+        /// <param name="attacker">The monster performing the attack.</param>
+        /// <param name="target">The monster receiving the damage.</param>
+        /// <param name="skill">The skill used for the attack.</param>
+        /// <returns>The final damage dealt.</returns>
         public float Execute(MonsterBase attacker, MonsterBase target, SkillBase skill)
         {
             _diagnostics.AddCheck($"{nameof(DamagePipeline)}: Starting DamagePipeline for skill '{skill.Name}'.");
@@ -64,6 +80,13 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Systems.Damage
             return finalDamage;
         }
 
+        /// <summary>
+        /// Applies elemental resistance reduction based on the skill's damage type.
+        /// </summary>
+        /// <param name="target">The monster receiving the damage.</param>
+        /// <param name="skill">The skill determining the damage type.</param>
+        /// <param name="afterDefense">Damage value after applying defense.</param>
+        /// <returns>Damage after applying resistance.</returns>
         private float GetAfterResistance(MonsterBase target, SkillBase skill, float afterDefense)
         {
             float resistance = skill.DamageType switch
@@ -83,6 +106,12 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Systems.Damage
             return afterResistance;
         }
 
+        /// <summary>
+        /// Applies absorb effects if the target has an active AbsorbEffect.
+        /// </summary>
+        /// <param name="target">The monster that may absorb damage.</param>
+        /// <param name="damage">Damage value before absorb.</param>
+        /// <returns>Damage after applying absorb.</returns>
         private float ApplyAbsorb(MonsterBase target, float damage)
         {
             var absorb = target.GetStatusEffects<AbsorbEffect>().FirstOrDefault();
