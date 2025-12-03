@@ -125,7 +125,7 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
                 int clearStartX = 40;
                 int clearStartY = 9;
                 int spriteHeight = 14;
-                int spriteWidth = 50;
+                int spriteWidth = 59;
                 _deps.UI.ClearArea(clearStartX, clearStartY, spriteWidth, spriteHeight);
                 Player.PrintSprite(true);
                 Enemy.PrintSprite(false);
