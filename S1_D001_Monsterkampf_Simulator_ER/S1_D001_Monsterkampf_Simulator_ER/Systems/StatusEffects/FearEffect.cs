@@ -25,6 +25,7 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Systems.StatusEffects
     {
         // === Fields ===
         private readonly float _multiplier;
+
         private float _baseSpeed;
         private bool _applied = false;
 
@@ -34,7 +35,7 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Systems.StatusEffects
         /// <param name="multiplier">Multiplier used to reduce the target's speed.</param>
         /// <param name="diagnostics">Diagnostics manager used for debug logging.</param>
         public FearEffect(float multiplier, DiagnosticsManager diagnostics)
-           : base("Fear",diagnostics)
+           : base("Fear", diagnostics)
         {
             _multiplier = multiplier;
         }

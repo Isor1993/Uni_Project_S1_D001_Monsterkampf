@@ -84,4 +84,3 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Dependencies
         ScreenManager Screen
     );
 }
-

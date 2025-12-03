@@ -44,7 +44,6 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Controllers
         {
             Monster = monster;
             _diagnostics = diagnostics ?? throw new ArgumentNullException(nameof(diagnostics));
-
         }
 
         /// <summary>

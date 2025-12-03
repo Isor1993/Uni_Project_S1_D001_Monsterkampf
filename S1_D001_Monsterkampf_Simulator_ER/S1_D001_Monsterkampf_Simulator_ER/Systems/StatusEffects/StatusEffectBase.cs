@@ -26,7 +26,6 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Systems.StatusEffects
 {
     internal abstract class StatusEffectBase
     {
-
         protected readonly DiagnosticsManager _diagnostics;
 
         /// <summary>
@@ -59,7 +58,6 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Systems.StatusEffects
         /// <param name="target">The monster affected by the status effect.</param>
         public virtual void ApplyStartOfTurn(MonsterBase target)
         {
-            
         }
 
         /// <summary>
@@ -69,7 +67,6 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Systems.StatusEffects
         /// <param name="target">The monster affected by the status effect.</param>
         public virtual void ApplyEndOfTurn(MonsterBase target)
         {
-
         }
 
         /// <summary>

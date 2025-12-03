@@ -23,9 +23,9 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Skills.Goblin
 {
     internal class PassiveSkill_Greed : SkillBase
     {
-
         // === Fields ===
         private const float SkillMultiplier = 1.5f;
+
         private const int SkillCooldown = 0;
 
         /// <summary>
@@ -45,7 +45,7 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Skills.Goblin
         }
 
         /// <summary>
-        /// Called when the passive is initialized. 
+        /// Called when the passive is initialized.
         /// Greed has no immediate effect on spawn, only on rewards after victory.
         /// </summary>
         /// <param name="user">The monster owning the Greed passive.</param>

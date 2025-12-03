@@ -31,9 +31,9 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Factories
 {
     internal class MonsterFactory
     {
-
         // === Dependencies ===
         private readonly DiagnosticsManager _diagnostics;
+
         private readonly MonsterBalancing _balancing;
 
         /// <summary>
@@ -45,7 +45,6 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Factories
         {
             _diagnostics = diagnostics;
             _balancing = balancing;
-
         }
 
         /// <summary>

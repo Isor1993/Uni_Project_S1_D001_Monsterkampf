@@ -18,6 +18,7 @@
 * History :
 *   03.12.2025 ER Created
 ******************************************************************************/
+
 using S1_D001_Monsterkampf_Simulator_ER.Controllers;
 using S1_D001_Monsterkampf_Simulator_ER.Monsters;
 
@@ -27,18 +28,19 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
     {
         // === Dependencies ===
         private readonly SymbolManager _symbol;
+
         private readonly PlayerController _playerController;
 
         // === Fields ===
 
-        const int HeaderPositionX = 0;
-        const int HeaderPositionY = 0;
-        const int StartOffsetX = 23;
-        const int StartOffsetY = 0;
-        const int StartSpriteOffsetX = 16;
-        const int StartSpriteOffsetY = 14;
-        const int TutorialOffsetX = 39;
-        const int EndOffsetX = 39;
+        private const int HeaderPositionX = 0;
+        private const int HeaderPositionY = 0;
+        private const int StartOffsetX = 23;
+        private const int StartOffsetY = 0;
+        private const int StartSpriteOffsetX = 16;
+        private const int StartSpriteOffsetY = 14;
+        private const int TutorialOffsetX = 39;
+        private const int EndOffsetX = 39;
 
         private string tutorialLine_0 = " Welcome to my monster simulation fighter project!";
         private string tutorialLine_1 = " [W] or [↑]    = Move up in the selection to choose options/skills";
@@ -67,7 +69,6 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
 
         private readonly string[] HeaderStartScreen_1 =
         {
-
             @" __  __                 _            ",
             @"|  \/  |               | |           ",
             @"| \  / | ___  _ __  ___| |_ ___ _ __ ",
@@ -78,7 +79,6 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
 
         private readonly string[] HeaderStartScreen_2 =
         {
-
             @" ____        _   _   _           ",
             @"|  _ \      | | | | | |          ",
             @"| |_) | __ _| |_| |_| | ___ _ __ ",
@@ -89,7 +89,6 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
 
         private readonly string[] HeaderTutorialScreen =
         {
-
             @" _______    _             _       _ ",
             @"|__   __|  | |           (_)     | |",
             @"   | |_   _| |_ ___  _ __ _  __ _| |",
@@ -142,7 +141,6 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
             PrintTutorialHeader();
             PrintTutorialFrame();
             PrintTutorialText();
-
         }
 
         /// <summary>
@@ -154,7 +152,6 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
             PrintEndFrame();
             PrintEndHeader();
             PrintEndText();
-
         }
 
         /// <summary>

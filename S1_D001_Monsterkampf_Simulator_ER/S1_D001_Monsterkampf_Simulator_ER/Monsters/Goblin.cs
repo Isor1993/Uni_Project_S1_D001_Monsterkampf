@@ -5,8 +5,8 @@
 * Author  : Eric Rosenberg
 *
 * Description :
-*   Represents the Goblin monster. Fast, aggressive and specialized in 
-*   quick strikes. Uses physical attack skills and benefits from its 
+*   Represents the Goblin monster. Fast, aggressive and specialized in
+*   quick strikes. Uses physical attack skills and benefits from its
 *   high speed in combat.
 *
 * Responsibilities :
@@ -30,7 +30,6 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Monsters
 
         public static readonly string[] GoblinSpriteP =
         {
-
                 @"    ____",
                 @"   (   O)_",
                 @"   |    __)",
@@ -45,6 +44,7 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Monsters
                 @"|__|  |__|",
                 @"(___) (___)"
         };
+
         public static readonly string[] GoblinSpriteE =
         {
                 @"         ____",
@@ -84,7 +84,6 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Monsters
                  skill,
                  diagnostics)
         {
-
         }
 
         /// <summary>

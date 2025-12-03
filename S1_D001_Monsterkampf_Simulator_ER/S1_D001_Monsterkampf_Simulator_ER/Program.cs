@@ -33,6 +33,7 @@ namespace S1_D001_Monsterkampf_Simulator_ER
         private static void Main(string[] args)
         {
             Console.OutputEncoding = System.Text.Encoding.UTF8;
+            Console.CursorVisible = false;
 
             // === CORE SYSTEMS ====================================================
             var diagnostics = new DiagnosticsManager();
@@ -43,7 +44,7 @@ namespace S1_D001_Monsterkampf_Simulator_ER
             var pipeline = new DamagePipeline(diagnostics);
 
             // === INPUT SYSTEM =====================================================
-            
+
             IPlayerInput input = new KeyboardInputManager();
             var inputManager = new InputManager(input);
 
@@ -54,9 +55,9 @@ namespace S1_D001_Monsterkampf_Simulator_ER
             var monsterFactory = new MonsterFactory(diagnostics, balancing);
 
             // === CONTROLLERS =======================================================
-            
+
             var playerController = new PlayerController(
-                monster: null!, 
+                monster: null!,
                 diagnostics: diagnostics,
                 ui: ui,
                 input: input);

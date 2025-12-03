@@ -19,12 +19,14 @@
 using S1_D001_Monsterkampf_Simulator_ER.Managers;
 using S1_D001_Monsterkampf_Simulator_ER.Monsters;
 using S1_D001_Monsterkampf_Simulator_ER.Systems.StatusEffects;
+
 namespace S1_D001_Monsterkampf_Simulator_ER.Skills.Orc
 {
     internal class PassiveSkill_Fear : SkillBase, IPassiveSkill
     {
         // === Fields ===
         private const float SkillMultiplier = 0.5f;
+
         private const int SkillCooldown = 0;
 
         /// <summary>

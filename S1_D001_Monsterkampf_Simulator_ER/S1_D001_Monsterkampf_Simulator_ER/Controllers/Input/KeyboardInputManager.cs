@@ -6,14 +6,12 @@
 *
 * Description :
 * Provides keyboard-based player input handling.
-* Translates ConsoleKey input into PlayerCommand actions 
+* Translates ConsoleKey input into PlayerCommand actions
 * (MoveUp, MoveDown, Confirm).
 *
 * History :
 * xx.xx.2025 ER Created
 ******************************************************************************/
-
-using System;
 
 namespace S1_D001_Monsterkampf_Simulator_ER.Managers
 {

@@ -19,7 +19,6 @@
 using S1_D001_Monsterkampf_Simulator_ER.Managers;
 using S1_D001_Monsterkampf_Simulator_ER.Monsters;
 
-
 namespace S1_D001_Monsterkampf_Simulator_ER.Systems.StatusEffects
 {
     internal class PoisonEffect : StatusEffectBase

@@ -22,10 +22,11 @@ using S1_D001_Monsterkampf_Simulator_ER.Systems.StatusEffects;
 
 namespace S1_D001_Monsterkampf_Simulator_ER.Skills.Slime
 {
-    internal class PassiveSkill_Absorb:SkillBase,IPassiveSkill
-    {        
+    internal class PassiveSkill_Absorb : SkillBase, IPassiveSkill
+    {
         // === Fields ===
-        private const float SkillMultiplier = 0.3f;        
+        private const float SkillMultiplier = 0.3f;
+
         private const int SkillCooldown = 0;
 
         /// <summary>
@@ -50,8 +51,8 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Skills.Slime
         /// <param name="user">The monster receiving the passive absorb effect.</param>
         public void ApplyPassive(MonsterBase user)
         {
-            user.AddStatusEffect(new AbsorbEffect(SkillMultiplier,_diagnostics));
+            user.AddStatusEffect(new AbsorbEffect(SkillMultiplier, _diagnostics));
             _diagnostics.AddCheck($"{nameof(PassiveSkill_Absorb)}.{nameof(ApplyPassive)}: Applied absorb effect on {user.Race}.");
         }
-    }    
+    }
 }

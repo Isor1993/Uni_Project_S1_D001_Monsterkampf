@@ -20,7 +20,6 @@
 using S1_D001_Monsterkampf_Simulator_ER.Managers;
 using S1_D001_Monsterkampf_Simulator_ER.Monsters;
 
-
 namespace S1_D001_Monsterkampf_Simulator_ER.Skills
 {
     internal class BasicAttack : SkillBase
@@ -39,13 +38,14 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Skills
                   "A standard physical attack based on AP.",
                   SkillType.Aktive,
                   DamageType.Physical,
-                  SkillMultiplier, 
+                  SkillMultiplier,
                   diagnostics
                   )
         {
             Cooldown = SkillCooldown;
             CurrentCooldown = SkillDuration;
         }
+
         /// <summary>
         /// Calculates raw damage using AP and the fixed multiplier.
         /// </summary>

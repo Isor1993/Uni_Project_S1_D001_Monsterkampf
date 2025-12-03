@@ -16,8 +16,6 @@
 *   xx.xx.2025 ER Created
 ******************************************************************************/
 
-using S1_D001_Monsterkampf_Simulator_ER.Monsters;
-
 namespace S1_D001_Monsterkampf_Simulator_ER.Player
 {
     internal class PlayerData
@@ -33,6 +31,5 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Player
         /// Number of battles successfully completed.
         /// </summary>
         public int CompletedBattles { get; set; } = 0;
-
     }
 }

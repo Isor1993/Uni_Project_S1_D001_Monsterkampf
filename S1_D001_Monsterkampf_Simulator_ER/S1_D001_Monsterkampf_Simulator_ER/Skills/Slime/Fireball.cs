@@ -23,9 +23,10 @@ using S1_D001_Monsterkampf_Simulator_ER.Monsters;
 namespace S1_D001_Monsterkampf_Simulator_ER.Skills.Slime
 {
     internal class Fireball : SkillBase
-    {        
+    {
         // === Fields ===
-        private const float SkillMultiplier = 1.5f;        
+        private const float SkillMultiplier = 1.5f;
+
         private const int SkillCooldown = 2;
 
         /// <summary>
@@ -54,6 +55,6 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Skills.Slime
             float raw = attacker.Meta.AP * Power;
             _diagnostics.AddCheck($"{nameof(Fireball)}.{nameof(CalculateRawDamage)}: RawDamage = {raw}.");
             return raw;
-        }       
+        }
     }
 }

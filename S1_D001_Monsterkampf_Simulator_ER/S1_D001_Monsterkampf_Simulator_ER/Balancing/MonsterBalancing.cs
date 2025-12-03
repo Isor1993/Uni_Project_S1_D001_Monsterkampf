@@ -21,34 +21,33 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Balancing
 {
     internal class MonsterBalancing
     {
-
         // === Dependencies ===
         private readonly DiagnosticsManager _diagnostics;
 
         // === Fields ===
 
-
         private readonly Dictionary<RaceType, BaseStats> _baseStats;
         private readonly Dictionary<RaceType, BaseResistances> _baseResistances;
-
-
 
         // === Global Balancing Constants ===
 
         // Level & Progression
         public int StartLevel => 1;
+
         public int LevelUpScaling => 1;
         public int BonusLevels => 2;
         public int BaseVictoryReward => 1;
 
         // Stat growth multipliers per level
         public float HPScaling => 0.10f;
+
         public float APScaling => 0.04f;
         public float DPScaling => 0.05f;
         public float SpeedScaling => 0.08f;
 
         // Stat point rewards for manual stat allocation
         public int StatIncrease_HP => 10;
+
         public int StatIncrease_AP => 1;
         public int StatIncrease_DP => 1;
         public float StatIncrease_Speed => 0.5f;
@@ -69,9 +68,9 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Balancing
             _baseStats = new Dictionary<RaceType, BaseStats>();
             _baseResistances = new Dictionary<RaceType, BaseResistances>();
 
-            _baseStats[RaceType.Goblin] = new BaseStats(HP: 48, AP: 17, DP: 2, Speed: 14);
-            _baseStats[RaceType.Slime] = new BaseStats(HP: 80, AP: 10, DP: 4, Speed: 6);
-            _baseStats[RaceType.Troll] = new BaseStats(HP: 70, AP: 15, DP: 3, Speed: 8);
+            _baseStats[RaceType.Goblin] = new BaseStats(HP: 55, AP: 20, DP: 4, Speed: 14);
+            _baseStats[RaceType.Slime] = new BaseStats(HP: 80, AP: 14, DP: 4, Speed: 6);
+            _baseStats[RaceType.Troll] = new BaseStats(HP: 90, AP: 15, DP: 4, Speed: 8);
             _baseStats[RaceType.Orc] = new BaseStats(HP: 80, AP: 17, DP: 6, Speed: 10);
 
             _baseResistances[RaceType.Goblin] = new BaseResistances(Physical: 0.00f, Fire: 0.00f, Water: 0.00f, Poison: 0.20f);
@@ -117,7 +116,6 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Balancing
             _diagnostics.AddCheck($"{nameof(MonsterBalancing)}.{nameof(GetMeta)}: Successfully got balanced meta data.");
 
             return new MonsterMeta(scaledHp, scaledHp, scaledAp, scaledDp, scaledSpeed);
-
         }
 
         /// <summary>

@@ -22,7 +22,7 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Controllers
 {
     internal class EnemyController : ControllerBase
     {
-        // === Dependencies ===       
+        // === Dependencies ===
         private readonly RandomManager _random;
 
         /// <summary>

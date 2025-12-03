@@ -20,13 +20,13 @@
 using S1_D001_Monsterkampf_Simulator_ER.Managers;
 using S1_D001_Monsterkampf_Simulator_ER.Monsters;
 
-
 namespace S1_D001_Monsterkampf_Simulator_ER.Systems.StatusEffects
 {
     internal class TribeScreamEffect : StatusEffectBase
     {
         // === Fields ===
         private readonly float _multiplier;
+
         private float _baseAp;
         private bool _applied = false;
 
@@ -37,10 +37,9 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Systems.StatusEffects
         /// <param name="duration">How many rounds the effect should last.</param>
         /// <param name="diagnostics">Diagnostics manager used for debug logging.</param>
         public TribeScreamEffect(float multiplier, int duration, DiagnosticsManager diagnostics)
-            : base("Tribe Scream",duration,diagnostics)
+            : base("Tribe Scream", duration, diagnostics)
         {
             _multiplier = multiplier;
-            
         }
 
         /// <summary>

@@ -11,9 +11,8 @@
 * recombination based on embedded timestamps.
 *
 * History :
-* xx.xx.2025 ER Created / 
+* xx.xx.2025 ER Created /
 ******************************************************************************/
-
 
 namespace S1_D001_Monsterkampf_Simulator_ER.Managers
 {
@@ -237,7 +236,6 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
             _checks.Clear();
             _exceptions.Clear();
         }
-
 
         // === Chronological Output ===
 

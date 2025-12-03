@@ -21,7 +21,6 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Monsters
 {
     internal class MonsterMeta
     {
-
         /// <summary>
         /// Maximum HP of the monster.
         /// </summary>

@@ -41,11 +41,12 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
 
     internal class BattleManager
     {
-
         // === Dependencies ===
         private readonly BattleManagerDependencies _deps;
+
         private readonly InputManager _inputManager;
         private readonly IPlayerInput _playerInput;
+
         // === Fields ===
         private bool _playerStarts;
 
@@ -96,7 +97,6 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
         /// </summary>
         public void RunBattle()
         {
-
             _deps.Diagnostics.AddCheck($"{nameof(BattleManager)}.{nameof(RunBattle)}: Battle started!");
 
             int round = 1;
@@ -122,7 +122,11 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
                 _deps.UI.ClearSkillBox();
                 _deps.UI.PrintMonsterInfoBoxPlayer();
                 _deps.UI.PrintMonsterInfoBoxEnemy();
-
+                int clearStartX = 40;
+                int clearStartY = 9;
+                int spriteHeight = 14;
+                int spriteWidth = 50;
+                _deps.UI.ClearArea(clearStartX, clearStartY, spriteWidth, spriteHeight);
                 Player.PrintSprite(true);
                 Enemy.PrintSprite(false);
 
@@ -130,7 +134,6 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
 
                 // Apply start-of-turn effects
                 HandleStartOfTurnEffects();
-
 
                 // Turns
                 if (_playerStarts)
@@ -275,7 +278,7 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
         }
 
         /// <summary>
-        /// Applies reward logic for the winning monster.  
+        /// Applies reward logic for the winning monster.
         /// Only the player receives rewards (stat points), including passive modifiers.
         /// </summary>
         /// <param name="winner">The controller whose monster won the fight.</param>
@@ -288,7 +291,6 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
 
             if (!winnerIsPlayer)
                 return;
-
 
             float reward = _deps.Balancing.BaseVictoryReward;
 
@@ -408,7 +410,6 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
                 _deps.Diagnostics.AddCheck(
                     $"{nameof(BattleManager)}.{nameof(EnemyTurn)}: New effect triggered → {newEffect.Name}");
             }
-
 
             // 3. Damage info box
             RefreshUI();

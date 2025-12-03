@@ -37,7 +37,6 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Monsters
         Troll = 2,
         Goblin = 3,
         Slime = 4,
-
     }
 
     /// <summary>
@@ -55,8 +54,10 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Monsters
     {
         // === Dependencies ===
         protected readonly DiagnosticsManager _diagnostics;
+
         // === Fields ===
         protected MonsterMeta _meta;
+
         protected MonsterResistance _resistance;
         protected SkillPackage _skills;
         private List<StatusEffectBase> _statusEffects = new List<StatusEffectBase>();
@@ -99,7 +100,6 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Monsters
             _diagnostics = diagnosticsManager;
             _skills = skill;
         }
-
 
         /// <summary>
         /// Returns the monster's meta stats (HP, AP, DP, Speed).
@@ -375,21 +375,25 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Monsters
                     Meta.CurrentHP = Meta.MaxHP;
                     _diagnostics.AddCheck($"{nameof(MonsterBase)}.{nameof(ApplyStatPointIncrease)}: Increased max HP {oldMaxHP} to {Meta.MaxHP}.");
                     break;
+
                 case StatType.AP:
                     float oldAP = Meta.AP;
                     Meta.AP += balancing.StatIncrease_AP;
                     _diagnostics.AddCheck($"{nameof(MonsterBase)}.{nameof(ApplyStatPointIncrease)}: Increased max AP {oldAP} to {Meta.AP}.");
                     break;
+
                 case StatType.DP:
                     float oldDP = Meta.DP;
                     Meta.DP += balancing.StatIncrease_DP;
                     _diagnostics.AddCheck($"{nameof(MonsterBase)}.{nameof(ApplyStatPointIncrease)}: Increased max DP {oldDP} to {Meta.DP}.");
                     break;
+
                 case StatType.Speed:
                     float oldMaxSpeed = Meta.Speed;
                     Meta.Speed += balancing.StatIncrease_Speed;
                     _diagnostics.AddCheck($"{nameof(MonsterBase)}.{nameof(ApplyStatPointIncrease)}: Increased max Speed {oldMaxSpeed} to {Meta.Speed}.");
                     break;
+
                 default:
                     _diagnostics.AddError($"{nameof(MonsterBase)}.{nameof(ApplyStatPointIncrease)}: No StatType found.");
                     break;

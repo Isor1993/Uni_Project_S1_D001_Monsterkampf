@@ -48,11 +48,13 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
 
         // === Dependencies ===
         private readonly GameDependencies _deps;
+
         private readonly InputManager _inputManager;
         private readonly IPlayerInput _playerInput;
 
         // === Fields ===
         private GameState _currentState = GameState.Start;
+
         private bool isRunning = true;
 
         /// <summary>
@@ -87,7 +89,6 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
         {
             while (isRunning)
             {
-
                 switch (_currentState)
                 {
                     case GameState.Start:
@@ -158,7 +159,6 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
             Console.ReadKey(true);
 
             _currentState = GameState.ChooseMonster;
-
         }
 
         /// <summary>
@@ -207,7 +207,6 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
                         confirmed = true;
                         break;
                 }
-
 
                 _deps.UI.UpdateMonsterSelectionBox(monsterChoices, pointer);
                 RefreshMessageBox();
@@ -286,7 +285,6 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
 
             int newLevel = player.Level + _deps.Balancing.LevelUpScaling;
 
-
             player.ApplyLevelUp(_deps.Balancing);
             player.SkillPackage.ResetCooldowns();
             _deps.Diagnostics.AddCheck(
@@ -318,7 +316,6 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
             MonsterBase enemy = _deps.MonsterFactory.Create(enemyRace, enemyLevel);
             ScaleEnemy(enemy, enemyLevel
 
-
                 , _deps.Balancing);
             _deps.EnemyController.SetMonster(enemy);
             _deps.Diagnostics.AddCheck($"{nameof(GameManager)}.{nameof(NextStage)}: Enemy created & assigned.");
@@ -332,8 +329,6 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
         {
             enemy.Meta.MaxHP += (1 + balancing.HPScaling) * level;
             enemy.Meta.AP += (1 +
-
-
 
             balancing.APScaling) * level;
             enemy.Meta.DP += (1 + balancing.DPScaling) * level;
@@ -352,11 +347,10 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
             Console.ReadKey(true);
 
             _currentState = GameState.Quit;
-
         }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         private void QuitGame()
         {

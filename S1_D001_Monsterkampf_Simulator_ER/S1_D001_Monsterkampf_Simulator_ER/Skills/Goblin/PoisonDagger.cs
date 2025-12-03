@@ -25,9 +25,9 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Skills.Goblin
 {
     internal class PoisonDagger : SkillBase
     {
-
         // === Fields ===
         private const float SkillMultiplier = 0.10f;
+
         private const int SkillDuration = 2;
         private const int SkillCooldown = 1;
         private const float BasicDamage = 1f;

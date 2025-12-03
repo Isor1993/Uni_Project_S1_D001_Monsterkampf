@@ -26,6 +26,7 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Skills.Orc
     {
         // === Fields ===
         private const float SkillMultiplier = 1.5f;
+
         private const int SkillDuration = 5;
         private const int SkillCooldown = 5;
         private const float BasicDamage = 0.5f;

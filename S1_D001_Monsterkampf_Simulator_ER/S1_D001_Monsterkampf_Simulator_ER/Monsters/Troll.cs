@@ -28,7 +28,6 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Monsters
 
         public static readonly string[] TrollSpriteP =
         {
-
             @"   A___A",
             @"  (    O)_",
             @"  |     __)",
@@ -64,7 +63,7 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Monsters
         };
 
         /// <summary>
-        /// Short description shown in UI and debug output.       
+        /// Short description shown in UI and debug output.
         /// </summary>
         public override string Description => "A slow but extremely durable monster. Regenerates health naturally.";
 
@@ -85,7 +84,6 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Monsters
                  skill,
                  diagnostics)
         {
-
         }
 
         /// <summary>

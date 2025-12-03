@@ -18,6 +18,7 @@
 * History :
 *   03.12.2025 ER Created
 ******************************************************************************/
+
 using S1_D001_Monsterkampf_Simulator_ER.Monsters;
 
 namespace S1_D001_Monsterkampf_Simulator_ER.Managers

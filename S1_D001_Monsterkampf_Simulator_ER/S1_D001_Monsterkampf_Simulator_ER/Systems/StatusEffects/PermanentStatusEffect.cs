@@ -18,7 +18,6 @@
 
 using S1_D001_Monsterkampf_Simulator_ER.Managers;
 
-
 namespace S1_D001_Monsterkampf_Simulator_ER.Systems.StatusEffects
 {
     internal abstract class PermanentStatusEffect : StatusEffectBase
@@ -28,10 +27,9 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Systems.StatusEffects
         /// </summary>
         /// <param name="name">The name of the status effect.</param>
         /// <param name="diagnostics">Diagnostics manager used for debug logging.</param>
-        protected PermanentStatusEffect(string name,DiagnosticsManager diagnostics)
+        protected PermanentStatusEffect(string name, DiagnosticsManager diagnostics)
             : base(name, int.MaxValue, diagnostics) // infinite duration
         {
-
         }
 
         /// <summary>
@@ -40,7 +38,7 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Systems.StatusEffects
         /// </summary>
         public override void Tick()
         {
-           _diagnostics.AddCheck($"{nameof(PermanentStatusEffect)}.{nameof(Tick)}: Permanent status does not tick.");
+            _diagnostics.AddCheck($"{nameof(PermanentStatusEffect)}.{nameof(Tick)}: Permanent status does not tick.");
         }
     }
 }

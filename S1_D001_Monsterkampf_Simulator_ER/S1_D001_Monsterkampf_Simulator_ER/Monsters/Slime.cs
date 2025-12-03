@@ -25,7 +25,6 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Monsters
 {
     internal class Slime : MonsterBase
     {
-
         // === Fields ===    }
 
         public static readonly string[] SlimeSpriteP =
@@ -119,6 +118,3 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Monsters
         }
     }
 }
-
-
-

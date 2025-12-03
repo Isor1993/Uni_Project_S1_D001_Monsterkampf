@@ -5,8 +5,8 @@
 * Author  : Eric Rosenberg
 *
 * Description :
-*   Simple helper manager responsible for writing formatted or unformatted 
-*   text to the console. Mainly used for generic printing, debug text, 
+*   Simple helper manager responsible for writing formatted or unformatted
+*   text to the console. Mainly used for generic printing, debug text,
 *   and keeping responsibilities separated from core game logic.
 *
 * Responsibilities :
@@ -17,6 +17,7 @@
 * History :
 *   03.12.2025 ER Created
 ******************************************************************************/
+
 namespace S1_D001_Monsterkampf_Simulator_ER.Managers
 {
     internal class PrintManager

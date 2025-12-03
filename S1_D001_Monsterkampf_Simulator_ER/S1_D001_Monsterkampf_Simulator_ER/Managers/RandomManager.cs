@@ -19,14 +19,12 @@
 *   03.12.2025 ER Created
 ******************************************************************************/
 
-
 using S1_D001_Monsterkampf_Simulator_ER.Monsters;
 
 namespace S1_D001_Monsterkampf_Simulator_ER.Managers
 {
     internal class RandomManager
     {
-
         private readonly Random _random;
 
         /// <summary>
@@ -50,7 +48,6 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
         /// </returns>
         public int Next(int maxExclusive)
         {
-
             return _random.Next(maxExclusive);
         }
 
@@ -79,7 +76,6 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
                     2 => RaceType.Orc,
                     3 => RaceType.Slime,
                     _ => RaceType.None,
-
                 };
             } while (enemy == racePlayer);
 

@@ -51,11 +51,10 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
         /// </summary>
         public int EnemyPositionY => 3;
 
-
         /// <summary>
         /// Generic offset used as padding inside framed areas.
         /// </summary>
-        const int EmptyOffset = 1;
+        private const int EmptyOffset = 1;
 
         /// <summary>
         /// Creates a new UI manager instance for drawing all battle UI.
@@ -68,7 +67,6 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
             _symbol = symbol;
             _diagnostics = diagnostics;
             _balancing = balancing;
-
         }
 
         /// <summary>
@@ -159,7 +157,6 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
                     else if (top || bottom) Console.Write(_symbol.WallHorizontalSymbol);
                     else if (left || right) Console.Write(_symbol.WallVerticalSymbol);
                     else Console.Write(" ");
-
                 }
             }
         }
@@ -196,7 +193,6 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
                 }
             }
         }
-
 
         /// <summary>
         /// Updates the player monster info box with current stats and HP bar.
@@ -325,7 +321,6 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
             Console.SetCursorPosition(x + LabelOffsetLeft, y + yOffset);
             if (monster.Meta.MaxHP < MaxValue)
             {
-
                 Console.Write($"HP : {(int)monster.Meta.CurrentHP}/{(int)monster.Meta.MaxHP} ");
             }
             else Console.Write($"HP  : >999999");
@@ -427,7 +422,7 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
         /// <param name="y">Top-left Y position.</param>
         /// <param name="width">Width of the area in characters.</param>
         /// <param name="height">Height of the area in characters.</param>
-        private void ClearArea(int x, int y, int width, int height)
+        public void ClearArea(int x, int y, int width, int height)
         {
             string blank = new string(' ', width);
 
@@ -468,6 +463,7 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
                 }
             }
         }
+
         /// <summary>
         /// Writes static stat labels (HP, LVL, Speed, AP, DP) into a monster box.
         /// </summary>
@@ -479,7 +475,6 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
             const int LableOffsetRight = 20;
             int LableStartY = 1;
             int yOffset = LableStartY;
-
 
             Console.SetCursorPosition(x + LabelOffsetLeft, y + yOffset);
             Console.Write("HP :");
@@ -578,9 +573,7 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
             int contentY = y + FrameOffset;
             int lineY = contentY;
 
-
             ClearArea(contentX, contentY, InnerWidth, InnerHeight);
-
 
             string line1 = $" {attacker.Race} hits you using [{skill.Name}].";
             string line2 = $" You received [{damage:0}] damage.";
@@ -623,7 +616,6 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
             int contentX = x + FrameOffset;
             int contentY = y + FrameOffset;
             int contentLineY = contentY;
-
 
             ClearArea(contentX, contentY, InnerWidth, InnerHeight);
 
@@ -718,9 +710,7 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
             int contentY = y + FrameOffset;
             int lineY = contentY;
 
-
             ClearArea(contentX, contentY, InnerWidth, InnerHeight);
-
 
             string line1 = $" Monster : {race}";
             string line2 = $" Stats   : HP {meta.MaxHP:0} | AP {meta.AP:0.0} | DP {meta.DP:0.0} | SPD {meta.Speed}";
@@ -864,9 +854,7 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
             int contentY = y + FrameOffset;
             int lineY = contentY;
 
-
             ClearArea(contentX, contentY, InnerWidth, InnerHeight);
-
 
             string line1 = playerWon
                 ? $" You won the fight."

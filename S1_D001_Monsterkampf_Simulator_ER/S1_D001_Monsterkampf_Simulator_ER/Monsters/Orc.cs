@@ -29,7 +29,6 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Monsters
 
         public static readonly string[] OrcSpriteP =
         {
-
             @"   A___A",
             @"  (    O)_",
             @"  |     __)",
@@ -86,7 +85,6 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Monsters
                  skill,
                  diagnostics)
         {
-
         }
 
         /// <summary>
@@ -136,4 +134,3 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Monsters
         }
     }
 }
-

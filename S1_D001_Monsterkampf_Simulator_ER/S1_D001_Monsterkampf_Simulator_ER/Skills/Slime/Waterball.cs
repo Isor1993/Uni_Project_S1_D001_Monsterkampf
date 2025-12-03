@@ -16,10 +16,9 @@
 * History :
 *   03.12.2025 ER Created
 ******************************************************************************/
+
 using S1_D001_Monsterkampf_Simulator_ER.Managers;
 using S1_D001_Monsterkampf_Simulator_ER.Monsters;
-
-
 
 namespace S1_D001_Monsterkampf_Simulator_ER.Skills.Slime
 {
@@ -27,6 +26,7 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Skills.Slime
     {
         // === Fields ===
         private const float SkillMultiplier = 1.5f;
+
         private const int SkillCooldown = 2;
 
         /// <summary>

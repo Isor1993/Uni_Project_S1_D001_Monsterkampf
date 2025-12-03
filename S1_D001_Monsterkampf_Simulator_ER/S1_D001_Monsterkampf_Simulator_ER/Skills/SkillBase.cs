@@ -19,7 +19,6 @@
 *   03.12.2025 ER Created
 ******************************************************************************/
 
-
 using S1_D001_Monsterkampf_Simulator_ER.Managers;
 using S1_D001_Monsterkampf_Simulator_ER.Monsters;
 
@@ -47,7 +46,6 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Skills
         Water = 3,
         Poison = 4,
     }
-
 
     internal class SkillBase
     {
@@ -86,12 +84,12 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Skills
         /// <summary>
         /// Base cooldown duration in rounds.
         /// </summary>
-        public int Cooldown { get; protected set; } = 0;       
+        public int Cooldown { get; protected set; } = 0;
 
         /// <summary>
         /// Remaining cooldown until the skill becomes ready.
         /// </summary>
-        public int CurrentCooldown { get; set; } = 0;          
+        public int CurrentCooldown { get; set; } = 0;
 
         /// <summary>
         /// Indicates whether the skill can currently be used.
@@ -147,7 +145,6 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Skills
         /// <param name="target">The monster receiving the hit.</param>
         public virtual void OnHit(MonsterBase attacker, MonsterBase target)
         {
-
         }
 
         /// <summary>

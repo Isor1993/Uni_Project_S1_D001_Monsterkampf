@@ -22,10 +22,9 @@
 ******************************************************************************/
 
 namespace S1_D001_Monsterkampf_Simulator_ER.Managers
-{   
+{
     internal class SymbolManager
     {
-               
         private char _pointerSymbol = '\u25BA';//                    ' ► '
 
         private char _infoboxCornerTopLeftSymbol = '\u250c';//       ' ┌ '
@@ -65,7 +64,7 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
         private char _wallCornerBottomLeftSymbol = '\u255A';//       ' ╚ '
 
         private char _wallCornerBottomRightSymbol = '\u255D';//      ' ╝ '
-       
+
         // Properties with get and set for possible upgrades later
 
         /// <summary>
@@ -111,7 +110,7 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
         /// <summary>
         /// Infobox vertical line symbol: │
         /// </summary>
-        public char InfoBoxVerticalLineSymbol  => _infoBoxVerticalLineSymbol; 
+        public char InfoBoxVerticalLineSymbol => _infoBoxVerticalLineSymbol;
 
         /// <summary>
         /// Wall intersection (top-down): ╦
@@ -141,12 +140,12 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
         /// <summary>
         /// Horizontal wall: ═
         /// </summary>
-        public char WallHorizontalSymbol => _wallHorizontalSymbol; 
+        public char WallHorizontalSymbol => _wallHorizontalSymbol;
 
         /// <summary>
         /// Vertical wall: ║
         /// </summary>
-        public char WallVerticalSymbol  => _wallVerticalSymbol;
+        public char WallVerticalSymbol => _wallVerticalSymbol;
 
         /// <summary>
         /// Top-left corner: ╔
@@ -166,6 +165,6 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
         /// <summary>
         /// Bottom-right corner: ╝
         /// </summary>
-        public char WallCornerBottomRightSymbol { get => _wallCornerBottomRightSymbol; private set => _wallCornerBottomRightSymbol = value; }        
+        public char WallCornerBottomRightSymbol { get => _wallCornerBottomRightSymbol; private set => _wallCornerBottomRightSymbol = value; }
     }
 }
