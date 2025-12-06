@@ -16,6 +16,7 @@
 
 using S1_D001_Monsterkampf_Simulator_ER.Managers;
 using S1_D001_Monsterkampf_Simulator_ER.Monsters;
+using System;
 
 namespace S1_D001_Monsterkampf_Simulator_ER.Balancing
 {
@@ -36,7 +37,9 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Balancing
 
         public int LevelUpScaling => 1;
         public int BonusLevels => 2;
-        public int BaseVictoryReward => 1;
+        public int BaseVictoryReward => 4
+            
+            ;
 
         // Stat growth multipliers per level
         public float HPScaling => 0.10f;
@@ -50,7 +53,7 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Balancing
 
         public int StatIncrease_AP => 1;
         public int StatIncrease_DP => 1;
-        public float StatIncrease_Speed => 0.5f;
+        public int StatIncrease_Speed => 1;
 
         /// <summary>
         /// Initializes all balancing data including base stats, base resistances,
@@ -113,10 +116,17 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Balancing
             float scaledDp = stats.DP + (DPScaling * scale);
             float scaledSpeed = stats.Speed + (SpeedScaling * scale);
 
+            int finalHp = (int)Math.Round(scaledHp);
+            int finalAp = (int)Math.Round(scaledAp);
+            int finalDp = (int)Math.Round(scaledDp);
+            int finalSpeed = (int)Math.Round(scaledSpeed);
+
             _diagnostics.AddCheck($"{nameof(MonsterBalancing)}.{nameof(GetMeta)}: Successfully got balanced meta data.");
 
-            return new MonsterMeta(scaledHp, scaledHp, scaledAp, scaledDp, scaledSpeed);
+            return new MonsterMeta(finalHp, finalHp, finalAp, finalDp, finalSpeed);
         }
+
+
 
         /// <summary>
         /// Retrieves the base resistance profile belonging to a monster race.

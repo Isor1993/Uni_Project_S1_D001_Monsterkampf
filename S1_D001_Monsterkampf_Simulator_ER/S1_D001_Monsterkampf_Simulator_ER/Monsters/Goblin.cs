@@ -86,24 +86,7 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Monsters
         {
         }
 
-        /// <summary>
-        /// Called when the Goblin enters a battle.
-        /// Activates its passive skill if assigned.
-        /// </summary>
-        public override void Spawn()
-        {
-            if (SkillPackage.PassiveSkill != null)
-            {
-                UsePasiveSkill();
-
-                _diagnostics.AddCheck($"{nameof(Goblin)}.{nameof(Spawn)}: Activated passive skill '{SkillPackage.PassiveSkill.Name}'.");
-            }
-            else
-            {
-                _diagnostics.AddError($"{nameof(Goblin)}.{nameof(Spawn)}: No passive skill assigned.");
-            }
-        }
-
+        
         /// <summary>
         /// Renders the Goblin ASCII sprite depending on whether it belongs to
         /// the player or the enemy.

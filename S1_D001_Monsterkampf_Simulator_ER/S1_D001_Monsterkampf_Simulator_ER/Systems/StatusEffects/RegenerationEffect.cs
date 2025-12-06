@@ -41,10 +41,10 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Systems.StatusEffects
         /// </summary>
         /// <param name="target">The monster receiving the regeneration effect.</param>
         public override void ApplyStartOfTurn(MonsterBase target)
-        {
+        {            
             float regeneration = target.Meta.MaxHP * _multiplier;
             regeneration = Math.Max(1, regeneration);
-            target.Heal(regeneration);
+            target.Heal(regeneration);           
             _diagnostics.AddCheck($"{nameof(RegenerationEffect)}.{nameof(ApplyStartOfTurn)}: {target.Race} regenerated {regeneration} HP ({_multiplier * 100:F0}%).");
         }
     }
