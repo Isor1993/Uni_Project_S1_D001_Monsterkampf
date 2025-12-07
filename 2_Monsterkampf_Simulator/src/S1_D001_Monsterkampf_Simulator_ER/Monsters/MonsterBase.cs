@@ -24,6 +24,7 @@ using S1_D001_Monsterkampf_Simulator_ER.Managers;
 using S1_D001_Monsterkampf_Simulator_ER.Skills;
 using S1_D001_Monsterkampf_Simulator_ER.Systems.Damage;
 using S1_D001_Monsterkampf_Simulator_ER.Systems.StatusEffects;
+using System;
 
 namespace S1_D001_Monsterkampf_Simulator_ER.Monsters
 {
@@ -111,12 +112,7 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Monsters
         /// </summary>
         public MonsterResistance Resistance => _resistance;
 
-        /// <summary>
-        /// Called once when the monster spawns into battle.
-        /// Typically used to apply passive spawn effects.
-        /// </summary>
-        public abstract void Spawn();
-
+        
         /// <summary>
         /// Performs an attack on another monster using a skill and
         /// a damage pipeline.
@@ -223,6 +219,15 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Monsters
         }
 
         /// <summary>
+        /// 
+        /// </summary>
+        public void ClearStatusEffects()
+        {
+            _statusEffects.Clear();
+            _diagnostics.AddCheck($"{nameof(MonsterBase)}.{nameof(ClearStatusEffects)}: Cleared all status effects for {Race}.");
+        }
+
+        /// <summary>
         /// Heals the monster by a specified amount
         /// without exceeding MaxHP.
         /// </summary>
@@ -230,6 +235,7 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Monsters
         public virtual void Heal(float heal)
         {
             Meta.CurrentHP += heal;
+           
             if (Meta.MaxHP < Meta.CurrentHP)
             {
                 Meta.CurrentHP = Meta.MaxHP;
@@ -399,6 +405,7 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Monsters
                     break;
             }
         }
+        
 
         /// <summary>
         /// Applies a level-up and scales all stats according to the balancing rules.
@@ -413,6 +420,12 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Monsters
             Meta.AP *= (balancing.APScaling + MultiplierBase);
             Meta.DP *= (balancing.DPScaling + MultiplierBase);
             Meta.Speed *= (balancing.SpeedScaling + MultiplierBase);
+
+            Meta.DP = (int)Math.Round(Meta.DP);
+            Meta.AP = (int)Math.Round(Meta.AP);
+            Meta.Speed = (int)Math.Round(Meta.Speed);
+            Meta.MaxHP = (int)Math.Round(Meta.MaxHP);
+            Meta.CurrentHP = (int)Math.Round(Meta.CurrentHP);
             _diagnostics.AddCheck($"{nameof(MonsterBase)}.{nameof(ApplyLevelUp)}: LevelUp to {Level} and updated stats.");
         }
 

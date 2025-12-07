@@ -303,7 +303,8 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
         /// <param name="monster">The monster whose stats are shown.</param>
         private void UpdateMonsterLabelStats(int x, int y, MonsterBase monster)
         {
-            const int MaxValue = 999999;
+            const int MaxValue_1 = 999999;
+            const int MaxValue_2 = 9999;
             const int maxBarSegments = 20;
             const int LabelOffsetLeft = 2; ;
             const int LableOffsetRight = 20;
@@ -319,39 +320,51 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
             yOffset++;
 
             Console.SetCursorPosition(x + LabelOffsetLeft, y + yOffset);
-            if (monster.Meta.MaxHP < MaxValue)
+            if (monster.Meta.MaxHP < MaxValue_1)
             {
+                Console.Write($"HP :                  ");
+                Console.SetCursorPosition(x + LabelOffsetLeft, y + yOffset);
                 Console.Write($"HP : {(int)monster.Meta.CurrentHP}/{(int)monster.Meta.MaxHP} ");
             }
             else Console.Write($"HP  : >999999");
             yOffset++;
 
             Console.SetCursorPosition(x + LabelOffsetLeft, y + yOffset);
-            if (monster.Level < MaxValue)
+            if (monster.Level < MaxValue_2)
             {
+                Console.WriteLine("        ");
+                Console.SetCursorPosition(x + LabelOffsetLeft, y + yOffset);
                 Console.Write($"LVL: {monster.Level:0}");
             }
             else Console.Write("LVL: > 9999");
 
             Console.SetCursorPosition(x + LableOffsetRight, y + yOffset);
-            if (monster.Meta.Speed < MaxValue)
+            if (monster.Meta.Speed < MaxValue_2)
             {
+                Console.WriteLine("        ");
+                Console.SetCursorPosition(x + LableOffsetRight, y + yOffset);
                 Console.Write($"Speed: {(int)monster.Meta.Speed:0}");
             }
             else Console.Write("Speed: > 9999");
             yOffset++;
 
             Console.SetCursorPosition(x + LabelOffsetLeft, y + yOffset);
-            if (monster.Meta.AP < MaxValue)
+            if (monster.Meta.AP < MaxValue_2)
             {
+                Console.WriteLine("        ");
+                Console.SetCursorPosition(x + LabelOffsetLeft, y + yOffset);
                 Console.Write($"AP : {(int)monster.Meta.AP:0}");
             }
             else Console.Write("AP : > 9999");
 
             Console.SetCursorPosition(x + LableOffsetRight, y + yOffset);
-            if (monster.Meta.DP < MaxValue)
+            if (monster.Meta.DP < MaxValue_2)
             {
-                Console.Write($"DP   : {(int)monster.Meta.DP:0}");
+                Console.WriteLine("        ");
+                Console.SetCursorPosition(x + LableOffsetRight, y + yOffset);
+                Console.Write($"DP   : {(int)monster.Meta.DP}");  
+                
+
             }
             else Console.Write("DP   : > 9999");
         }
@@ -713,7 +726,7 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
             ClearArea(contentX, contentY, InnerWidth, InnerHeight);
 
             string line1 = $" Monster : {race}";
-            string line2 = $" Stats   : HP {meta.MaxHP:0} | AP {meta.AP:0.0} | DP {meta.DP:0.0} | SPD {meta.Speed}";
+            string line2 = $" Stats   : HP {(int)meta.MaxHP} | AP {(int)meta.AP} | DP {(int)meta.DP} | SPD {(int)meta.Speed}";
             string line3 = $" Info    : {description}";
             string enterLine = $"{_symbol.PointerSymbol} [Enter]";
 
@@ -814,8 +827,8 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
                 _ => 0
             };
 
-            string line1 = $" Stat      : {stat}";
-            string line2 = $" Current   : {currentValue:0.0} -> {newValue}";
+            string line1 = $" Stat      : {(int)stat}";
+            string line2 = $" Current   : {(int)currentValue} -> {(int)newValue}";
             string line3 = $" Effect    : {description}";
             string enterLine = $"{_symbol.PointerSymbol} [Enter]";
 

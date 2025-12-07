@@ -71,23 +71,7 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Monsters
         {
         }
 
-        /// <summary>
-        /// Called when the Slime enters a battle.
-        /// Activates its passive skill if available.
-        /// </summary>
-        public override void Spawn()
-        {
-            if (SkillPackage.PassiveSkill != null)
-            {
-                UsePasiveSkill();
-                _diagnostics.AddCheck($"{nameof(Slime)}.{nameof(Spawn)}: Activated passive skill '{SkillPackage.PassiveSkill.Name}'.");
-            }
-            else
-            {
-                _diagnostics.AddError($"{nameof(Slime)}.{nameof(Spawn)}: No passive skill assigned.");
-            }
-        }
-
+       
         /// <summary>
         /// Renders the Slime ASCII sprite depending on whether it is
         /// the player or the enemy.

@@ -314,9 +314,7 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
             _deps.Diagnostics.AddCheck($"{nameof(GameManager)}.{nameof(NextStage)}: Next enemy is {enemyRace}.");
 
             MonsterBase enemy = _deps.MonsterFactory.Create(enemyRace, enemyLevel);
-            ScaleEnemy(enemy, enemyLevel
-
-                , _deps.Balancing);
+            ScaleEnemy(enemy, enemyLevel, _deps.Balancing, enemyRace);
             _deps.EnemyController.SetMonster(enemy);
             _deps.Diagnostics.AddCheck($"{nameof(GameManager)}.{nameof(NextStage)}: Enemy created & assigned.");
             _currentState = GameState.BattleStart;
@@ -325,17 +323,55 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
         /// <summary>
         /// Renders end screen and waits for confirmation before quitting.
         /// </summary>
-        public void ScaleEnemy(MonsterBase enemy, int level, MonsterBalancing balancing)
+        public void ScaleEnemy(MonsterBase enemy, int level, MonsterBalancing balancing, RaceType race)
         {
-            enemy.Meta.MaxHP += (1 + balancing.HPScaling) * level;
-            enemy.Meta.AP += (1 +
 
-            balancing.APScaling) * level;
-            enemy.Meta.DP += (1 + balancing.DPScaling) * level;
-            enemy.Meta.Speed += (1 + balancing.SpeedScaling) * level;
+            var meta = balancing.GetMeta(race, level);
+
+            float multiplier = 1f;
+
+            if (level < 5)
+                multiplier = 0.1f;
+
+            else if (level < 10)
+                multiplier = 0.1f;
+
+            else if (level < 15)
+                multiplier = 0.1f;
+
+            else if (level < 20)
+                multiplier = 0.2f;
+
+            else if (level < 25)
+                multiplier = 0.2f;
+
+            else if (level < 50)
+                multiplier = 0.2f;
+
+            else if (level < 75)
+                multiplier = 1.0f;
+
+            else if (level < 100)
+                multiplier = 2.5f;
+
+            else
+                multiplier = 3.0f;
+
+            enemy.Meta.MaxHP = meta.MaxHP * level * multiplier;
+            enemy.Meta.CurrentHP = enemy.Meta.MaxHP;
+            enemy.Meta.AP = meta.AP * level * multiplier;
+            enemy.Meta.DP = meta.DP * level * multiplier;
+            enemy.Meta.Speed = meta.Speed * level * multiplier;
+
+            enemy.Meta.DP = (int)Math.Round(enemy.Meta.DP);
+            enemy.Meta.AP = (int)Math.Round(enemy.Meta.AP);
+            enemy.Meta.Speed = (int)Math.Round(enemy.Meta.Speed);
+            enemy.Meta.MaxHP = (int)Math.Round(enemy.Meta.MaxHP);
+            enemy.Meta.CurrentHP = (int)Math.Round(enemy.Meta.CurrentHP);
 
             enemy.Meta.CurrentHP = enemy.Meta.MaxHP;
         }
+
 
         /// <summary>
         /// Stops the main loop and ends the game session.

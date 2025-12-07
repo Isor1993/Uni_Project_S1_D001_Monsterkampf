@@ -26,6 +26,7 @@ using S1_D001_Monsterkampf_Simulator_ER.Dependencies;
 using S1_D001_Monsterkampf_Simulator_ER.Monsters;
 using S1_D001_Monsterkampf_Simulator_ER.Skills;
 using S1_D001_Monsterkampf_Simulator_ER.Systems.StatusEffects;
+using System.Reflection.Emit;
 
 namespace S1_D001_Monsterkampf_Simulator_ER.Managers
 {
@@ -97,7 +98,14 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
         /// </summary>
         public void RunBattle()
         {
+
             _deps.Diagnostics.AddCheck($"{nameof(BattleManager)}.{nameof(RunBattle)}: Battle started!");
+
+            Player.ClearStatusEffects();
+            Enemy.ClearStatusEffects();
+
+            Player.UsePasiveSkill();
+            Enemy.UsePasiveSkill();
 
             int round = 1;
             bool battleRunning = true;
@@ -130,8 +138,11 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
                 Player.PrintSprite(true);
                 Enemy.PrintSprite(false);
 
+               
+
                 RefreshUI();
 
+               
                 // Apply start-of-turn effects
                 HandleStartOfTurnEffects();
 
@@ -185,10 +196,9 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
         /// </summary>
         private void HandleStartOfTurnEffects()
         {
-            Player.ProcessStartOfTurnEffects();
-            Player.UsePasiveSkill();
-            Enemy.ProcessStartOfTurnEffects();
-            Enemy.UsePasiveSkill();
+            Player.ProcessStartOfTurnEffects();               
+            Enemy.ProcessStartOfTurnEffects();           
+            
         }
 
         /// <summary>
@@ -366,6 +376,7 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
                 _deps.Diagnostics.AddCheck(
                     $"{nameof(BattleManager)}.{nameof(PlayerTurn)}: New effect triggered → {newEffect.Name}");
             }
+            
 
             // 3. Attack info box
             RefreshUI();
@@ -410,11 +421,14 @@ namespace S1_D001_Monsterkampf_Simulator_ER.Managers
                 _deps.Diagnostics.AddCheck(
                     $"{nameof(BattleManager)}.{nameof(EnemyTurn)}: New effect triggered → {newEffect.Name}");
             }
+           
 
             // 3. Damage info box
             RefreshUI();
             _deps.UI.UpdateMessageBoxForTakeDamage(Enemy, Player, skill: skill, damage: damage, newEffect);
             // 4. Wait for ENTER
+            
+            
             WaitForNext();
 
             // 5. Death check
